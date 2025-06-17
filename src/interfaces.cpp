@@ -441,7 +441,7 @@ void Table::display() {
 
   std::string line, cell;
   for (int i = start_line;
-       i < std::min((int)data.size(), start_line + visible_lines); i++) {
+       i < std::min((int)data.size(), start_line + visible_rows); i++) {
 
     line = "│";
 
@@ -496,7 +496,7 @@ int Table::await_input() {
         // increment but dont let (cursor > options.size)
         cursor += (cursor < data.size() - 1) ? 1 : 0;
 
-        start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
+        start_line += (cursor >= start_line + visible_rows) ? 1 : 0;
         return 0;
 
       case 'D':
@@ -512,10 +512,19 @@ int Table::await_input() {
 void Table::update_size() {
   cons.update_size();
 
-  visible_lines =
-      (cons.height - 5) /
-      (line_seperation +
-       cell_height); // take 5 for header, table header and footer, divide for cell seperation
+  visible_rows = 0;
+  while (true) {
+    int space_used =
+        (cell_height * (visible_rows + 1)) +
+        (line_seperation * visible_rows); // calculates lines used by displaying
+                                          // another row of cells
+    if (space_used >
+        (cons.height - 5)) { // take 5 for header, table header and footer
+      break;
+    }
+    visible_rows++;
+  }
+
   table_width = cons.width - 2; // take space on each side of table
   column_width = (table_width - (columns.size() + 1)) / columns.size();
 }

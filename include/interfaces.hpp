@@ -95,7 +95,7 @@ public:
 
 private:
   int cursor;          // current scroll value
-  int visible_lines;   // number of table rows that will fit onto the terminal
+  int visible_rows;    // number of table rows that will fit onto the terminal
   int start_line;      // index value of first row which shows in view
   int table_width;     // width of table in characters
   int column_width;    // width of each column in characters
