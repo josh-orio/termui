@@ -454,7 +454,11 @@ void Table::display() {
     line = "│";
 
     for (std::string c : columns) {
-      cell = data[i][c].get<std::string>();
+      if (data[i].contains(c)) {
+        cell = data[i][c].get<std::string>();
+      } else {
+        cell = "ERROR";
+      }
 
       if (cell.size() > column_width - 2) {
         line += " " +
