@@ -120,7 +120,10 @@ std::vector<std::string> Input::show() {
   cons.ct.off();
   cons.at.enable();
 
-  cursor = 0; // reset so cursor is at the top
+  // set cursor and start_line so first field is visible
+  cursor = 0;
+  start_line = 0;
+
   selected = false;
 
   do {
@@ -165,7 +168,7 @@ void Input::display() {
   update_size();
   cons.clear();
 
-  cons.print_ln(" " + bold_text(title));
+  cons.print_ln(" " + bold_text(title) + std::format(" {} {}", start_line, cursor));
   cons.print_ln(div_line(cons.width));
 
   for (int i = start_line;
