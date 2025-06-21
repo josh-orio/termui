@@ -64,29 +64,26 @@ void Info::display() {
 }
 
 bool Info::await_input() {
-  char c = std::getchar();
-
-  if (c == 27) /* ESC key */ {
-    if (std::getchar() == '[') {
-      switch (c = std::getchar()) {
-      case 'A':
-        // up arrow moves cursor up
+  if (std::getchar() == keys::ESC) {
+    if (std::getchar() == '[') { // random char in escape sequence
+      switch (std::getchar()) {
+      case keys::U_ARROW:
         // decrement but dont let (cursor < 0)
         line_cursor -= (line_cursor > 0) ? 1 : 0;
         return true;
 
-      case 'B':
-        // down arrow moves cursor down
-        // increment but dont let all text disappear
+      case keys::D_ARROW:
+        // increment but dont let (cursor > options.size)
         line_cursor += (line_cursor < content_lines - 1) ? 1 : 0;
         return true;
 
-      case 'D':
+      case keys::L_ARROW:
         // left arrow closes info page
         return false;
       }
     }
   }
+
   return true;
 }
 
@@ -196,53 +193,64 @@ bool Input::await_input() {
 
   // returning false signals closing the input window, returning true signals
   // continuing to display and take more user input
-  char c = std::getchar();
 
-  if (c == 10) /* enter key */ {
-    // signals (de)selection of current field, just requires a bool flip
-    selected = !selected;
-  }
-  // processes regular character inputs
-  else if (selected) {
-    // accept characters in range 32 - 126
-    // and delete (127)
-    // input sanitization is done in classes, not here
+  char c;
+  if (selected) {
+    switch (c = std::getchar()) {
+    case keys::ENTER:
+      // enter signals (de)selection of current field
+      selected = false;
+      return true;
 
-    if (32 <= c && c <= 126) {
-      responses[cursor] += c; // add input character to field string
-    } else if (c == 127) {    /* backspace/delete */
+    case keys::ESC:
+    // ESC gets ignored plus whatever 2 chars complete the sequence
+      std::getchar();
+      std::getchar();
+      return true;
+
+    case 32 ... 126:
+      // accept ascii characters in range 32 - 126
+      // input sanitization is done in classes, not here
+      responses[cursor] += c;
+      return true;
+
+    case keys::DEL:
+    // DEL char clears last char in string
       if (responses[cursor].size() > 0) {
         responses[cursor] =
             std::string(responses[cursor].begin(), responses[cursor].end() - 1);
       }
-    } else if (c == '\e') {
-      std::getchar();
-      std::getchar();
-      // ignore escape key inputs and clear next input chars
+      return true;
     }
-  }
-  // processing arrow commands
-  else if (c == 27) /* ESC key */ {
-    if (std::getchar() == '[') {
-      switch (c = std::getchar()) {
-      case 'A':
-        // up arrow moves cursor up
-        // decrement but dont let (cursor < 0)
-        cursor -= (cursor > 0) ? 1 : 0;
-        start_line -= (cursor < start_line) ? 1 : 0;
-        return true;
+  } else {
+    switch (c = std::getchar()) {
+    case keys::ENTER:
+      // enter signals (de)selection of current field
+      selected = true;
+      return true;
 
-      case 'B':
-        // down arrow moves cursor down
-        // increment but dont let (cursor > fields.size)
-        cursor += (cursor < fields.size() - 1) ? 1 : 0;
-        start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
-        return true;
+    case keys::ESC:
+      if (std::getchar() == '[') {
+        switch (c = std::getchar()) {
+        case keys::U_ARROW:
+          // up arrow moves cursor up
+          // decrement but dont let (cursor < 0)
+          cursor -= (cursor > 0) ? 1 : 0;
+          start_line -= (cursor < start_line) ? 1 : 0;
+          return true;
 
-      case 'C':
-        // right arrow finalizes the responses
-        // won't return if a field is selected (guaranteed)
-        return false;
+        case keys::D_ARROW:
+          // down arrow moves cursor down
+          // increment but dont let (cursor > fields.size)
+          cursor += (cursor < fields.size() - 1) ? 1 : 0;
+          start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
+          return true;
+
+        case keys::R_ARROW:
+          // right arrow finalizes the responses
+          // can't return if a field is selected (good thing)
+          return false;
+        }
       }
     }
   }
@@ -315,25 +323,22 @@ void Menu::display() {
 }
 
 bool Menu::await_input() {
-  char c = std::getchar();
-
-  if (c == 10) /* enter key */ {
+  switch (std::getchar()) {
+  case keys::ENTER:
     return false;
-  }
-  // processing arrow commands
-  else if (c == 27) /* ESC key */ {
-    if (std::getchar() == '[') {
-      switch (c = std::getchar()) {
-      case 'A':
-        cursor -= (cursor > 0) ? 1 : 0; // decrement but dont let (cursor <0)
 
+  case keys::ESC:
+    if (std::getchar() == '[') { // random char in escape sequence
+      switch (std::getchar()) {
+      case keys::U_ARROW:
+        // decrement but dont let (cursor <0)
+        cursor -= (cursor > 0) ? 1 : 0;
         start_line -= (cursor < start_line) ? 1 : 0;
         return true;
-      case 'B':
-        cursor += (cursor < options.size() - 1)
-                      ? 1
-                      : 0; // increment but dont let (cursor > options.size)
 
+      case keys::D_ARROW:
+        // increment but dont let (cursor > options.size)
+        cursor += (cursor < options.size() - 1) ? 1 : 0;
         start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
         return true;
       }
@@ -479,27 +484,27 @@ int Table::await_input() {
   return 0 -> continue
   return 1 -> select row
   */
-  char c = std::getchar();
-  // processing arrow commands
-  if (c == 10) /* enter key */ {
+
+  switch (std::getchar()) {
+  case keys::ENTER:
     return 1;
-  } else if (c == 27) /* ESC key */ {
-    if (std::getchar() == '[') {
-      switch (c = std::getchar()) {
-      case 'A':
+
+  case keys::ESC:
+    if (std::getchar() == '[') { // random char in escape sequence
+      switch (std::getchar()) {
+      case keys::U_ARROW:
         // decrement but dont let (cursor < 0)
         cursor -= (cursor > 0) ? 1 : 0;
         start_line -= (cursor < start_line) ? 1 : 0;
         return 0;
 
-      case 'B':
+      case keys::D_ARROW:
         // increment but dont let (cursor > options.size)
         cursor += (cursor < data.size() - 1) ? 1 : 0;
-
         start_line += (cursor >= start_line + visible_rows) ? 1 : 0;
         return 0;
 
-      case 'D':
+      case keys::L_ARROW:
         // left arrow closes info page
         return -1;
       }
