@@ -168,7 +168,7 @@ void Input::display() {
   update_size();
   cons.clear();
 
-  cons.print_ln(" " + bold_text(title) + std::format(" {} {}", start_line, cursor));
+  cons.print_ln(" " + bold_text(title));
   cons.print_ln(div_line(cons.width));
 
   for (int i = start_line;
@@ -206,7 +206,7 @@ bool Input::await_input() {
       return true;
 
     case keys::ESC:
-    // ESC gets ignored plus whatever 2 chars complete the sequence
+      // ESC gets ignored plus whatever 2 chars complete the sequence
       std::getchar();
       std::getchar();
       return true;
@@ -218,7 +218,7 @@ bool Input::await_input() {
       return true;
 
     case keys::DEL:
-    // DEL char clears last char in string
+      // DEL char clears last char in string
       if (responses[cursor].size() > 0) {
         responses[cursor] =
             std::string(responses[cursor].begin(), responses[cursor].end() - 1);
