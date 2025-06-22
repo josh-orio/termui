@@ -407,10 +407,33 @@ void Table::display() {
   update_size();
   cons.clear();
 
-  cons.print_ln(" " + bold_text(title));
+  // construct strings for table headers, and columns
+  // some of this could get replaced by std::format (?)
+  std::string headline = "╭";
+  std::string splitter = "├";
+  std::string spacing = "│";
+  std::string footer = "╰";
+
+  for (int i = 0; i < columns.size(); i++) {
+    headline += div_line(column_width);
+    splitter += div_line(column_width);
+    spacing += ws(column_width);
+    footer += div_line(column_width);
+
+    if (i < columns.size() - 1) {
+      headline += "┬";
+      splitter += "┼";
+      spacing += "│";
+      footer += "┴";
+    }
+  }
+
+  headline += "╮";
+  splitter += "┤";
+  spacing += "│";
+  footer += "╯";
 
   std::string header = "│";
-
   for (std::string c : columns) {
     if (c.size() > column_width - 2) {
       header +=
@@ -421,67 +444,58 @@ void Table::display() {
     header += "│";
   }
 
-  // construct strings for table headers, and columns
-  // some of this could get replaced by std::format (?)
-  std::string headline = "┌";
-  std::string splitter = "├";
-  std::string spacing = "│";
-
-  for (int i = 0; i < columns.size(); i++) {
-    headline += div_line(column_width);
-    splitter += div_line(column_width);
-    spacing += ws(column_width);
-
-    if (i < columns.size() - 1) {
-      headline += "┬";
-      splitter += "┼";
-      spacing += "│";
-    }
-  }
-
-  headline += "┐";
-  splitter += "┤";
-  spacing += "│";
-
+  cons.print_ln(" " + bold_text(title));
   cons.print_ln(" " + headline);
   cons.print_ln(" " + bold_text(header));
   cons.print_ln(" " + splitter);
 
-  std::string line, cell;
+  std::vector<std::string> row_text;
+  std::string cell_text;
+  int char_lim;
   for (int i = start_line;
        i < std::min((int)data.size(), start_line + visible_rows); i++) {
 
-    line = "│";
+    row_text = std::vector<std::string>(cell_height, "│");
 
     for (std::string c : columns) {
+      char_lim = cell_height * (column_width - 2);
+
       if (data[i].contains(c)) {
-        cell = data[i][c].get<std::string>();
+        cell_text = data[i][c].get<std::string>();
       } else {
-        cell = "ERROR";
+        cell_text = "ERROR";
       }
 
-      if (cell.size() > column_width - 2) {
-        line += " " +
-                std::string(cell.begin(), cell.begin() + column_width - 5) +
-                "... ";
-      } else if (cell.size() <= column_width - 2) {
-        line += " " + cell +
-                std::string((column_width - 2) - cell.size(), ' ') + " ";
+      if (cell_text.length() < char_lim) {
+        cell_text += std::string(char_lim - cell_text.length(), ' ');
+      } else if (cell_text.length() > char_lim) {
+        cell_text =
+            std::string(cell_text.begin(), cell_text.begin() + char_lim - 3) +
+            "...";
       }
-      line += "│";
+
+      for (int ii = 0; ii < cell_height; ii++) {
+        row_text[ii] +=
+            " " +
+            std::string(cell_text.begin() + (ii * (column_width - 2)),
+                        cell_text.begin() + ((ii + 1) * (column_width - 2))) +
+            " │";
+      }
     }
 
-    if (i == cursor) {
-      cons.print_ln(" " + highlight_text(line));
-    } else {
-      cons.print_ln(" " + line);
+    for (int ii = 0; ii < cell_height; ii++) {
+      if (i == cursor) {
+        cons.print_ln(" " + highlight_text(row_text[ii]));
+      } else {
+        cons.print_ln(" " + row_text[ii]);
+      }
     }
 
     for (int i = 0; i < line_seperation; i++) {
       cons.print_ln(" " + spacing);
     }
   }
-
+  cons.print_ln(" " + footer);
   cons.print_at_pos(faint_text("[←] exit  [↑/↓] scroll"), cons.height, 2);
 }
 
@@ -531,7 +545,7 @@ void Table::update_size() {
         (line_seperation * visible_rows); // calculates lines used by displaying
                                           // another row of cells
     if (space_used >
-        (cons.height - 5)) { // take 5 for header, table header and footer
+        (cons.height - 6)) { // take 6 for header, table header and footer
       break;
     }
     visible_rows++;
