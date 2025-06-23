@@ -452,6 +452,7 @@ void Table::display() {
   std::vector<std::string> row_text;
   std::string cell_text;
   int char_lim;
+  int space_used = 0;
   for (int i = start_line;
        i < std::min((int)data.size(), start_line + visible_rows); i++) {
 
@@ -489,10 +490,15 @@ void Table::display() {
       } else {
         cons.print_ln(" " + row_text[ii]);
       }
+
+      space_used++;
     }
 
-    for (int i = 0; i < line_seperation; i++) {
-      cons.print_ln(" " + spacing);
+    for (int ii = 0; ii < line_seperation; ii++) {
+      if (space_used < cons.height-6) {
+        cons.print_ln(" " + spacing);
+        space_used++;
+      }
     }
   }
   cons.print_ln(" " + footer);
@@ -540,10 +546,10 @@ void Table::update_size() {
 
   visible_rows = 0;
   while (true) {
+    // calculates lines used by displaying another row of cells
     int space_used =
-        (cell_height * (visible_rows + 1)) +
-        (line_seperation * visible_rows); // calculates lines used by displaying
-                                          // another row of cells
+        (cell_height * (visible_rows + 1)) + (line_seperation * visible_rows);
+
     if (space_used >
         (cons.height - 6)) { // take 6 for header, table header and footer
       break;
