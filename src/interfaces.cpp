@@ -52,7 +52,7 @@ void Info::display() {
 
   cons.clear();
 
-  cons.print_ln(" " + bold_text(title));
+  cons.print_ln(" " + title);
   cons.print_ln(" " + faint_text(div_line(cons.width - 2)));
 
   for (int i = line_cursor;
@@ -168,15 +168,14 @@ void Input::display() {
   update_size();
   cons.clear();
 
-  cons.print_ln(" " + bold_text(title));
+  cons.print_ln(" " + title);
   cons.print_ln(div_line(cons.width));
 
   for (int i = start_line;
        i < std::min((int)fields.size(), start_line + visible_lines); i++) {
     if (i == cursor) {
       if (selected) {
-        cons.print_ln(bt(" > " + fields[i]) + ": " +
-                      format_text(responses[i] + " ", formats::REVERSE_VIDEO));
+        cons.print_ln(bt(" > " + fields[i]) + ": " + rv(responses[i] + " "));
       } else {
         cons.print_ln(bt(" > " + fields[i]) + ": " + responses[i]);
       }
@@ -309,7 +308,7 @@ void Menu::display() {
   update_size();
   cons.clear();
 
-  cons.print_ln(" " + bold_text(title));
+  cons.print_ln(" " + title);
   cons.print_ln(div_line(cons.width));
 
   for (int i = start_line;
@@ -444,7 +443,7 @@ void Table::display() {
     header += "│";
   }
 
-  cons.print_ln(" " + bold_text(title));
+  cons.print_ln(" " + title);
   cons.print_ln(" " + headline);
   cons.print_ln(" " + bold_text(header));
   cons.print_ln(" " + splitter);
@@ -486,7 +485,7 @@ void Table::display() {
 
     for (int ii = 0; ii < cell_height; ii++) {
       if (i == cursor) {
-        cons.print_ln(" " + highlight_text(row_text[ii]));
+        cons.print_ln(" " + rv(row_text[ii]));
       } else {
         cons.print_ln(" " + row_text[ii]);
       }
@@ -495,7 +494,7 @@ void Table::display() {
     }
 
     for (int ii = 0; ii < line_seperation; ii++) {
-      if (space_used < cons.height-6) {
+      if (space_used < cons.height - 6) {
         cons.print_ln(" " + spacing);
         space_used++;
       }
