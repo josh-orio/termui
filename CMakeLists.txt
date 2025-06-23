@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 file(GLOB TERMUI_SOURCES "src/*.cpp")
 file(GLOB TERMUI_INCLUDE "include/*.hpp")
 
-message("termui sources: ${TERMUI_SOURCES}")
-message("termui includes: ${TERMUI_INCLUDE}")
+# message("termui sources: ${TERMUI_SOURCES}")
+# message("termui includes: ${TERMUI_INCLUDE}")
 
 add_library(termui ${TERMUI_SOURCES})
 target_include_directories(termui PRIVATE include)

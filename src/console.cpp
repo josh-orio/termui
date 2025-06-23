@@ -48,12 +48,6 @@ Console::Console(bool b, bool e, bool c, bool a) {
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   width = w.ws_col, height = w.ws_row;
 
-  // apply specified console settings
-  // (buffered == true) ? bt.on() : bt.off();
-  // (echos == true) ? et.on() : et.off();
-  // (cursor == true) ? ct.on() : ct.off();
-  // (alt == true) ? at.enable() : at.disable();
-
   buffered = b;
   echos = e;
   cursor = c;
@@ -73,7 +67,6 @@ void Console::close() {
   (echos == false) ? et.on() : et.off();
   (cursor == false) ? ct.on() : ct.off();
   (altterm == false) ? at.enable() : at.disable();
-
 }
 
 void Console::print(std::string p) { std::cout << p << " "; }
