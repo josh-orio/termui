@@ -56,3 +56,6 @@ install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/termuiConfig.cmake"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/termui
 )
+
+add_executable(test_program test.cpp)
+target_link_libraries(test_program PRIVATE termui)
