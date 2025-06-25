@@ -6,16 +6,6 @@
 #include "nlohmann/json.hpp"
 #include <vector>
 
-namespace keys {
-    inline constexpr char ENTER = 10;
-    inline constexpr char ESC = 27;
-    inline constexpr char D_ARROW = 'B';
-    inline constexpr char U_ARROW = 'A';
-    inline constexpr char L_ARROW = 'D';
-    inline constexpr char R_ARROW = 'C';
-    inline constexpr char DEL = 127;
-} // namespace formats
-
 class Info {
 public:
   Console cons;
@@ -42,25 +32,22 @@ public:
   Console cons;
   std::string title;
   std::vector<std::string> fields, responses;
-  std::vector<std::vector<std::string>> options;
 
-  Input(std::string t,
-        std::vector<std::string> f); // default text only input interface
-  Input(std::string t, std::vector<std::string> f,
-        std::vector<std::vector<std::string>>
-            o); // optionally can provide a set list of choices for some/all
-                // input fields
+  Input(std::string t, std::vector<std::string> f);
+  Input(std::string t, std::vector<std::string>, int ls);
 
-  std::vector<std::string> show();
+  int show();
+  std::vector<std::string> get_responses();
 
 private:
-  int cursor;        // current scroll value
-  bool selected;     // element selection indicator
-  int visible_lines; // total number of lines in view
-  int start_line;    // index value of first line which shows in view
+  int cursor;          // current scroll value
+  bool selected;       // element selection indicator
+  int visible_lines;   // total number of lines in view
+  int start_line;      // index value of first line which shows in view
+  int line_seperation; // number of blank lines between elements
 
   void display();
-  bool await_input();
+  int await_input();
 
   void update_size();
 };
@@ -72,7 +59,7 @@ public:
   std::vector<std::string> options;
 
   Menu(std::string t, std::vector<std::string> o);
-  Menu(std::string t, std::vector<std::string> o, int s);
+  Menu(std::string t, std::vector<std::string> o, int ls);
 
   int show(); // returns index of selected option
 
@@ -97,11 +84,10 @@ public:
 
   Table(std::string t, std::vector<std::string> c,
         std::vector<nlohmann::json> d);
-
   Table(std::string t, std::vector<std::string> c,
         std::vector<nlohmann::json> d, int ch, int ls);
 
-  void show();
+  int show();
 
 private:
   int cursor;          // current scroll value

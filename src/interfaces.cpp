@@ -99,78 +99,53 @@ Input::Input(std::string t, std::vector<std::string> f) {
   cons = Console(false, false, false, true);
   title = t;
   fields = f;
-  options = std::vector<std::vector<std::string>>(f.size(),
-                                                  std::vector<std::string>());
   responses.resize(fields.size(), "");
+  line_seperation = 0;
 }
 
-Input::Input(std::string t, std::vector<std::string> f,
-             std::vector<std::vector<std::string>> o) {
+Input::Input(std::string t, std::vector<std::string> f, int ls) {
   cons = Console(false, false, false, true);
   title = t;
   fields = f;
-  options = o;
   responses.resize(fields.size(), "");
+  line_seperation = ls;
 }
 
-std::vector<std::string> Input::show() {
-  // configure terminal
-  cons.bt.off();
-  cons.et.off();
-  cons.ct.off();
-  cons.at.enable();
+int Input::show() {
+  cons.show(); // configure terminal
 
-  // set cursor and start_line so first field is visible
   cursor = 0;
   start_line = 0;
-
   selected = false;
 
+  int sig;
   do {
-    if (selected && options[cursor].size() > 0) {
+    display();
+    sig = await_input();
+  } while (sig != -1);
 
-      cons.bt.on();
-      cons.et.on();
-      cons.ct.on();
-      cons.at.disable();
+  cons.close(); // reset terminal
 
-      Menu m("Sub-menu", options[cursor]);
-      int choice = m.show();
-
-      responses[cursor] = options[cursor][choice];
-
-      cons.bt.off();
-      cons.et.off();
-      cons.ct.off();
-      cons.at.enable();
-
-      selected = false; // avoid recurrent looping
-      display();        // reprint the input interface in current state
-
-      continue; // don't need to await input so skip immediately
-
-    } else {
-      display();
-    }
-
-  } while (await_input());
-
-  // return terminal to defaults
-  cons.bt.on();
-  cons.et.on();
-  cons.ct.on();
-  cons.at.disable();
-
-  return responses;
+  // return codes:
+  // -1 : normal exit
+  // >= 0 : selection at cursor position
+  if (sig == -1) {
+    return -1;
+  } else {
+    return cursor;
+  }
 }
+
+std::vector<std::string> Input::get_responses() { return responses; }
 
 void Input::display() {
   update_size();
   cons.clear();
 
   cons.print_ln(" " + title);
-  cons.print_ln(div_line(cons.width));
+  cons.print_ln(" " + faint_text(div_line(cons.width - 2)));
 
+  int space_used = 0;
   for (int i = start_line;
        i < std::min((int)fields.size(), start_line + visible_lines); i++) {
     if (i == cursor) {
@@ -182,19 +157,25 @@ void Input::display() {
     } else {
       cons.print_ln("   " + fields[i] + ": " + responses[i]);
     }
-    cons.print_ln(); // for spacing
+    space_used++;
+
+    for (int ii = 0; ii < line_seperation; ii++) {
+      if (space_used < cons.height - 3) {
+        cons.print_ln();
+        space_used++;
+      }
+    }
   }
   cons.print_at_pos(
       faint_text("[↵] select/deselect  [↑/↓] scroll [→] finalize"), cons.height,
       2);
 }
 
-bool Input::await_input() {
-  // this function should take the user input and process changes such as text
-  // input or element selection
-
-  // returning false signals closing the input window, returning true signals
-  // continuing to display and take more user input
+int Input::await_input() {
+  // return values:
+  // -1: close window
+  // 0: normal/proceed
+  // 1: element selected
 
   char c;
   if (selected) {
@@ -202,19 +183,19 @@ bool Input::await_input() {
     case keys::ENTER:
       // enter signals (de)selection of current field
       selected = false;
-      return true;
+      return 0;
 
     case keys::ESC:
       // ESC gets ignored plus whatever 2 chars complete the sequence
       std::getchar();
       std::getchar();
-      return true;
+      return 0;
 
     case 32 ... 126:
       // accept ascii characters in range 32 - 126
       // input sanitization is done in classes, not here
       responses[cursor] += c;
-      return true;
+      return 0;
 
     case keys::DEL:
       // DEL char clears last char in string
@@ -222,14 +203,14 @@ bool Input::await_input() {
         responses[cursor] =
             std::string(responses[cursor].begin(), responses[cursor].end() - 1);
       }
-      return true;
+      return 0;
     }
   } else {
     switch (c = std::getchar()) {
     case keys::ENTER:
       // enter signals (de)selection of current field
       selected = true;
-      return true;
+      return 1;
 
     case keys::ESC:
       if (std::getchar() == '[') {
@@ -239,30 +220,39 @@ bool Input::await_input() {
           // decrement but dont let (cursor < 0)
           cursor -= (cursor > 0) ? 1 : 0;
           start_line -= (cursor < start_line) ? 1 : 0;
-          return true;
+          return 0;
 
         case keys::D_ARROW:
           // down arrow moves cursor down
           // increment but dont let (cursor > fields.size)
           cursor += (cursor < fields.size() - 1) ? 1 : 0;
           start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
-          return true;
+          return 0;
 
         case keys::R_ARROW:
           // right arrow finalizes the responses
           // can't return if a field is selected (good thing)
-          return false;
+          return -1;
         }
       }
     }
   }
-  return true;
+  return 0; // i guess?
 }
 
 void Input::update_size() {
   cons.update_size();
-  visible_lines = (cons.height - 3) /
-                  2; // take 3 for header and footer, div 2 for field spacing
+
+  visible_lines = 0;
+  while (true) {
+    // calculates lines used by displaying another row of cells
+    int space_used = (visible_lines + 1) + (line_seperation * visible_lines);
+
+    if (space_used > (cons.height - 3)) { // take 3 for header and footer
+      break;
+    }
+    visible_lines++;
+  }
 }
 
 Menu::Menu(std::string t, std::vector<std::string> o) {
@@ -280,11 +270,7 @@ Menu::Menu(std::string t, std::vector<std::string> o, int s) {
 }
 
 int Menu::show() {
-  // configure terminal
-  cons.bt.off();
-  cons.et.off();
-  cons.ct.off();
-  cons.at.enable();
+  cons.show(); // configure terminal
 
   cursor = 0;
   start_line = 0;
@@ -293,24 +279,19 @@ int Menu::show() {
     display();
   } while (await_input());
 
-  // return terminal to defaults
-  cons.bt.on();
-  cons.et.on();
-  cons.ct.on();
-  cons.at.disable();
+  cons.close(); // reset terminal
 
   return cursor; // returns selected option
 }
 
 void Menu::display() {
-  std::string spacing = ls(line_seperation);
-
   update_size();
   cons.clear();
 
   cons.print_ln(" " + title);
-  cons.print_ln(div_line(cons.width));
+  cons.print_ln(" " + faint_text(div_line(cons.width - 2)));
 
+  int space_used = 0;
   for (int i = start_line;
        i < std::min((int)options.size(), start_line + visible_lines); i++) {
     if (i == cursor) {
@@ -318,7 +299,14 @@ void Menu::display() {
     } else {
       cons.print_ln(ws(3) + options[i]);
     }
-    cons.exact_print(spacing);
+    space_used++;
+
+    for (int ii = 0; ii < line_seperation; ii++) {
+      if (space_used < cons.height - 3) {
+        cons.print_ln();
+        space_used++;
+      }
+    }
   }
 
   cons.print_at_pos(faint_text("[↵] select  [↑/↓] scroll"), cons.height, 2);
@@ -353,14 +341,21 @@ bool Menu::await_input() {
 void Menu::update_size() {
   cons.update_size();
 
-  visible_lines = (cons.height - 6) /
-                  2; // 6 for header and footer spacing, div 2 for field spacing
+  visible_lines = 0;
+  while (true) {
+    // calculates lines used by displaying another row of cells
+    int space_used = (visible_lines + 1) + (line_seperation * visible_lines);
+
+    if (space_used > (cons.height - 3)) { // take 3 for header and footer
+      break;
+    }
+    visible_lines++;
+  }
 }
 
 Table::Table(std::string t, std::vector<std::string> c,
              std::vector<nlohmann::json> d) {
   cons = Console(false, false, false, true);
-
   title = t;
   columns = c;
   data = d;
@@ -371,7 +366,6 @@ Table::Table(std::string t, std::vector<std::string> c,
 Table::Table(std::string t, std::vector<std::string> c,
              std::vector<nlohmann::json> d, int ch, int ls) {
   cons = Console(false, false, false, true);
-
   title = t;
   columns = c;
   data = d;
@@ -379,27 +373,28 @@ Table::Table(std::string t, std::vector<std::string> c,
   line_seperation = ls;
 }
 
-void Table::show() {
-  // configure terminal
-  cons.bt.off();
-  cons.et.off();
-  cons.ct.off();
-  cons.at.enable();
+int Table::show() {
+  cons.show(); // configure terminal
 
   cursor = 0;
   start_line = 0;
 
-  int cont = 0;
+  int sig;
   do {
     display();
-    cont = await_input();
-  } while (cont >= 0);
+    sig = await_input();
+  } while (sig != -1);
 
-  // return terminal to defaults
-  cons.bt.on();
-  cons.et.on();
-  cons.ct.on();
-  cons.at.disable();
+  cons.close(); // reset terminal
+
+  // Return codes:
+  // -1 : normal exit
+  // >= 0 : selection at cursor position
+  if (sig == -1) {
+    return -1;
+  } else {
+    return cursor;
+  }
 }
 
 void Table::display() {
@@ -444,6 +439,7 @@ void Table::display() {
   }
 
   cons.print_ln(" " + title);
+  cons.print_ln(" " + faint_text(div_line(cons.width - 2)));
   cons.print_ln(" " + headline);
   cons.print_ln(" " + bold_text(header));
   cons.print_ln(" " + splitter);
@@ -494,7 +490,7 @@ void Table::display() {
     }
 
     for (int ii = 0; ii < line_seperation; ii++) {
-      if (space_used < cons.height - 6) {
+      if (space_used < cons.height - 7) {
         cons.print_ln(" " + spacing);
         space_used++;
       }
@@ -505,11 +501,10 @@ void Table::display() {
 }
 
 int Table::await_input() {
-  /*
-  return -1 -> exit
-  return 0 -> continue
-  return 1 -> select row
-  */
+  // return values:
+  // -1: close window
+  // 0: normal/proceed
+  // 1: element selected
 
   switch (std::getchar()) {
   case keys::ENTER:
@@ -550,7 +545,7 @@ void Table::update_size() {
         (cell_height * (visible_rows + 1)) + (line_seperation * visible_rows);
 
     if (space_used >
-        (cons.height - 6)) { // take 6 for header, table header and footer
+        (cons.height - 7)) { // take 7 for header, table header and footer
       break;
     }
     visible_rows++;

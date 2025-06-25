@@ -7,6 +7,16 @@
 #include <termios.h>
 #include <unistd.h>
 
+namespace keys {
+inline constexpr char ENTER = 10;
+inline constexpr char ESC = 27;
+inline constexpr char D_ARROW = 'B';
+inline constexpr char U_ARROW = 'A';
+inline constexpr char L_ARROW = 'D';
+inline constexpr char R_ARROW = 'C';
+inline constexpr char DEL = 127;
+} // namespace keys
+
 class BufferModeToggle /* switches between terminal buffering modes */ {
 private:
   struct termios t;
