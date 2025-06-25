@@ -4,6 +4,8 @@
 #include <format>
 #include <string>
 
+namespace termui {
+
 namespace formats {
 inline std::string NONE = "\033[0m";
 inline std::string BOLD = "\033[1m";
@@ -83,5 +85,7 @@ public:
 
   std::string render(std::string s);
 };
+
+} // namespace termui
 
 #endif

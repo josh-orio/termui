@@ -6,6 +6,8 @@
 #include "nlohmann/json.hpp"
 #include <vector>
 
+namespace termui {
+
 class Info {
 public:
   Console cons;
@@ -107,5 +109,7 @@ private:
 
   void update_size();
 };
+
+} // namespace termui
 
 #endif

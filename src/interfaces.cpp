@@ -2,6 +2,8 @@
 #include "formatting.hpp"
 #include <string>
 
+namespace termui {
+
 Info::Info(std::string t, std::string c) {
   cons = Console(false, false, false, true);
   title = t;
@@ -559,3 +561,5 @@ void Table::update_size() {
   table_width = cons.width - 2; // take space on each side of table
   column_width = (table_width - (columns.size() + 1)) / columns.size();
 }
+
+} // namespace termui

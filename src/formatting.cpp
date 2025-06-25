@@ -1,5 +1,7 @@
 #include "formatting.hpp"
 
+namespace termui {
+
 std::string whitespace(int len) { return std::string(len, ' '); }
 
 std::string div_line(int len) {
@@ -58,3 +60,5 @@ std::string RGB::fg_ansi() {
 std::string RGB::bg_ansi() {
   return std::format("\33[48;2;{};{};{}m", r, g, b);
 }
+
+} // namespace termui

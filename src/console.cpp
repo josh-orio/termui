@@ -1,5 +1,7 @@
 #include "console.hpp"
 
+namespace termui {
+
 void BufferModeToggle::off() {
   tcgetattr(STDIN_FILENO, &t);          // get the current terminal i/o flags
   t.c_lflag &= ~ICANON;                 // flip the bit related to buffering
@@ -41,7 +43,7 @@ void AlternateTerminalToggle::disable() {
   std::cout << "\033[?1049l"; // switch back to the primary screen buffer
 }
 
-Console::Console() {};
+Console::Console(){};
 
 Console::Console(bool b, bool e, bool c, bool a) {
   struct winsize w;
@@ -55,14 +57,14 @@ Console::Console(bool b, bool e, bool c, bool a) {
 }
 
 void Console::show() {
-(buffered == true) ? bt.on() : bt.off();
+  (buffered == true) ? bt.on() : bt.off();
   (echos == true) ? et.on() : et.off();
   (cursor == true) ? ct.on() : ct.off();
   (altterm == true) ? at.enable() : at.disable();
 }
 
 void Console::close() {
- // switch t for f should have the right effect?
+  // switch t for f should have the right effect?
   (buffered == false) ? bt.on() : bt.off();
   (echos == false) ? et.on() : et.off();
   (cursor == false) ? ct.on() : ct.off();
@@ -100,3 +102,5 @@ void Console::update_size() {
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   width = w.ws_col, height = w.ws_row;
 }
+
+} // namespace termui

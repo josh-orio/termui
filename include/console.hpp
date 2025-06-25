@@ -7,6 +7,8 @@
 #include <termios.h>
 #include <unistd.h>
 
+namespace termui {
+
 namespace keys {
 inline constexpr char ENTER = 10;
 inline constexpr char ESC = 27;
@@ -80,5 +82,7 @@ public:
 
   void update_size();
 };
+
+} // namespace termui
 
 #endif
