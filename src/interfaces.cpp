@@ -91,8 +91,8 @@ void Info::update_size() {
   cons.update_size();
 
   text_width = cons.width - 4; // 2 space padding on each side
-  visible_lines = cons.height -
-                  3; // take three lines off for header (2) and footer (1) space
+  overhead = 3;                // header(2) + footer(1)
+  visible_lines = cons.height - overhead;
 }
 
 Input::Input(std::string t, std::vector<std::string> f) {
@@ -160,7 +160,7 @@ void Input::display() {
     space_used++;
 
     for (int ii = 0; ii < line_seperation; ii++) {
-      if (space_used < cons.height - 3) {
+      if (space_used < cons.height - overhead) {
         cons.print_ln();
         space_used++;
       }
@@ -243,12 +243,14 @@ int Input::await_input() {
 void Input::update_size() {
   cons.update_size();
 
+  overhead = 3; // header(2) + footer(1)
+
   visible_lines = 0;
   while (true) {
     // calculates lines used by displaying another row of cells
     int space_used = (visible_lines + 1) + (line_seperation * visible_lines);
 
-    if (space_used > (cons.height - 3)) { // take 3 for header and footer
+    if (space_used > (cons.height - overhead)) {
       break;
     }
     visible_lines++;
@@ -302,7 +304,7 @@ void Menu::display() {
     space_used++;
 
     for (int ii = 0; ii < line_seperation; ii++) {
-      if (space_used < cons.height - 3) {
+      if (space_used < cons.height - overhead) {
         cons.print_ln();
         space_used++;
       }
@@ -341,12 +343,14 @@ bool Menu::await_input() {
 void Menu::update_size() {
   cons.update_size();
 
+  overhead = 3; // header(2) + footer(1)
+
   visible_lines = 0;
   while (true) {
     // calculates lines used by displaying another row of cells
     int space_used = (visible_lines + 1) + (line_seperation * visible_lines);
 
-    if (space_used > (cons.height - 3)) { // take 3 for header and footer
+    if (space_used > (cons.height - overhead)) {
       break;
     }
     visible_lines++;
@@ -490,7 +494,7 @@ void Table::display() {
     }
 
     for (int ii = 0; ii < line_seperation; ii++) {
-      if (space_used < cons.height - 7) {
+      if (space_used < cons.height - overhead) {
         cons.print_ln(" " + spacing);
         space_used++;
       }
@@ -538,14 +542,15 @@ int Table::await_input() {
 void Table::update_size() {
   cons.update_size();
 
+  overhead = 7; // header(2) + table header(3) + table foot(1) + footer(1)
+
   visible_rows = 0;
   while (true) {
     // calculates lines used by displaying another row of cells
     int space_used =
         (cell_height * (visible_rows + 1)) + (line_seperation * visible_rows);
 
-    if (space_used >
-        (cons.height - 7)) { // take 7 for header, table header and footer
+    if (space_used > (cons.height - overhead)) {
       break;
     }
     visible_rows++;

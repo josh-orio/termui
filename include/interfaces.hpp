@@ -20,6 +20,7 @@ private:
   int text_width;    // width of text accounting for padding
   int content_lines; // total number of lines of content
   int visible_lines; // total number of lines in view
+  int overhead;      // number of lines reserved for header & footer
 
   void display();
   bool await_input();
@@ -45,6 +46,7 @@ private:
   int visible_lines;   // total number of lines in view
   int start_line;      // index value of first line which shows in view
   int line_seperation; // number of blank lines between elements
+  int overhead;        // number of lines reserved for header & footer
 
   void display();
   int await_input();
@@ -68,6 +70,7 @@ private:
   int visible_lines;   // total number of lines in view
   int start_line;      // index value of first line which shows in view
   int line_seperation; // number of blank lines between elements
+  int overhead;        // number of lines reserved for header & footer
 
   void display();
   bool await_input();
@@ -97,6 +100,7 @@ private:
   int column_width;    // width of each column in characters
   int line_seperation; // number of blank lines between elements
   int cell_height;     // number of lines dedicated to a cell
+  int overhead;        // number of lines reserved for header & footer
 
   void display();
   int await_input();
