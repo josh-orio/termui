@@ -38,8 +38,11 @@ public:
 
   Input(std::string t, std::vector<std::string> f);
   Input(std::string t, std::vector<std::string>, int ls);
-
-  int show();
+ 
+  int show(); /* return values:
+  -1: exit
+  >=0: element selected (return value as index)
+  */
   std::vector<std::string> get_responses();
 
 private:
@@ -51,7 +54,11 @@ private:
   int overhead;        // number of lines reserved for header & footer
 
   void display();
-  int await_input();
+  int await_input(); /* return values:
+  -1: exit
+  0: continue
+  1: element selected
+  */
 
   void update_size();
 };
@@ -92,7 +99,10 @@ public:
   Table(std::string t, std::vector<std::string> c,
         std::vector<nlohmann::json> d, int ch, int ls);
 
-  int show();
+  int show(); /* return values:
+  -1: exit
+  >=0: element selected (return value as index)
+  */
 
 private:
   int cursor;          // current scroll value
@@ -105,7 +115,11 @@ private:
   int overhead;        // number of lines reserved for header & footer
 
   void display();
-  int await_input();
+  int await_input(); /* return values:
+  -1: exit
+  0: continue
+  1: element selected
+  */
 
   void update_size();
 };
