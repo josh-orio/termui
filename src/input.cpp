@@ -53,8 +53,7 @@ void Input::display() {
   cons.print_ln(" " + faint_text(div_line(cons.width - 2)));
 
   int space_used = 0;
-  for (int i = start_line;
-       i < std::min((int)fields.size(), start_line + visible_lines); i++) {
+  for (int i = start_line; i < std::min((int)fields.size(), start_line + visible_lines); i++) {
     if (i == cursor) {
       if (selected) {
         cons.print_ln(bt(" > " + fields[i]) + ": " + rv(responses[i] + " "));
@@ -73,9 +72,7 @@ void Input::display() {
       }
     }
   }
-  cons.print_at_pos(
-      faint_text("[↵] select/deselect  [↑/↓] scroll [→] finalize"), cons.height,
-      2);
+  cons.print_at_pos(faint_text("[↵] select/deselect  [↑/↓] scroll [→] finalize"), cons.height, 2);
 }
 
 int Input::await_input() {
@@ -107,8 +104,7 @@ int Input::await_input() {
     case keys::DEL:
       // DEL char clears last char in string
       if (responses[cursor].size() > 0) {
-        responses[cursor] =
-            std::string(responses[cursor].begin(), responses[cursor].end() - 1);
+        responses[cursor] = std::string(responses[cursor].begin(), responses[cursor].end() - 1);
       }
       return 0;
     }

@@ -38,7 +38,7 @@ public:
 
   Input(std::string t, std::vector<std::string> f);
   Input(std::string t, std::vector<std::string>, int ls);
- 
+
   int show(); /* return values:
   -1: exit
   >=0: element selected (return value as index)
@@ -94,10 +94,8 @@ public:
   std::vector<std::string> columns;
   std::vector<nlohmann::json> data;
 
-  Table(std::string t, std::vector<std::string> c,
-        std::vector<nlohmann::json> d);
-  Table(std::string t, std::vector<std::string> c,
-        std::vector<nlohmann::json> d, int ch, int ls);
+  Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::json> d);
+  Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::json> d, int ch, int ls);
 
   int show(); /* return values:
   -1: exit

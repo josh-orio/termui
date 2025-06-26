@@ -2,8 +2,7 @@
 
 namespace termui {
 
-Table::Table(std::string t, std::vector<std::string> c,
-             std::vector<nlohmann::json> d) {
+Table::Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::json> d) {
   cons = Console(false, false, false, true);
   title = t;
   columns = c;
@@ -12,8 +11,7 @@ Table::Table(std::string t, std::vector<std::string> c,
   line_seperation = 0;
 }
 
-Table::Table(std::string t, std::vector<std::string> c,
-             std::vector<nlohmann::json> d, int ch, int ls) {
+Table::Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::json> d, int ch, int ls) {
   cons = Console(false, false, false, true);
   title = t;
   columns = c;
@@ -79,8 +77,7 @@ void Table::display() {
   std::string header = "│";
   for (std::string c : columns) {
     if (c.size() > column_width - 2) {
-      header +=
-          " " + std::string(c.begin(), c.begin() + column_width - 5) + "... ";
+      header += " " + std::string(c.begin(), c.begin() + column_width - 5) + "... ";
     } else if (c.size() <= column_width - 2) {
       header += " " + c + std::string((column_width - 2) - c.size(), ' ') + " ";
     }
@@ -97,8 +94,7 @@ void Table::display() {
   std::string cell_text;
   int char_lim;
   int space_used = 0;
-  for (int i = start_line;
-       i < std::min((int)data.size(), start_line + visible_rows); i++) {
+  for (int i = start_line; i < std::min((int)data.size(), start_line + visible_rows); i++) {
 
     row_text = std::vector<std::string>(cell_height, "│");
 
@@ -114,17 +110,14 @@ void Table::display() {
       if (cell_text.length() < char_lim) {
         cell_text += std::string(char_lim - cell_text.length(), ' ');
       } else if (cell_text.length() > char_lim) {
-        cell_text =
-            std::string(cell_text.begin(), cell_text.begin() + char_lim - 3) +
-            "...";
+        cell_text = std::string(cell_text.begin(), cell_text.begin() + char_lim - 3) + "...";
       }
 
       for (int ii = 0; ii < cell_height; ii++) {
-        row_text[ii] +=
-            " " +
-            std::string(cell_text.begin() + (ii * (column_width - 2)),
-                        cell_text.begin() + ((ii + 1) * (column_width - 2))) +
-            " │";
+        row_text[ii] += " " +
+                        std::string(cell_text.begin() + (ii * (column_width - 2)),
+                                    cell_text.begin() + ((ii + 1) * (column_width - 2))) +
+                        " │";
       }
     }
 
@@ -192,8 +185,7 @@ void Table::update_size() {
   visible_rows = 0;
   while (true) {
     // calculates lines used by displaying another row of cells
-    int space_used =
-        (cell_height * (visible_rows + 1)) + (line_seperation * visible_rows);
+    int space_used = (cell_height * (visible_rows + 1)) + (line_seperation * visible_rows);
 
     if (space_used > (cons.height - overhead)) {
       break;

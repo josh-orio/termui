@@ -55,8 +55,7 @@ void Info::display() {
   cons.print_ln(" " + title);
   cons.print_ln(" " + faint_text(div_line(cons.width - 2)));
 
-  for (int i = line_cursor;
-       i < std::min(line_cursor + visible_lines, (int)formatted.size()); i++) {
+  for (int i = line_cursor; i < std::min(line_cursor + visible_lines, (int)formatted.size()); i++) {
     cons.print_ln("  " + formatted[i]);
   }
 

@@ -39,8 +39,7 @@ void Menu::display() {
   cons.print_ln(" " + faint_text(div_line(cons.width - 2)));
 
   int space_used = 0;
-  for (int i = start_line;
-       i < std::min((int)options.size(), start_line + visible_lines); i++) {
+  for (int i = start_line; i < std::min((int)options.size(), start_line + visible_lines); i++) {
     if (i == cursor) {
       cons.print_ln(bt(" > " + options[i]));
     } else {

@@ -43,9 +43,7 @@ public:
   void on();  // enables the cursor
 };
 
-class AlternateTerminalToggle /* switches between alt and main terminal buffer
-                               */
-{
+class AlternateTerminalToggle /* switches between alt and main terminal buffer */ {
 public:
   void enable();  // switches to alternate terminal buffer
   void disable(); // switches back to primary terminal buffer

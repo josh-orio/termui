@@ -81,9 +81,7 @@ void Console::exact_print(std::string p) { std::cout << p; }
 
 void Console::blank_ln() { std::cout << std::endl; }
 
-void Console::print_at_pos(std::string p, int col, int row) {
-  std::cout << std::format("\033[{};{}H{}", col, row, p);
-};
+void Console::print_at_pos(std::string p, int col, int row) { std::cout << std::format("\033[{};{}H{}", col, row, p); };
 
 void Console::print_ln_at_pos(std::string p, int col, int row) {
   std::cout << std::format("\033[{};{}H{}\n", col, row, p);
