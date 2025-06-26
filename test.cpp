@@ -16,10 +16,8 @@ int main() {
     break; // remove to run
 
     i_status = i.show();
-    if (i_status == 0) {
-      continue;
-    } else if (i_status > 0) {
-      // maybe create a menu and feed the result back to i
+    if (i_status >= 0) {
+      // create a menu and feed the result back to i
       std::vector<std::string> o{"Option 1", "Option 2"};
       i.responses[i_status] =
           o[termui::Menu(termui::rv(termui::bt(" Sub-Menu ")), o).show()];
