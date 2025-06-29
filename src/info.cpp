@@ -6,12 +6,12 @@ Info::Info(std::string t, std::string c) {
   cons = Console(false, false, false, true);
   title = t;
   content = c;
+
+  line_cursor = 0;
 }
 
 void Info::show() {
   cons.show(); // configure terminal
-
-  line_cursor = 0;
 
   do {
     display();

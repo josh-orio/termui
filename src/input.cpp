@@ -8,13 +8,14 @@ Input::Input(std::string t, std::vector<std::string> f, std::vector<std::string>
   fields = f;
   responses = r;
   line_seperation = ls;
+
+  cursor = 0;
+  start_line = 0;
 }
 
 int Input::show() {
   cons.show(); // configure terminal
 
-  cursor = 0;
-  start_line = 0;
   selected = false;
 
   int sig = 0;

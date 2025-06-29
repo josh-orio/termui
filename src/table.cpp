@@ -9,13 +9,13 @@ Table::Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::js
   data = d;
   cell_height = ch;
   line_seperation = ls;
+
+  cursor = 0;
+  start_line = 0;
 }
 
 int Table::show() {
   cons.show(); // configure terminal
-
-  cursor = 0;
-  start_line = 0;
 
   int sig;
   do {

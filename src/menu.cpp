@@ -7,13 +7,13 @@ Menu::Menu(std::string t, std::vector<std::string> o, int ls) {
   title = t;
   options = o;
   line_seperation = ls;
+
+  cursor = 0;
+  start_line = 0;
 }
 
 int Menu::show() {
   cons.show(); // configure terminal
-
-  cursor = 0;
-  start_line = 0;
 
   do {
     display();
