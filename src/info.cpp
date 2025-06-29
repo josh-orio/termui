@@ -53,7 +53,7 @@ void Info::display() {
   cons.clear();
 
   cons.print_ln(" " + title);
-  cons.print_ln(" " + faint_text(div_line(cons.width - 2)));
+  cons.print_ln();
 
   for (int i = line_cursor; i < std::min(line_cursor + visible_lines, (int)formatted.size()); i++) {
     cons.print_ln("  " + formatted[i]);
@@ -90,7 +90,7 @@ void Info::update_size() {
   cons.update_size();
 
   text_width = cons.width - 4; // 2 space padding on each side
-  overhead = 3;                // header(2) + footer(1)
+  overhead = 4;                // header(2) + footer(2)
   visible_lines = cons.height - overhead;
 }
 

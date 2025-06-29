@@ -36,7 +36,7 @@ public:
   std::string title;
   std::vector<std::string> fields, responses;
 
-  Input(std::string t, std::vector<std::string>, int ls = 0);
+  Input(std::string t, std::vector<std::string> f, std::vector<std::string> &r, int ls = 0);
 
   int show(); /* return values:
   -1: exit

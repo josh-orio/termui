@@ -76,7 +76,7 @@ void Table::display() {
   }
 
   cons.print_ln(" " + title);
-  cons.print_ln(" " + faint_text(div_line(cons.width - 2)));
+  cons.print_ln();
   cons.print_ln(" " + headline);
   cons.print_ln(" " + bold_text(header));
   cons.print_ln(" " + splitter);

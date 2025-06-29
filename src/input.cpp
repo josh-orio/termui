@@ -2,11 +2,11 @@
 
 namespace termui {
 
-Input::Input(std::string t, std::vector<std::string> f, int ls) {
+Input::Input(std::string t, std::vector<std::string> f, std::vector<std::string> &r, int ls) {
   cons = Console(false, false, false, true);
   title = t;
   fields = f;
-  responses.resize(fields.size(), "");
+  responses = r;
   line_seperation = ls;
 }
 
@@ -42,7 +42,7 @@ void Input::display() {
   cons.clear();
 
   cons.print_ln(" " + title);
-  cons.print_ln(" " + faint_text(div_line(cons.width - 2)));
+  cons.print_ln();
 
   int space_used = 0;
   for (int i = start_line; i < std::min((int)fields.size(), start_line + visible_lines); i++) {
@@ -138,7 +138,7 @@ int Input::await_input() {
 void Input::update_size() {
   cons.update_size();
 
-  overhead = 3; // header(2) + footer(1)
+  overhead = 4; // header(2) + footer(2)
 
   visible_lines = 0;
   while (true) {

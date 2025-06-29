@@ -2,11 +2,11 @@
 
 namespace termui {
 
-Menu::Menu(std::string t, std::vector<std::string> o, int s) {
+Menu::Menu(std::string t, std::vector<std::string> o, int ls) {
   cons = Console(false, false, false, true);
   title = t;
   options = o;
-  line_seperation = s;
+  line_seperation = ls;
 }
 
 int Menu::show() {
@@ -29,7 +29,7 @@ void Menu::display() {
   cons.clear();
 
   cons.print_ln(" " + title);
-  cons.print_ln(" " + faint_text(div_line(cons.width - 2)));
+  cons.print_ln();
 
   int space_used = 0;
   for (int i = start_line; i < std::min((int)options.size(), start_line + visible_lines); i++) {
@@ -80,7 +80,7 @@ bool Menu::await_input() {
 void Menu::update_size() {
   cons.update_size();
 
-  overhead = 3; // header(2) + footer(1)
+  overhead = 4; // header(2) + footer(4)
 
   visible_lines = 0;
   while (true) {
