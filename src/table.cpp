@@ -2,15 +2,6 @@
 
 namespace termui {
 
-Table::Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::json> d) {
-  cons = Console(false, false, false, true);
-  title = t;
-  columns = c;
-  data = d;
-  cell_height = 1;
-  line_seperation = 0;
-}
-
 Table::Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::json> d, int ch, int ls) {
   cons = Console(false, false, false, true);
   title = t;

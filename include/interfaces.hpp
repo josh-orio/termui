@@ -36,8 +36,7 @@ public:
   std::string title;
   std::vector<std::string> fields, responses;
 
-  Input(std::string t, std::vector<std::string> f);
-  Input(std::string t, std::vector<std::string>, int ls);
+  Input(std::string t, std::vector<std::string>, int ls = 0);
 
   int show(); /* return values:
   -1: exit
@@ -69,8 +68,7 @@ public:
   std::string title;
   std::vector<std::string> options;
 
-  Menu(std::string t, std::vector<std::string> o);
-  Menu(std::string t, std::vector<std::string> o, int ls);
+  Menu(std::string t, std::vector<std::string> o, int ls = 0);
 
   int show(); // returns index of selected option
 
@@ -94,8 +92,7 @@ public:
   std::vector<std::string> columns;
   std::vector<nlohmann::json> data;
 
-  Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::json> d);
-  Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::json> d, int ch, int ls);
+  Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::json> d, int ch = 1, int ls = 0);
 
   int show(); /* return values:
   -1: exit

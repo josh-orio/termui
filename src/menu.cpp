@@ -2,13 +2,6 @@
 
 namespace termui {
 
-Menu::Menu(std::string t, std::vector<std::string> o) {
-  cons = Console(false, false, false, true);
-  title = t;
-  options = o;
-  line_seperation = 0;
-}
-
 Menu::Menu(std::string t, std::vector<std::string> o, int s) {
   cons = Console(false, false, false, true);
   title = t;

@@ -2,14 +2,6 @@
 
 namespace termui {
 
-Input::Input(std::string t, std::vector<std::string> f) {
-  cons = Console(false, false, false, true);
-  title = t;
-  fields = f;
-  responses.resize(fields.size(), "");
-  line_seperation = 0;
-}
-
 Input::Input(std::string t, std::vector<std::string> f, int ls) {
   cons = Console(false, false, false, true);
   title = t;
