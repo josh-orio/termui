@@ -12,9 +12,9 @@ std::string div_line(int len) {
 }
 
 std::string line_sep(int len) { return std::string(len, '\n'); }
-std::string bold_text(std::string s) { return formats::BOLD + s + formats::BOLD_OFF; }
-std::string reverse_video(std::string s) { return formats::REVERSE_VIDEO + s + formats::NONE; }
-std::string faint_text(std::string s) { return formats::FAINT + s + formats::NONE; }
+std::string bold_text(std::string s) { return format::BOLD + s + format::BOLD_OFF; }
+std::string reverse_video(std::string s) { return format::REVERSE_VIDEO + s + format::NONE; }
+std::string faint_text(std::string s) { return format::FAINT + s + format::NONE; }
 
 std::string ws(int len) /* whitespace */ { return whitespace(len); }
 std::string dl(int len) /* dividing line */ { return div_line(len); }
@@ -23,30 +23,22 @@ std::string bt(std::string s) /* bold text*/ { return bold_text(s); }
 std::string rv(std::string s) /*  reverse video*/ { return reverse_video(s); }
 std::string ft(std::string s) /*  faint*/ { return faint_text(s); }
 
-Style::Style() {
-  fg = "";
-  bg = "";
-  w = "";
-}
-
-Style::Style(std::string foreground, std::string background, std::string weight) {
-  fg = foreground;
-  bg = background;
-  w = weight;
+Style::Style(std::string f, std::string b, std::string w) {
+  foreground = f;
+  background = b;
+  weight = w;
 }
 
 std::string Style::render(std::string s) {
-  return std::format("{}{}{}{}{}{}{}", fg, bg, w, s, colors::DEFAULT, background::DEFAULT, formats::NONE);
+  return std::format("{}{}{}{}{}", foreground, background, weight, s, format::NONE);
 }
 
-RGB::RGB(int red, int green, int blue) {
-  r = red;
-  g = green;
-  b = blue;
-}
+// 8 bit color
+std::string fg_color(int c) { return std::format("\033[38;5;{}m", c); }
+std::string bg_color(int c) { return std::format("\033[48;5;{}m", c); }
 
-std::string RGB::fg_ansi() { return std::format("\033[38;2;{};{};{}m", r, g, b); }
-
-std::string RGB::bg_ansi() { return std::format("\33[48;2;{};{};{}m", r, g, b); }
+// 24 bit color
+std::string fg_color(int r, int g, int b) { return std::format("\033[38;2;{};{};{}m", r, g, b); }
+std::string bg_color(int r, int g, int b) { return std::format("\33[48;2;{};{};{}m", r, g, b); }
 
 } // namespace termui
