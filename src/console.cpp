@@ -27,21 +27,13 @@ void EchoModeToggle::on() {
   tcsetattr(STDIN_FILENO, TCSANOW, &t);
 }
 
-void CursorModeToggle::off() {
-  std::cout << "\e[?25l"; // hides the cursor
-}
+void CursorModeToggle::off() { std::cout << term::HIDE_CURSOR; }
 
-void CursorModeToggle::on() {
-  std::cout << "\e[?25h"; // enables the cursor
-}
+void CursorModeToggle::on() { std::cout << term::SHOW_CURSOR; }
 
-void AlternateTerminalToggle::enable() {
-  std::cout << "\033[?1049h"; // switch to alternate terminal buffer
-}
+void AlternateTerminalToggle::enable() { std::cout << term::ALT_BUFFER; }
 
-void AlternateTerminalToggle::disable() {
-  std::cout << "\033[?1049l"; // switch back to the primary screen buffer
-}
+void AlternateTerminalToggle::disable() { std::cout << term::PRIMARY_BUFFER; }
 
 Console::Console(){};
 
@@ -71,29 +63,25 @@ void Console::close() {
   (altterm == false) ? at.enable() : at.disable();
 }
 
-void Console::print(std::string p) { std::cout << p << " "; }
+void Console::clear_buffer() { buffer = {}; }
 
-void Console::print_ln() { std::cout << std::endl; }
+void Console::clear_screen() { std::cout << term::CLEAR_CONSOLE << term::CLEAR_SCROLLBACK; }
 
-void Console::print_ln(std::string p) { std::cout << p << std::endl; }
+void Console::clear_scrollback() { std::cout << term::CLEAR_SCROLLBACK; }
 
-void Console::exact_print(std::string p) { std::cout << p; }
+void Console::print(int row, int col, std::string s) { buffer.push_back(std::format("\033[{};{}H{}", row, col, s)); }
 
-void Console::blank_ln() { std::cout << std::endl; }
+void Console::flush() {
+  std::string stream = "";
 
-void Console::print_at_pos(std::string p, int col, int row) { std::cout << std::format("\033[{};{}H{}", col, row, p); };
+  for (auto s : buffer) {
+    stream += s;
+  }
 
-void Console::print_ln_at_pos(std::string p, int col, int row) {
-  std::cout << std::format("\033[{};{}H{}\n", col, row, p);
-};
-
-void Console::clear() {
-  std::cout << "\033[2J"; // clear screen
-  std::cout << "\033[3J"; // clear the scrollback buffer
-  std::cout << "\033[H";  // move the cursor to the top-left
+  clear_screen();
+  std::cout << stream;
+  clear_buffer();
 }
-
-void Console::clear_scrollback() { std::cout << "\033[3J"; }
 
 void Console::update_size() {
   struct winsize w;

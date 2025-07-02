@@ -1,6 +1,7 @@
 #ifndef CONSOLE_HPP
 #define CONSOLE_HPP
 
+#include "ansi.hpp"
 #include <iostream>
 #include <string>
 #include <sys/ioctl.h>
@@ -53,6 +54,8 @@ class Console {
 public:
   int width, height;
 
+  std::vector<std::string> buffer;
+
   BufferModeToggle bt;
   EchoModeToggle et;
   CursorModeToggle ct;
@@ -66,17 +69,12 @@ public:
   void show();
   void close();
 
-  void print(std::string p);
-  void print_ln();
-  void print_ln(std::string p);
-  void exact_print(std::string p);
-  void blank_ln();
-
-  void clear();
+  void clear_buffer();
+  void clear_screen();
   void clear_scrollback();
 
-  void print_at_pos(std::string s, int col, int row);
-  void print_ln_at_pos(std::string s, int col, int row);
+  void print(int row, int col, std::string s);
+  void flush();
 
   void update_size();
 };
