@@ -2,12 +2,10 @@
 
 namespace termui {
 
-Info::Info(std::string t, std::string c) {
+Info::Info(const std::string &t, const std::string &c) : title(t), content(c) {
   cons = Console(false, false, false, true);
-  title = t;
-  content = c;
-
   line_cursor = 0;
+  overhead = 4; // header(3) + footer(1)
 }
 
 void Info::show() {
@@ -50,16 +48,16 @@ void Info::display() {
 
   content_lines = formatted.size();
 
-  cons.clear();
+  cons.print(2, 2, title);
 
-  cons.print_ln(" " + title);
-  cons.print_ln();
-
+  int space_used = 0;
   for (int i = line_cursor; i < std::min(line_cursor + visible_lines, (int)formatted.size()); i++) {
-    cons.print_ln("  " + formatted[i]);
+    cons.print(space_used + 4, 3, formatted[i]);
+    space_used++;
   }
 
-  cons.print_at_pos(faint_text("[←] return  [↑/↓] scroll"), cons.height, 2);
+  cons.print(cons.height, 2, faint_text("[←] return  [↑/↓] scroll"));
+  cons.flush();
 }
 
 bool Info::await_input() {
@@ -90,7 +88,6 @@ void Info::update_size() {
   cons.update_size();
 
   text_width = cons.width - 4; // 2 space padding on each side
-  overhead = 4;                // header(2) + footer(2)
   visible_lines = cons.height - overhead;
 }
 

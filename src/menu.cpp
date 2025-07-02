@@ -2,14 +2,12 @@
 
 namespace termui {
 
-Menu::Menu(std::string t, std::vector<std::string> o, int ls) {
+Menu::Menu(const std::string &t, const std::vector<std::string> &o, int ls) : title(t), options(o) {
   cons = Console(false, false, false, true);
-  title = t;
-  options = o;
   line_seperation = ls;
-
   cursor = 0;
   start_line = 0;
+  overhead = 4; // header(3) + footer(1)
 }
 
 int Menu::show() {
@@ -26,29 +24,27 @@ int Menu::show() {
 
 void Menu::display() {
   update_size();
-  cons.clear();
-
-  cons.print_ln(" " + title);
-  cons.print_ln();
+  
+  cons.print(2, 2, title);
 
   int space_used = 0;
   for (int i = start_line; i < std::min((int)options.size(), start_line + visible_lines); i++) {
     if (i == cursor) {
-      cons.print_ln(bt(" > " + options[i]));
+      cons.print(space_used + 4, 2, bt("> " + options[i]));
     } else {
-      cons.print_ln(ws(3) + options[i]);
+      cons.print(space_used + 4, 4, options[i]);
     }
     space_used++;
 
     for (int ii = 0; ii < line_seperation; ii++) {
       if (space_used < cons.height - overhead) {
-        cons.print_ln();
         space_used++;
       }
     }
   }
 
-  cons.print_at_pos(faint_text("[↵] select  [↑/↓] scroll"), cons.height, 2);
+  cons.print(cons.height, 2, faint_text("[↵] select  [↑/↓] scroll"));
+  cons.flush();
 }
 
 bool Menu::await_input() {
@@ -79,8 +75,6 @@ bool Menu::await_input() {
 
 void Menu::update_size() {
   cons.update_size();
-
-  overhead = 4; // header(2) + footer(4)
 
   visible_lines = 0;
   while (true) {

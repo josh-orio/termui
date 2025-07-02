@@ -2,16 +2,15 @@
 
 namespace termui {
 
-Table::Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::json> d, int ch, int ls) {
+Table::Table(const std::string &t, const std::vector<std::string> &c, const std::vector<nlohmann::json> &d, int ch,
+             int ls)
+    : title(t), columns(c), data(d) {
   cons = Console(false, false, false, true);
-  title = t;
-  columns = c;
-  data = d;
   cell_height = ch;
   line_seperation = ls;
-
   cursor = 0;
   start_line = 0;
+  overhead = 8; // header(3) + table header(3) + table foot(1) + footer(1)
 }
 
 int Table::show() {
@@ -37,7 +36,7 @@ int Table::show() {
 
 void Table::display() {
   update_size();
-  cons.clear();
+  // cons.clear();
 
   // construct strings for table headers, and columns
   // some of this could get replaced by std::format (?)
@@ -74,12 +73,12 @@ void Table::display() {
     }
     header += "│";
   }
+  
+  cons.print(2, 2, title);
+  cons.print(4, 2, headline);
+  cons.print(5, 2, bold_text(header));
+  cons.print(6, 2, splitter);
 
-  cons.print_ln(" " + title);
-  cons.print_ln();
-  cons.print_ln(" " + headline);
-  cons.print_ln(" " + bold_text(header));
-  cons.print_ln(" " + splitter);
 
   std::vector<std::string> row_text;
   std::string cell_text;
@@ -114,9 +113,9 @@ void Table::display() {
 
     for (int ii = 0; ii < cell_height; ii++) {
       if (i == cursor) {
-        cons.print_ln(" " + rv(row_text[ii]));
+        cons.print(space_used+7, 2, rv(row_text[ii]));
       } else {
-        cons.print_ln(" " + row_text[ii]);
+        cons.print(space_used+7, 2, row_text[ii]);
       }
 
       space_used++;
@@ -124,13 +123,15 @@ void Table::display() {
 
     for (int ii = 0; ii < line_seperation; ii++) {
       if (space_used < cons.height - overhead) {
-        cons.print_ln(" " + spacing);
+        cons.print(space_used+7, 2, spacing);
         space_used++;
       }
     }
   }
-  cons.print_ln(" " + footer);
-  cons.print_at_pos(faint_text("[←] exit  [↑/↓] scroll"), cons.height, 2);
+  
+  cons.print(space_used+7, 2, footer);
+  cons.print(cons.height, 2, faint_text("[←] exit  [↑/↓] scroll"));
+  cons.flush();
 }
 
 int Table::await_input() {
@@ -170,8 +171,6 @@ int Table::await_input() {
 
 void Table::update_size() {
   cons.update_size();
-
-  overhead = 7; // header(2) + table header(3) + table foot(1) + footer(1)
 
   visible_rows = 0;
   while (true) {

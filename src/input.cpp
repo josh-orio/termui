@@ -2,15 +2,13 @@
 
 namespace termui {
 
-Input::Input(std::string t, std::vector<std::string> f, std::vector<std::string> &r, int ls) {
+Input::Input(const std::string &t, const std::vector<std::string> &f, const std::vector<std::string> &r, int ls)
+    : title(t), fields(f), responses(r) {
   cons = Console(false, false, false, true);
-  title = t;
-  fields = f;
-  responses = r;
   line_seperation = ls;
-
   cursor = 0;
   start_line = 0;
+  overhead = 4; // header(3) + footer(1)
 }
 
 int Input::show() {
@@ -36,36 +34,35 @@ int Input::show() {
   }
 }
 
-std::vector<std::string> Input::get_responses() { return responses; }
+// std::vector<std::string> Input::get_responses() { return responses; }
 
 void Input::display() {
   update_size();
-  cons.clear();
 
-  cons.print_ln(" " + title);
-  cons.print_ln();
+  cons.print(2, 2, title);
 
   int space_used = 0;
   for (int i = start_line; i < std::min((int)fields.size(), start_line + visible_lines); i++) {
     if (i == cursor) {
       if (selected) {
-        cons.print_ln(bt(" > " + fields[i]) + ": " + rv(responses[i] + " "));
+        cons.print(space_used + 4, 2, bt("> " + fields[i]) + ": " + rv(responses[i] + " "));
       } else {
-        cons.print_ln(bt(" > " + fields[i]) + ": " + responses[i]);
+        cons.print(space_used + 4, 2, bt("> " + fields[i]) + ": " + responses[i]);
       }
     } else {
-      cons.print_ln("   " + fields[i] + ": " + responses[i]);
+      cons.print(space_used + 4, 4, fields[i] + ": " + responses[i]);
     }
     space_used++;
 
     for (int ii = 0; ii < line_seperation; ii++) {
       if (space_used < cons.height - overhead) {
-        cons.print_ln();
         space_used++;
       }
     }
   }
-  cons.print_at_pos(faint_text("[↵] select/deselect  [↑/↓] scroll [→] finalize"), cons.height, 2);
+
+  cons.print(cons.height, 2, faint_text("[↵] select/deselect  [↑/↓] scroll [→] finalize"));
+  cons.flush();
 }
 
 int Input::await_input() {
@@ -138,8 +135,6 @@ int Input::await_input() {
 
 void Input::update_size() {
   cons.update_size();
-
-  overhead = 4; // header(2) + footer(2)
 
   visible_lines = 0;
   while (true) {
