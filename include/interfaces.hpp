@@ -11,9 +11,9 @@ namespace termui {
 class Info {
 public:
   Console cons;
-  std::string title, content;
+  const std::string title, content;
 
-  Info(std::string t, std::string c);
+  Info(const std::string &t, const std::string &c);
 
   void show();
 
@@ -33,16 +33,16 @@ private:
 class Input {
 public:
   Console cons;
-  std::string title;
-  std::vector<std::string> fields, responses;
+  const std::string title;
+  const std::vector<std::string> fields;
+  std::vector<std::string> responses;
 
-  Input(std::string t, std::vector<std::string> f, std::vector<std::string> &r, int ls = 0);
+  Input(const std::string &t, const std::vector<std::string> &f, const std::vector<std::string> &r, int ls = 0);
 
   int show(); /* return values:
   -1: exit
   >=0: element selected (return value as index)
   */
-  std::vector<std::string> get_responses();
 
 private:
   int cursor;          // current scroll value
@@ -65,10 +65,10 @@ private:
 class Menu {
 public:
   Console cons;
-  std::string title;
-  std::vector<std::string> options;
+  const std::string title;
+  const std::vector<std::string> options;
 
-  Menu(std::string t, std::vector<std::string> o, int ls = 0);
+  Menu(const std::string &t, const std::vector<std::string> &o, int ls = 0);
 
   int show(); // returns index of selected option
 
@@ -92,7 +92,8 @@ public:
   std::vector<std::string> columns;
   std::vector<nlohmann::json> data;
 
-  Table(std::string t, std::vector<std::string> c, std::vector<nlohmann::json> d, int ch = 1, int ls = 0);
+  Table(const std::string &t, const std::vector<std::string> &c, const std::vector<nlohmann::json> &d, int ch = 1,
+        int ls = 0);
 
   int show(); /* return values:
   -1: exit
