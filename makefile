@@ -15,3 +15,13 @@ test:
 install:
 	@mkdir -p $(BUILD_DIR)
 	@cd $(BUILD_DIR) && cmake -D CMAKE_BUILD_TYPE=Release .. && sudo $(MAKE) -j install
+
+clean:
+	@rm -rf $(BUILD_DIR) 
+
+debug:
+	@clear
+	@rm -rf .cache build
+	@mkdir -p $(BUILD_DIR)
+	@cd $(BUILD_DIR) && cmake -D CMAKE_BUILD_TYPE=Debug .. && $(MAKE) -j
+	@lldb  ./build/test_program
