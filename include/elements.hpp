@@ -47,6 +47,17 @@ public:
   std::string render();
 };
 
+class Text {
+public:
+  std::string data;
+  int w, h;
+  std::string fg_col, bg_col;
+
+  Text(std::string data, int w, int h, std::string fg_col, std::string bg_col);
+
+  std::string render();
+};
+
 } // namespace termui
 
 #endif

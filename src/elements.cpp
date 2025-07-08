@@ -61,4 +61,24 @@ std::string ProgressBar::render() {
   return outbuff;
 }
 
+Text::Text(std::string data, int w, int h, std::string fg_col, std::string bg_col)
+    : data(data), w(w), h(h), fg_col(fg_col), bg_col(bg_col){};
+
+std::string Text::render() {
+  std::string outbuff;
+
+  outbuff += fg_col + bg_col;
+
+  std::string tmp = trim_str(data, w * h);
+
+  for (int i = 0; i < h; i++) {
+    outbuff += tmp.substr(i * w, w);
+    outbuff += std::format("\e[{}B\e[{}D", 1, w); // cursor down 1, left w;
+  }
+
+  outbuff += format::NONE;
+
+  return outbuff;
+}
+
 } // namespace termui
