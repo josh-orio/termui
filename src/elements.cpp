@@ -22,7 +22,8 @@ std::string Box::render() {
   return outbuff;
 }
 
-Button::Button(int w, std::string text, std::string active_color) : w(w), text(text), active_color(active_color) {}
+Button::Button(int w, std::string text, std::string active_color, std::string idle_color)
+    : w(w), text(text), active_color(active_color), idle_color(idle_color) {}
 
 std::string Button::render() {
   std::string outbuff;
@@ -30,10 +31,20 @@ std::string Button::render() {
   if (selected) {
     outbuff += active_color;
   } else {
-    outbuff += bg_color(247); // temporary 'inactive' color
+    outbuff += idle_color;
   }
 
-  outbuff += trim_str(text, w); // TODO: centrally position text in button
+  if (text.length() > w) {
+    outbuff += text.substr(0, w - 3) + "...";
+  } else if (text.length() < w) {
+    int diff = w - text.length();
+    int l = diff / 2;
+    int r = diff - l;
+    text = std::string(l, ' ') + text + std::string(r, ' ');
+    outbuff += text;
+  } else {
+    outbuff += text;
+  }
 
   outbuff += format::NONE;
 
@@ -69,7 +80,13 @@ std::string Text::render() {
 
   outbuff += fg_col + bg_col;
 
-  std::string tmp = trim_str(data, w * h);
+  std::string tmp = data;
+
+  if (tmp.length() > w * h) {
+    tmp = tmp.substr(0, (w * h) - 3) + "...";
+  } else if (tmp.length() < w * h) {
+    tmp += std::string((w * h) - tmp.length(), ' ');
+  }
 
   for (int i = 0; i < h; i++) {
     outbuff += tmp.substr(i * w, w);

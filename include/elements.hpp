@@ -4,7 +4,6 @@
 #define ELEMENTS_HPP
 
 #include "formatting.hpp"
-#include "util.hpp"
 #include <iostream>
 #include <string>
 
@@ -29,9 +28,9 @@ public:
   int w;
   bool selected;
   std::string text;
-  std::string active_color;
+  std::string active_color, idle_color;
 
-  Button(int w, std::string text, std::string active_color);
+  Button(int w, std::string text, std::string active_color, std::string idle_color);
 
   std::string render();
 };
