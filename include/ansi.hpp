@@ -5,7 +5,7 @@
 
 namespace termui {
 
-namespace format {
+namespace format { /* text formatting codes */
 inline std::string NONE = "\033[0m";
 inline std::string BOLD = "\033[1m";
 inline std::string FAINT = "\033[2m";
@@ -25,7 +25,7 @@ inline std::string CONCEAL_OFF = "\033[28m";
 inline std::string CROSSED_OUT_OFF = "\033[29m";
 } // namespace format
 
-namespace fg {
+namespace fg { /* text color codes */
 inline std::string BLACK = "\033[30m";
 inline std::string RED = "\033[31m";
 inline std::string GREEN = "\033[32m";
@@ -37,7 +37,7 @@ inline std::string WHITE = "\033[37m";
 inline std::string DEFAULT = "\033[39m";
 } // namespace fg
 
-namespace bg {
+namespace bg { /* text background color codes */
 inline std::string BLACK = "\033[40m";
 inline std::string RED = "\033[41m";
 inline std::string GREEN = "\033[42m";
@@ -49,14 +49,14 @@ inline std::string WHITE = "\033[47m";
 inline std::string DEFAULT = "\033[49m";
 } // namespace bg
 
-namespace term {
+namespace term { /* random terminal manipulation codes */
 inline std::string CLEAR_CONSOLE = "\033[2J";
 inline std::string CLEAR_SCROLLBACK = "\033[3J";
 inline std::string CURSOR_HOME = "\033[H";
 inline std::string HIDE_CURSOR = "\033[?25l";
 inline std::string SHOW_CURSOR = "\033[?25h";
-inline std::string ALT_BUFFER = "\033[?1049h";
-inline std::string PRIMARY_BUFFER = "\033[?1049l";
+inline std::string ALT_BUFFER = "\033[?1049h";     // enables the alternative buffer
+inline std::string PRIMARY_BUFFER = "\033[?1049l"; // disables the alternative buffer
 } // namespace term
 
 } // namespace termui

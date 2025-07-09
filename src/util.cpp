@@ -1,6 +1,14 @@
-#include "formatting.hpp"
+#include "util.hpp"
 
 namespace termui {
+
+// 8 bit color
+std::string fg_color(int c) { return std::format("\033[38;5;{}m", c); }
+std::string bg_color(int c) { return std::format("\033[48;5;{}m", c); }
+
+// 24 bit color
+std::string fg_color(int r, int g, int b) { return std::format("\033[38;2;{};{};{}m", r, g, b); }
+std::string bg_color(int r, int g, int b) { return std::format("\033[48;2;{};{};{}m", r, g, b); }
 
 std::string whitespace(int len) { return std::string(len, ' '); }
 
@@ -22,23 +30,5 @@ std::string ls(int len) /* line seperation*/ { return line_sep(len); }
 std::string bt(std::string s) /* bold text*/ { return bold_text(s); }
 std::string rv(std::string s) /*  reverse video*/ { return reverse_video(s); }
 std::string ft(std::string s) /*  faint*/ { return faint_text(s); }
-
-Style::Style(std::string f, std::string b, std::string w) {
-  foreground = f;
-  background = b;
-  weight = w;
-}
-
-std::string Style::render(std::string s) {
-  return std::format("{}{}{}{}{}", foreground, background, weight, s, format::NONE);
-}
-
-// 8 bit color
-std::string fg_color(int c) { return std::format("\033[38;5;{}m", c); }
-std::string bg_color(int c) { return std::format("\033[48;5;{}m", c); }
-
-// 24 bit color
-std::string fg_color(int r, int g, int b) { return std::format("\033[38;2;{};{};{}m", r, g, b); }
-std::string bg_color(int r, int g, int b) { return std::format("\33[48;2;{};{};{}m", r, g, b); }
 
 } // namespace termui
