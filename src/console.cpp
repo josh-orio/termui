@@ -31,9 +31,9 @@ void CursorModeToggle::off() { std::cout << term::HIDE_CURSOR; }
 
 void CursorModeToggle::on() { std::cout << term::SHOW_CURSOR; }
 
-void AlternateTerminalToggle::enable() { std::cout << term::ALT_BUFFER; }
+void AlternateBufferToggle::enable() { std::cout << term::ALT_BUFFER; }
 
-void AlternateTerminalToggle::disable() { std::cout << term::PRIMARY_BUFFER; }
+void AlternateBufferToggle::disable() { std::cout << term::PRIMARY_BUFFER; }
 
 Console::Console(){};
 
@@ -46,6 +46,9 @@ Console::Console(bool b, bool e, bool c, bool a) {
   echos = e;
   cursor = c;
   altterm = a;
+
+  outbuff = "";
+  inbuff = "";
 }
 
 void Console::show() {
@@ -63,25 +66,27 @@ void Console::close() {
   (altterm == false) ? at.enable() : at.disable();
 }
 
-void Console::clear_buffer() { buffer = {}; }
+void Console::clear_buffer() { outbuff.clear(); }
 
 void Console::clear_screen() { std::cout << term::CLEAR_CONSOLE << term::CLEAR_SCROLLBACK; }
 
 void Console::clear_scrollback() { std::cout << term::CLEAR_SCROLLBACK; }
 
-void Console::print(int row, int col, std::string s) { buffer.push_back(std::format("\033[{};{}H{}", row, col, s)); }
+void Console::print(int row, int col, std::string s) { outbuff += std::format("\033[{};{}H{}", row, col, s); }
+void Console::print(std::string s) { outbuff += s; }
 
 void Console::flush() {
-  std::string stream = "";
-
-  for (auto s : buffer) {
-    stream += s;
-  }
-
   clear_screen();
-  std::cout << stream;
+  std::cout << outbuff;
   clear_buffer();
 }
+
+void Console::curs_up(int n) { outbuff += std::format("\e[{}A", n); }
+void Console::curs_down(int n) { outbuff += std::format("\e[{}B", n); }
+void Console::curs_right(int n) { outbuff += std::format("\e[{}C", n); }
+void Console::curs_left(int n) { outbuff += std::format("\e[{}D", n); }
+
+void Console::await_input() { inbuff += std::cin.get(); }
 
 void Console::update_size() {
   struct winsize w;
