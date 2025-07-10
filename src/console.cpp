@@ -77,7 +77,8 @@ void Console::print(std::string s) { outbuff += s; }
 
 void Console::flush() {
   clear_screen();
-  std::cout << outbuff;
+  std::cout << outbuff
+            << std::flush; // might not (wont) print without std::flush (due to read() in await_input i think?)
   clear_buffer();
 }
 
@@ -86,7 +87,15 @@ void Console::curs_down(int n) { outbuff += std::format("\e[{}B", n); }
 void Console::curs_right(int n) { outbuff += std::format("\e[{}C", n); }
 void Console::curs_left(int n) { outbuff += std::format("\e[{}D", n); }
 
-void Console::await_input() { inbuff += std::cin.get(); }
+void Console::await_input() {
+  char keys[8]; // allow reading upto 8 chars at once, ansi codes should only be 3-5
+  int nbytes;
+
+  nbytes = read(STDIN_FILENO, keys, sizeof(keys));
+  for (int i = 0; i < nbytes; i++) {
+    inbuff += keys[i];
+  }
+}
 
 void Console::update_size() {
   struct winsize w;
