@@ -80,17 +80,41 @@ std::string Text::render() {
 
   outbuff += fg_col + bg_col;
 
-  std::string tmp = data;
+  std::vector<std::string> formatted;
+  std::string copy = data;
 
-  if (tmp.length() > w * h) {
-    tmp = tmp.substr(0, (w * h) - 3) + "...";
-  } else if (tmp.length() < w * h) {
-    tmp += std::string((w * h) - tmp.length(), ' ');
+  for (int i = 0; i < h; i++) {
+    int next = 0;
+    if (copy.find('\n') == std::string::npos) {
+      next = std::min({(int)copy.size(), w});
+    } else {
+      next = std::min({(int)copy.size(), w, (int)copy.find('\n')});
+    }
+
+    formatted.push_back(std::string(copy.begin(), copy.begin() + next) + std::string(w - next, ' '));
+
+    if (copy.begin() + next + 1 < copy.end()) {
+      if (copy[next] == '\n') {
+        copy = std::string(copy.begin() + next + 1, copy.end());
+      } else {
+        copy = std::string(copy.begin() + next, copy.end());
+      }
+    } else {
+      copy = "";
+    }
+  }
+
+  if (copy.size() > 0) { // data remaining, didnt fit in text box, print ...
+    formatted[h - 1] = formatted[h - 1].substr(0, w - 3) + "...";
   }
 
   for (int i = 0; i < h; i++) {
-    outbuff += tmp.substr(i * w, w);
-    outbuff += std::format("\e[{}B\e[{}D", 1, w); // cursor down 1, left w;
+    outbuff += formatted[i];
+    if (i == h - 1) {
+      continue; // continue to avoid interfering with other ui elements
+    } else {
+      outbuff += std::format("\e[{}B\e[{}D", 1, w); // cursor down 1, left w
+    }
   }
 
   outbuff += format::NONE;
