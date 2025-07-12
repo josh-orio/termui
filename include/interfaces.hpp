@@ -87,7 +87,7 @@ private:
   int overhead;        // number of lines reserved for header & footer
 
   void display();
-  bool await_input();
+  bool process_input();
 
   void update_size();
 };

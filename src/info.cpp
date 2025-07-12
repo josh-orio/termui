@@ -13,7 +13,7 @@ void Info::show() {
 
   do {
     display();
-  } while (await_input());
+  } while (process_input());
 
   cons.close(); // reset terminal
 }
@@ -27,7 +27,7 @@ void Info::display() {
   // a bit of preprocessing to fit the text in the terminal
   while (copy.length() > 0) {
     int next = 0;
-    if (copy.find('\n') == std::string::npos) {
+    if (copy.find('\n') == std::string::npos) { // no linebreaks in remaining text
       next = std::min({(int)copy.size(), text_width});
     } else {
       next = std::min({(int)copy.size(), text_width, (int)copy.find('\n')});
@@ -60,28 +60,44 @@ void Info::display() {
   cons.flush();
 }
 
-bool Info::await_input() {
-  if (std::getchar() == keys::ESC) {
-    if (std::getchar() == '[') { // random char in escape sequence
-      switch (std::getchar()) {
-      case keys::U_ARROW:
-        // decrement but dont let (cursor < 0)
-        line_cursor -= (line_cursor > 0) ? 1 : 0;
-        return true;
+bool Info::process_input() {
+  cons.poll_input(); // read in any unread chars
 
-      case keys::D_ARROW:
-        // increment but dont let (cursor > options.size)
-        line_cursor += (line_cursor < content_lines - 1) ? 1 : 0;
-        return true;
+  std::vector<std::string> controls{key::U_ARROW, key::D_ARROW, key::L_ARROW}; // replacing this will be part of #12
+  std::vector<size_t> cep(controls.size());                                    // control - earliest pos for each
 
-      case keys::L_ARROW:
-        // left arrow closes info page
-        return false;
-      }
-    }
+  std::transform(controls.begin(), controls.end(), cep.begin(),
+                 [this](const std::string &s) { return cons.inbuff.find(s); });
+
+  int min = std::distance(std::begin(cep), std::min_element(std::begin(cep), std::end(cep)));
+
+  if (cep[min] == std::string::npos) {
+    return true;
+  } // none of the controls are in the buffer
+
+  std::string ec = controls[min]; // earliest control
+
+  cons.inbuff.erase(0, cep[min] + ec.size()); // remove everything upto the end of the control (will erase anything
+                                              // unintelligble before the control too)
+
+  // ^ this implementation finds the first control key/sequence in the input buffer. this is done in the odd case that
+  // multiple controls may be in the input buffer at once (incredibly unlikely)
+
+  // now interface effects/changes can be handled
+  if (ec == key::U_ARROW) {
+    line_cursor -= (line_cursor > 0) ? 1 : 0; // decrement but dont let (cursor < 0)
+    return true;
+
+  } else if (ec == key::D_ARROW) {
+    line_cursor += (line_cursor < content_lines - 1) ? 1 : 0; // increment but dont let (cursor > content_lines)
+    return true;
+
+  } else if (ec == key::L_ARROW) { // left arrow closes info page
+    return false;
+
+  } else {
+    return true;
   }
-
-  return true;
 }
 
 void Info::update_size() {

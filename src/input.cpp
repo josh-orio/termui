@@ -16,20 +16,17 @@ int Input::show() {
 
   selected = false;
 
-  int sig = 0;
+  int sig;
   do {
     display();
-    sig = await_input();
-  } while (sig == 0);
+    sig = process_input();
+  } while (sig != -1);
 
   cons.close(); // reset terminal
 
-  // return codes:
-  // -1 : normal exit
-  // >= 0 : selection at cursor position
-  if (sig == -1) {
-    return -1;
-  } else {
+  if (sig == -1) { // return codes:
+    return -1;     // -1 : normal exit
+  } else {         // >= 0 : selection at cursor position
     return cursor;
   }
 }
@@ -64,74 +61,97 @@ void Input::display() {
   cons.print(cons.height, 2, faint_text("[↵] select/deselect  [↑/↓] scroll [→] finalize"));
   cons.flush();
 }
-
-int Input::await_input() {
+int Input::process_input() {
   // return values:
   // -1: close window
   // 0: normal/proceed
   // 1: element selected
 
-  char c;
-  if (selected) {
-    switch (c = std::getchar()) {
-    case keys::ENTER:
-      // enter signals deselection of current field
+  cons.poll_input(); // read in any unread chars
+
+  std::vector<std::string> controls{key::U_ARROW, key::D_ARROW, key::L_ARROW,
+                                    key::R_ARROW, key::DEL,     key::ENTER}; // replacing this will be part of #12
+
+  for (int i = 32; i <= 126; i++) { // want to accept all ascii 32 to 126
+    controls.push_back(std::string{(char)i});
+  } // this does not need to be regenerated on every call to function, will be optimized out with control maps in #12
+
+  std::vector<size_t> cep(controls.size()); // control - earliest pos for each
+
+  std::transform(controls.begin(), controls.end(), cep.begin(),
+                 [this](const std::string &s) { return cons.inbuff.find(s); });
+
+  int min = std::distance(std::begin(cep), std::min_element(std::begin(cep), std::end(cep)));
+
+  if (cep[min] == std::string::npos) {
+    return 0;
+  } // none of the controls are in the buffer
+
+  std::string ec = controls[min]; // earliest control
+
+  cons.inbuff.erase(0, cep[min] + ec.size()); // remove everything upto the end of the control (will erase anything
+                                              // unintelligble before the control too)
+
+  // ^ this implementation finds the first control key/sequence in the input buffer. this is done in the odd case that
+  // multiple controls may be in the input buffer at once (incredibly unlikely)
+
+  // now interface effects/changes can be handled
+  if (ec == key::ENTER) { // select/deselect
+    if (selected) {
       selected = false;
       return 0;
+    } else {
+      selected = true;
+      return 1;
+    }
 
-    case keys::ESC:
-      // ESC gets ignored plus whatever 2 chars complete the sequence
-      std::getchar();
-      std::getchar();
+  } else if (ec == key::U_ARROW) {
+    if (!selected) {
+      // up arrow moves cursor up
+      // decrement but dont let (cursor < 0)
+      cursor -= (cursor > 0) ? 1 : 0;
+      start_line -= (cursor < start_line) ? 1 : 0;
+    }
+    return 0;
+
+  } else if (ec == key::D_ARROW) {
+    if (!selected) {
+      // down arrow moves cursor down
+      // increment but dont let (cursor > fields.size)
+      cursor += (cursor < fields.size() - 1) ? 1 : 0;
+      start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
+    }
+    return 0;
+
+  } else if (ec == key::R_ARROW) { // finalize input
+    if (!selected) {
+      // can't return if a field is selected (good thing)
+      return -1;
+    } else {
       return 0;
+    }
 
-    case 32 ... 126:
-      // accept ascii characters in range 32 - 126
-      // input sanitization is done in classes, not here
-      responses[cursor] += c;
-      return 0;
-
-    case keys::DEL:
-      // DEL char clears last char in string
+  } else if (ec == key::DEL) { // remove last char
+    // DEL char clears last char in string
+    if (selected) {
       if (responses[cursor].size() > 0) {
         responses[cursor] = std::string(responses[cursor].begin(), responses[cursor].end() - 1);
       }
-      return 0;
     }
+    return 0;
+
+  } else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // add char
+    // accept ascii characters in range 32 - 126
+    // input sanitization is done in classes, not here
+    if (selected) {
+      responses[cursor] += ec;
+    }
+    return 0;
+
   } else {
-    switch (c = std::getchar()) {
-    case keys::ENTER:
-      // enter signals selection of current field
-      selected = true;
-      return 1;
-
-    case keys::ESC:
-      if (std::getchar() == '[') {
-        switch (c = std::getchar()) {
-        case keys::U_ARROW:
-          // up arrow moves cursor up
-          // decrement but dont let (cursor < 0)
-          cursor -= (cursor > 0) ? 1 : 0;
-          start_line -= (cursor < start_line) ? 1 : 0;
-          return 0;
-
-        case keys::D_ARROW:
-          // down arrow moves cursor down
-          // increment but dont let (cursor > fields.size)
-          cursor += (cursor < fields.size() - 1) ? 1 : 0;
-          start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
-          return 0;
-
-        case keys::R_ARROW:
-          // right arrow finalizes the responses
-          // can't return if a field is selected (good thing)
-          return -1;
-        }
-      }
-    }
+    return 0;
   }
-  return 0; // i guess?
-}
+};
 
 void Input::update_size() {
   cons.update_size();

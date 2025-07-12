@@ -1,4 +1,5 @@
 #include "interfaces.hpp"
+#include "util.hpp"
 
 namespace termui {
 
@@ -16,11 +17,13 @@ Table::Table(const std::string &t, const std::vector<std::string> &c, const std:
 int Table::show() {
   cons.show(); // configure terminal
 
+  reprint = true;
+
   int sig;
   do {
     display();
-    sig = await_input();
-  } while (sig != -1);
+    sig = process_input();
+  } while (sig == 0);
 
   cons.close(); // reset terminal
 
@@ -73,12 +76,11 @@ void Table::display() {
     }
     header += "│";
   }
-  
+
   cons.print(2, 2, title);
   cons.print(4, 2, headline);
   cons.print(5, 2, bold_text(header));
   cons.print(6, 2, splitter);
-
 
   std::vector<std::string> row_text;
   std::string cell_text;
@@ -113,9 +115,9 @@ void Table::display() {
 
     for (int ii = 0; ii < cell_height; ii++) {
       if (i == cursor) {
-        cons.print(space_used+7, 2, rv(row_text[ii]));
+        cons.print(space_used + 7, 2, rv(row_text[ii]));
       } else {
-        cons.print(space_used+7, 2, row_text[ii]);
+        cons.print(space_used + 7, 2, row_text[ii]);
       }
 
       space_used++;
@@ -123,51 +125,65 @@ void Table::display() {
 
     for (int ii = 0; ii < line_seperation; ii++) {
       if (space_used < cons.height - overhead) {
-        cons.print(space_used+7, 2, spacing);
+        cons.print(space_used + 7, 2, spacing);
         space_used++;
       }
     }
   }
-  
-  cons.print(space_used+7, 2, footer);
-  cons.print(cons.height, 2, faint_text("[←] exit  [↑/↓] scroll"));
+
+  cons.print(space_used + 7, 2, footer);
+  cons.print(cons.height, 2, faint_text("[ESC] exit  [↑/↓] scroll [↵] select"));
   cons.flush();
 }
-
-int Table::await_input() {
+int Table::process_input() {
   // return values:
   // -1: close window
   // 0: normal/proceed
   // 1: element selected
 
-  switch (std::getchar()) {
-  case keys::ENTER:
+  cons.poll_input(); // read in any unread chars
+
+  std::vector<std::string> controls{key::ENTER, key::U_ARROW, key::D_ARROW,
+                                    key::ESC}; // replacing this will be part of #12
+  std::vector<size_t> cep(controls.size());    // control - earliest pos for each
+
+  std::transform(controls.begin(), controls.end(), cep.begin(),
+                 [this](const std::string &s) { return cons.inbuff.find(s); });
+
+  int min = std::distance(std::begin(cep), std::min_element(std::begin(cep), std::end(cep)));
+
+  if (cep[min] == std::string::npos) {
+    return 0;
+  } // none of the controls are in the buffer
+
+  std::string ec = controls[min]; // earliest control
+
+  cons.inbuff.erase(0, cep[min] + ec.size()); // remove everything upto the end of the control (will erase anything
+                                              // unintelligble before the control too)
+
+  // ^ this implementation finds the first control key/sequence in the input buffer. this is done in the odd case that
+  // multiple controls may be in the input buffer at once (incredibly unlikely)
+
+  // now interface effects/changes can be handled
+  if (ec == key::ENTER) {
     return 1;
+  } else if (ec == key::U_ARROW) {
+    // decrement but dont let (cursor < 0)
+    cursor -= (cursor > 0) ? 1 : 0;
+    start_line -= (cursor < start_line) ? 1 : 0;
 
-  case keys::ESC:
-    if (std::getchar() == '[') { // random char in escape sequence
-      switch (std::getchar()) {
-      case keys::U_ARROW:
-        // decrement but dont let (cursor < 0)
-        cursor -= (cursor > 0) ? 1 : 0;
-        start_line -= (cursor < start_line) ? 1 : 0;
-        return 0;
+  } else if (ec == key::D_ARROW) {
+    // increment but dont let (cursor > options.size)
+    cursor += (cursor < data.size() - 1) ? 1 : 0;
+    start_line += (cursor >= start_line + visible_rows) ? 1 : 0;
 
-      case keys::D_ARROW:
-        // increment but dont let (cursor > options.size)
-        cursor += (cursor < data.size() - 1) ? 1 : 0;
-        start_line += (cursor >= start_line + visible_rows) ? 1 : 0;
-        return 0;
+  } else if (ec == key::ESC) {
+    return -1;
 
-      case keys::L_ARROW:
-        // left arrow closes info page
-        return -1;
-      }
-    }
+  } else {
+    return 0;
   }
-
-  return 0;
-}
+};
 
 void Table::update_size() {
   cons.update_size();

@@ -15,7 +15,7 @@ int Menu::show() {
 
   do {
     display();
-  } while (await_input());
+  } while (process_input());
 
   cons.close(); // reset terminal
 
@@ -24,7 +24,7 @@ int Menu::show() {
 
 void Menu::display() {
   update_size();
-  
+
   cons.print(2, 2, title);
 
   int space_used = 0;
@@ -46,32 +46,47 @@ void Menu::display() {
   cons.print(cons.height, 2, faint_text("[↵] select  [↑/↓] scroll"));
   cons.flush();
 }
+bool Menu::process_input() {
+  cons.poll_input(); // read in any unread chars
 
-bool Menu::await_input() {
-  switch (std::getchar()) {
-  case keys::ENTER:
+  std::vector<std::string> controls{key::U_ARROW, key::D_ARROW, key::ENTER}; // replacing this will be part of #12
+  std::vector<size_t> cep(controls.size());                                  // control - earliest pos for each
+
+  std::transform(controls.begin(), controls.end(), cep.begin(),
+                 [this](const std::string &s) { return cons.inbuff.find(s); });
+
+  int min = std::distance(std::begin(cep), std::min_element(std::begin(cep), std::end(cep)));
+
+  if (cep[min] == std::string::npos) {
+    return true;
+  } // none of the controls are in the buffer
+
+  std::string ec = controls[min]; // earliest control
+
+  cons.inbuff.erase(0, cep[min] + ec.size()); // remove everything upto the end of the control (will erase anything
+                                              // unintelligble before the control too)
+
+  // ^ this implementation finds the first control key/sequence in the input buffer. this is done in the odd case that
+  // multiple controls may be in the input buffer at once (incredibly unlikely)
+
+  // now interface effects/changes can be handled
+  if (ec == key::U_ARROW) { // decrement but dont let (cursor < 0)
+    cursor -= (cursor > 0) ? 1 : 0;
+    start_line -= (cursor < start_line) ? 1 : 0;
+    return true;
+
+  } else if (ec == key::D_ARROW) { // increment but dont let (cursor > options.size)
+    cursor += (cursor < options.size() - 1) ? 1 : 0;
+    start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
+    return true;
+
+  } else if (ec == key::ENTER) { // enter selects the option
     return false;
 
-  case keys::ESC:
-    if (std::getchar() == '[') { // random char in escape sequence
-      switch (std::getchar()) {
-      case keys::U_ARROW:
-        // decrement but dont let (cursor <0)
-        cursor -= (cursor > 0) ? 1 : 0;
-        start_line -= (cursor < start_line) ? 1 : 0;
-        return true;
-
-      case keys::D_ARROW:
-        // increment but dont let (cursor > options.size)
-        cursor += (cursor < options.size() - 1) ? 1 : 0;
-        start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
-        return true;
-      }
-    }
+  } else {
+    return true;
   }
-
-  return true;
-}
+};
 
 void Menu::update_size() {
   cons.update_size();
