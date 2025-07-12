@@ -58,7 +58,10 @@ public:
   void show();
   void close();
 
-  void clear_buffer();
+  void update_size();
+
+  void clear_outbuff();
+  void clear_inbuff();
   void clear_screen();
   void clear_scrollback();
 
@@ -71,9 +74,8 @@ public:
   void curs_right(int n);
   void curs_left(int n);
 
-  void await_input();
+  void poll_input(); // read (upto 8) chars off stdin into inbuff
 
-  void update_size();
 };
 
 } // namespace termui

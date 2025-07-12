@@ -66,7 +66,9 @@ void Console::close() {
   (altterm == false) ? at.enable() : at.disable();
 }
 
-void Console::clear_buffer() { outbuff.clear(); }
+void Console::clear_outbuff() { outbuff.clear(); }
+
+void Console::clear_inbuff() { inbuff.clear(); }
 
 void Console::clear_screen() { std::cout << term::CLEAR_CONSOLE << term::CLEAR_SCROLLBACK; }
 
@@ -79,7 +81,7 @@ void Console::flush() {
   clear_screen();
   std::cout << outbuff
             << std::flush; // might not (wont) print without std::flush (due to read() in await_input i think?)
-  clear_buffer();
+  clear_outbuff();
 }
 
 void Console::curs_up(int n) { outbuff += std::format("\e[{}A", n); }
@@ -87,7 +89,7 @@ void Console::curs_down(int n) { outbuff += std::format("\e[{}B", n); }
 void Console::curs_right(int n) { outbuff += std::format("\e[{}C", n); }
 void Console::curs_left(int n) { outbuff += std::format("\e[{}D", n); }
 
-void Console::await_input() {
+void Console::poll_input() {
   char keys[8]; // allow reading upto 8 chars at once, ansi codes should only be 3-5
   int nbytes;
 
