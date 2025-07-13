@@ -31,8 +31,6 @@ int Input::show() {
   }
 }
 
-// std::vector<std::string> Input::get_responses() { return responses; }
-
 void Input::display() {
   update_size();
 
@@ -67,35 +65,10 @@ int Input::process_input() {
   // 0: normal/proceed
   // 1: element selected
 
-  cons.poll_input(); // read in any unread chars
-
   std::vector<std::string> controls{key::U_ARROW, key::D_ARROW, key::L_ARROW,
                                     key::R_ARROW, key::DEL,     key::ENTER}; // replacing this will be part of #12
+  std::string ec = cons.poll_input();                                        // read in a control
 
-  for (int i = 32; i <= 126; i++) { // want to accept all ascii 32 to 126
-    controls.push_back(std::string{(char)i});
-  } // this does not need to be regenerated on every call to function, will be optimized out with control maps in #12
-
-  std::vector<size_t> cep(controls.size()); // control - earliest pos for each
-
-  std::transform(controls.begin(), controls.end(), cep.begin(),
-                 [this](const std::string &s) { return cons.inbuff.find(s); });
-
-  int min = std::distance(std::begin(cep), std::min_element(std::begin(cep), std::end(cep)));
-
-  if (cep[min] == std::string::npos) {
-    return 0;
-  } // none of the controls are in the buffer
-
-  std::string ec = controls[min]; // earliest control
-
-  cons.inbuff.erase(0, cep[min] + ec.size()); // remove everything upto the end of the control (will erase anything
-                                              // unintelligble before the control too)
-
-  // ^ this implementation finds the first control key/sequence in the input buffer. this is done in the odd case that
-  // multiple controls may be in the input buffer at once (incredibly unlikely)
-
-  // now interface effects/changes can be handled
   if (ec == key::ENTER) { // select/deselect
     if (selected) {
       selected = false;

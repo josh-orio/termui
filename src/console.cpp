@@ -48,7 +48,6 @@ Console::Console(bool b, bool e, bool c, bool a) {
   altterm = a;
 
   outbuff = "";
-  inbuff = "";
 }
 
 void Console::show() {
@@ -67,8 +66,6 @@ void Console::close() {
 }
 
 void Console::clear_outbuff() { outbuff.clear(); }
-
-void Console::clear_inbuff() { inbuff.clear(); }
 
 void Console::clear_screen() { std::cout << term::CLEAR_CONSOLE << term::CLEAR_SCROLLBACK; }
 
@@ -89,14 +86,13 @@ void Console::curs_down(int n) { outbuff += std::format("\e[{}B", n); }
 void Console::curs_right(int n) { outbuff += std::format("\e[{}C", n); }
 void Console::curs_left(int n) { outbuff += std::format("\e[{}D", n); }
 
-void Console::poll_input() {
+std::string Console::poll_input() {
   char keys[8]; // allow reading upto 8 chars at once, ansi codes should only be 3-5
   int nbytes;
 
   nbytes = read(STDIN_FILENO, keys, sizeof(keys));
-  for (int i = 0; i < nbytes; i++) {
-    inbuff += keys[i];
-  }
+  
+  return std::string(keys, nbytes);
 }
 
 void Console::update_size() {
