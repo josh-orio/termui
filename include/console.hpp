@@ -43,7 +43,7 @@ public:
 class Console {
 public:
   int width, height;
-  std::string inbuff, outbuff;
+  std::string outbuff;
 
   BufferModeToggle bt;
   EchoModeToggle et;
@@ -61,7 +61,6 @@ public:
   void update_size();
 
   void clear_outbuff();
-  void clear_inbuff();
   void clear_screen();
   void clear_scrollback();
 
@@ -74,7 +73,7 @@ public:
   void curs_right(int n);
   void curs_left(int n);
 
-  void poll_input(); // read (upto 8) chars off stdin into inbuff
+  std::string poll_input(); // read (upto 8) chars off stdin into inbuff
 
 };
 
