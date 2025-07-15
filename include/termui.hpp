@@ -2,7 +2,8 @@
 #define TERMUI_HPP
 
 #include "console.hpp"
-#include "formatting.hpp"
+#include "elements.hpp"
 #include "interfaces.hpp"
+#include "util.hpp"
 
 #endif
