@@ -17,8 +17,7 @@ int Menu::show() {
     display();
   } while (process_input());
 
-  cons.close(); // reset terminal
-
+  cons.close();  // reset terminal
   return cursor; // returns selected option
 }
 
@@ -43,12 +42,11 @@ void Menu::display() {
     }
   }
 
-  cons.print(cons.height, 2, faint_text("[↵] select  [↑/↓] scroll"));
+  cons.print(cons.height, 2, faint_text("[ESC] close  [↑/↓] scroll [↵] select"));
   cons.flush();
 }
 bool Menu::process_input() {
-  std::vector<std::string> controls{key::U_ARROW, key::D_ARROW, key::ENTER}; // replacing this will be part of #12
-  std::string ec = cons.poll_input();                                        // read in a control
+  std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::U_ARROW) { // decrement but dont let (cursor < 0)
     cursor -= (cursor > 0) ? 1 : 0;
@@ -61,6 +59,9 @@ bool Menu::process_input() {
     return true;
 
   } else if (ec == key::ENTER) { // enter selects the option
+    return false;
+
+  } else if (ec == key::ESC) { // esc closes the interface
     return false;
 
   } else {

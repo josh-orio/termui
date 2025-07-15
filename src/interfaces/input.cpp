@@ -56,7 +56,7 @@ void Input::display() {
     }
   }
 
-  cons.print(cons.height, 2, faint_text("[↵] select/deselect  [↑/↓] scroll [→] finalize"));
+  cons.print(cons.height, 2, faint_text("[ESC] close  [↑/↓] scroll [↵] select/deselect"));
   cons.flush();
 }
 int Input::process_input() {
@@ -65,9 +65,7 @@ int Input::process_input() {
   // 0: normal/proceed
   // 1: element selected
 
-  std::vector<std::string> controls{key::U_ARROW, key::D_ARROW, key::L_ARROW,
-                                    key::R_ARROW, key::DEL,     key::ENTER}; // replacing this will be part of #12
-  std::string ec = cons.poll_input();                                        // read in a control
+  std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::ENTER) { // select/deselect
     if (selected) {
@@ -77,6 +75,12 @@ int Input::process_input() {
       selected = true;
       return 1;
     }
+
+  } else if (ec == key::ESC) { // escape to close
+    if (!selected) {           // dont close if field selected
+      return -1;
+    }
+    return 0;
 
   } else if (ec == key::U_ARROW) {
     if (!selected) {
@@ -95,14 +99,6 @@ int Input::process_input() {
       start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
     }
     return 0;
-
-  } else if (ec == key::R_ARROW) { // finalize input
-    if (!selected) {
-      // can't return if a field is selected (good thing)
-      return -1;
-    } else {
-      return 0;
-    }
 
   } else if (ec == key::DEL) { // remove last char
     // DEL char clears last char in string

@@ -31,9 +31,9 @@ std::string rv(std::string s); // reverse video
 std::string ft(std::string s); // faint
 
 namespace key { /* used for comparison operations when reading off input buffers */
-inline std::string ENTER {10};
-inline std::string ESC {27};
-inline std::string DEL {127};
+inline std::string ENTER{10};
+inline std::string ESC{27};
+inline std::string DEL{127};
 inline std::string U_ARROW = "\e[A";
 inline std::string D_ARROW = "\e[B";
 inline std::string R_ARROW = "\e[C";
@@ -42,7 +42,7 @@ inline std::string L_ARROW = "\e[D";
 
 namespace symbol { /* used to make the control strips at the bottom of interfaces */
 inline std::string BLOCK = "█";
-inline std::string ELLIPSIS ="…";
+inline std::string ELLIPSIS = "…";
 inline std::string L_ARROW = "←";
 inline std::string R_ARROW = "→";
 inline std::string U_ARROW = "↑";

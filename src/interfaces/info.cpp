@@ -61,8 +61,7 @@ void Info::display() {
 }
 
 bool Info::process_input() {
-  std::vector<std::string> controls{key::U_ARROW, key::D_ARROW, key::ESC}; // replacing this will be part of #12
-  std::string ec = cons.poll_input();                                      // read in a control
+  std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::U_ARROW) {
     line_cursor -= (line_cursor > 0) ? 1 : 0; // decrement but dont let (cursor < 0)

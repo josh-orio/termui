@@ -74,8 +74,7 @@ void BinaryMenu::display() {
 }
 
 bool BinaryMenu::process_input() {
-  std::vector<std::string> controls{key::ENTER, key::L_ARROW, key::R_ARROW}; // replacing this will be part of #12
-  std::string ec = cons.poll_input();                                        // read in a control
+  std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::ENTER) {
     return false;
