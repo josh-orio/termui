@@ -42,6 +42,7 @@ inline std::string L_ARROW = "\e[D";
 
 namespace symbol { /* used to make the control strips at the bottom of interfaces */
 inline std::string BLOCK = "█";
+inline std::string ELLIPSIS ="…";
 inline std::string L_ARROW = "←";
 inline std::string R_ARROW = "→";
 inline std::string U_ARROW = "↑";
@@ -51,6 +52,11 @@ inline std::string VBD = "↑/↓"; // vertical bi directional
 inline std::string ENTER = "↵";
 inline std::string TAB = "⇥";
 } // namespace symbol
+
+std::string curs_up(int n);
+std::string curs_down(int n);
+std::string curs_right(int n);
+std::string curs_left(int n);
 
 } // namespace termui
 

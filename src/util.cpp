@@ -31,4 +31,9 @@ std::string bt(std::string s) /* bold text*/ { return bold_text(s); }
 std::string rv(std::string s) /*  reverse video*/ { return reverse_video(s); }
 std::string ft(std::string s) /*  faint*/ { return faint_text(s); }
 
+std::string curs_up(int n) { return std::format("\e[{}A", n); }
+std::string curs_down(int n) { return std::format("\e[{}B", n); }
+std::string curs_right(int n) { return std::format("\e[{}C", n); }
+std::string curs_left(int n) { return std::format("\e[{}D", n); }
+
 } // namespace termui
