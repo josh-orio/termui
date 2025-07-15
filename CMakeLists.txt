@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28.0)
 project(termui LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
-file(GLOB TERMUI_SOURCES "src/*.cpp")
+file(GLOB_RECURSE TERMUI_SOURCES "src/*.cpp")
 file(GLOB TERMUI_INCLUDE "include/*.hpp")
 
 # message("termui sources: ${TERMUI_SOURCES}")
