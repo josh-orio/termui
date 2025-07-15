@@ -3,12 +3,12 @@
 namespace termui {
 
 // 8 bit color
-std::string fg_color(int c) { return std::format("\033[38;5;{}m", c); }
-std::string bg_color(int c) { return std::format("\033[48;5;{}m", c); }
+std::string fg_color(int c) { return std::format("\e[38;5;{}m", c); }
+std::string bg_color(int c) { return std::format("\e[48;5;{}m", c); }
 
 // 24 bit color
-std::string fg_color(int r, int g, int b) { return std::format("\033[38;2;{};{};{}m", r, g, b); }
-std::string bg_color(int r, int g, int b) { return std::format("\033[48;2;{};{};{}m", r, g, b); }
+std::string fg_color(int r, int g, int b) { return std::format("\e[38;2;{};{};{}m", r, g, b); }
+std::string bg_color(int r, int g, int b) { return std::format("\e[48;2;{};{};{}m", r, g, b); }
 
 std::string whitespace(int len) { return std::string(len, ' '); }
 

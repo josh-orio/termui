@@ -71,7 +71,7 @@ void Console::clear_screen() { std::cout << term::CLEAR_CONSOLE << term::CLEAR_S
 
 void Console::clear_scrollback() { std::cout << term::CLEAR_SCROLLBACK; }
 
-void Console::print(int row, int col, std::string s) { outbuff += std::format("\033[{};{}H{}", row, col, s); }
+void Console::print(int row, int col, std::string s) { outbuff += std::format("\e[{};{}H{}", row, col, s); }
 void Console::print(std::string s) { outbuff += s; }
 
 void Console::flush() {
