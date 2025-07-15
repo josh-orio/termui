@@ -35,7 +35,7 @@ std::string Text::render() {
   }
 
   if (copy.size() > 0) { // data remaining, didnt fit in text box, print ...
-    formatted[h - 1] = formatted[h - 1].substr(0, w - 3) + "...";
+    formatted[h - 1] = formatted[h - 1].substr(0, w - 1) + symbol::ELLIPSIS;
   }
 
   for (int i = 0; i < h; i++) {
@@ -43,7 +43,7 @@ std::string Text::render() {
     if (i == h - 1) {
       continue; // continue to avoid interfering with other ui elements
     } else {
-      outbuff += std::format("\e[{}B\e[{}D", 1, w); // cursor down 1, left w
+      outbuff += curs_down(1) + curs_left(w);
     }
   }
 
