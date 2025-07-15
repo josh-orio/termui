@@ -57,6 +57,29 @@ public:
   std::string render();
 };
 
+class Table {
+public:
+  std::vector<std::string> columns;
+  std::vector<int> column_widths;
+  std::vector<std::vector<std::string>> cells; // organized as row major
+
+  int cursor;          // current scroll value
+  int visible_rows;    // number of table rows that will fit onto the terminal
+  int start_line;      // index value of first row which shows in view
+  int table_width;     // width of table in characters
+  int table_height;    // height of table
+  int line_seperation; // number of blank lines between elements
+  int cell_height;     // number of lines dedicated to a cell
+  int overhead;        // number of lines reserved for header & footer
+  bool reprint;
+
+  std::string row_color;
+
+  Table(std::vector<std::string> columns, std::vector<int> column_widths, std::vector<std::vector<std::string>> cells);
+
+  std::string render();
+};
+
 } // namespace termui
 
 #endif

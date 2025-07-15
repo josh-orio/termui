@@ -92,41 +92,41 @@ private:
   void update_size();
 };
 
-class Table {
-public:
-  Console cons;
-  std::string title;
-  std::vector<std::string> columns;
-  std::vector<nlohmann::json> data;
+// class Table {
+// public:
+//   Console cons;
+//   std::string title;
+//   std::vector<std::string> columns;
+//   std::vector<nlohmann::json> data;
 
-  Table(const std::string &t, const std::vector<std::string> &c, const std::vector<nlohmann::json> &d, int ch = 1,
-        int ls = 0);
+//   Table(const std::string &t, const std::vector<std::string> &c, const std::vector<nlohmann::json> &d, int ch = 1,
+//         int ls = 0);
 
-  int show(); /* return values:
-  -1: exit
-  >=0: element selected (return value as index)
-  */
+//   int show(); /* return values:
+//   -1: exit
+//   >=0: element selected (return value as index)
+//   */
 
-private:
-  int cursor;          // current scroll value
-  int visible_rows;    // number of table rows that will fit onto the terminal
-  int start_line;      // index value of first row which shows in view
-  int table_width;     // width of table in characters
-  int column_width;    // width of each column in characters
-  int line_seperation; // number of blank lines between elements
-  int cell_height;     // number of lines dedicated to a cell
-  int overhead;        // number of lines reserved for header & footer
-  bool reprint;
+// private:
+//   int cursor;          // current scroll value
+//   int visible_rows;    // number of table rows that will fit onto the terminal
+//   int start_line;      // index value of first row which shows in view
+//   int table_width;     // width of table in characters
+//   int column_width;    // width of each column in characters
+//   int line_seperation; // number of blank lines between elements
+//   int cell_height;     // number of lines dedicated to a cell
+//   int overhead;        // number of lines reserved for header & footer
+//   bool reprint;
 
-  void display();
-  int process_input(); /* return values:
-  -1: exit
-  0: continue
-  1: element selected
-  */
+//   void display();
+//   int process_input(); /* return values:
+//   -1: exit
+//   0: continue
+//   1: element selected
+//   */
 
-  void update_size();
-};
+//   void update_size();
+// };
 
 class BinaryMenu {
 public:
