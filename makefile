@@ -9,7 +9,7 @@ test:
 	@clear
 	@rm -rf .cache build
 	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cmake -D CMAKE_BUILD_TYPE=Debug .. && $(MAKE) -j
+	@cd $(BUILD_DIR) && cmake -D CMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && $(MAKE) -j
 	@./build/test_program
 
 install:
@@ -23,5 +23,5 @@ debug:
 	@clear
 	@rm -rf .cache build
 	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cmake -D CMAKE_BUILD_TYPE=Debug .. && $(MAKE) -j
+	@cd $(BUILD_DIR) && cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && $(MAKE) -j
 	@lldb  ./build/test_program
