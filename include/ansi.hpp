@@ -17,6 +17,7 @@ inline std::string REVERSE_VIDEO = "\e[7m";
 inline std::string CONCEAL = "\e[8m";
 inline std::string CROSSED_OUT = "\e[9m";
 inline std::string BOLD_OFF = "\e[22m";
+inline std::string FAINT_OFF = "\e[22m"; // two codes do the same thing?
 inline std::string ITALIC_OFF = "\e[23m";
 inline std::string UNDERLINE_OFF = "\e[24m";
 inline std::string BLINK_OFF = "\e[25m";

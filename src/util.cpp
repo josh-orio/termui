@@ -21,8 +21,8 @@ std::string div_line(int len) {
 
 std::string line_sep(int len) { return std::string(len, '\n'); }
 std::string bold_text(std::string s) { return format::BOLD + s + format::BOLD_OFF; }
-std::string reverse_video(std::string s) { return format::REVERSE_VIDEO + s + format::NONE; }
-std::string faint_text(std::string s) { return format::FAINT + s + format::NONE; }
+std::string reverse_video(std::string s) { return format::REVERSE_VIDEO + s + format::REVERSE_VIDEO_OFF; }
+std::string faint_text(std::string s) { return format::FAINT + s + format::FAINT_OFF; }
 
 std::string ws(int len) /* whitespace */ { return whitespace(len); }
 std::string dl(int len) /* dividing line */ { return div_line(len); }

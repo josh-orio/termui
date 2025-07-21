@@ -40,8 +40,20 @@ inline std::string R_ARROW = "\e[C";
 inline std::string L_ARROW = "\e[D";
 } // namespace key
 
-namespace symbol { /* used to make the control strips at the bottom of interfaces */
+namespace symbol { /* often reused unicode symbols */
 inline std::string BLOCK = "█";
+inline std::string L8 = "▏";
+
+inline std::string TICK = "✓";
+inline std::string DOT = "·";
+
+inline std::string VERTICAL = "│";
+
+inline std::string TOP_LEFT_ROUND = "╭";
+inline std::string TOP_RIGHT_ROUND = "╮";
+inline std::string BOTTOM_LEFT_ROUND = "╰";
+inline std::string BOTTOM_RIGHT_ROUND = "╯";
+
 inline std::string ELLIPSIS = "…";
 inline std::string L_ARROW = "←";
 inline std::string R_ARROW = "→";
@@ -57,6 +69,8 @@ std::string curs_up(int n);
 std::string curs_down(int n);
 std::string curs_right(int n);
 std::string curs_left(int n);
+
+enum class align { NONE, LEFT, RIGHT, CENTER, TOP, BOTTOM };
 
 } // namespace termui
 
