@@ -1,17 +1,40 @@
-/* UI elements */
-
 #ifndef ELEMENTS_HPP
 #define ELEMENTS_HPP
 
 #include "util.hpp"
-#include <iostream>
 #include <string>
+
+/* UI elements */
 
 // elements should not be aware of position in terminal, only of their own properties such as width and height
 // using absolute cursor positioning is prohibited
 // using relative cursor positioning is encouraged
 
 namespace termui {
+
+class Text {
+public:
+  std::string data;
+  int w, h;
+  std::string fg_col, bg_col;
+
+  Text(std::string data, int w, int h, std::string fg_col, std::string bg_col);
+
+  std::string render();
+};
+
+class Input {
+public:
+  std::string field, value, placeholder;
+  std::string ftc;
+  bool active, vertical;
+  int max_w;
+
+  Input(std::string field, std::string &value, std::string placeholder, std::string ftc /* field text color */,
+        bool vertical);
+
+  std::string render();
+};
 
 class Box {
 public:
@@ -46,15 +69,69 @@ public:
   std::string render();
 };
 
-class Text {
+class Select { /* one shot selection */
 public:
-  std::string data;
+  std::vector<std::string> elements;
   int w, h;
-  std::string fg_col, bg_col;
+  int cursor;
+  int line_spacing;
 
-  Text(std::string data, int w, int h, std::string fg_col, std::string bg_col);
+  Select(std::vector<std::string> elements, int w, int h, int ls = 0);
 
   std::string render();
+
+  void cursor_up();
+  void cursor_down();
+
+private:
+  int visible_lines;
+  int start_line;
+
+  void internal_update();
+};
+
+class MultiSelect { /* multi shot selection */
+public:
+  std::vector<std::string> elements;
+  std::vector<bool> selection_map;
+  int w, h;
+  int cursor;
+  int line_spacing;
+
+  MultiSelect(std::vector<std::string> elements, int w, int h, int ls = 0);
+
+  std::string render();
+
+  void cursor_up();
+  void cursor_down();
+  void select(); // toggle
+
+private:
+  int visible_lines;
+  int start_line;
+
+  void internal_update();
+};
+
+class FancySelect {
+public:
+  std::vector<std::string> elements, desc;
+  int w, h;
+  int cursor;
+  int line_spacing;
+
+  FancySelect(std::vector<std::string> elements, std::vector<std::string> desc, int w, int h, int ls = 1);
+
+  std::string render();
+
+  void cursor_up();
+  void cursor_down();
+
+private:
+  int visible_rows;
+  int start_line;
+
+  void internal_update();
 };
 
 class Table {
@@ -63,21 +140,27 @@ public:
   std::vector<int> column_widths;
   std::vector<std::vector<std::string>> cells; // organized as row major
 
-  int cursor;          // current scroll value
-  int visible_rows;    // number of table rows that will fit onto the terminal
-  int start_line;      // index value of first row which shows in view
-  int table_width;     // width of table in characters
-  int table_height;    // height of table
-  int line_seperation; // number of blank lines between elements
-  int cell_height;     // number of lines dedicated to a cell
-  int overhead;        // number of lines reserved for header & footer
-  bool reprint;
+  int cursor;
+  int line_seperation; // number of blank lines between rows
+  int cell_height;     // number of lines to a cell
 
   std::string row_color;
 
   Table(std::vector<std::string> columns, std::vector<int> column_widths, std::vector<std::vector<std::string>> cells);
 
   std::string render();
+
+  void cursor_up();
+  void cursor_down();
+
+private:
+  int visible_rows; // number of table rows that fit the h restraint
+  int start_line;   // index value of first visible row
+  int table_width;
+  int table_height;
+  int overhead; // number of lines reserved for header & footer
+
+  void internal_update();
 };
 
 } // namespace termui

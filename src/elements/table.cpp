@@ -84,4 +84,33 @@ std::string Table::render() {
   return outbuff;
 }
 
+void Table::cursor_up() { // decrement but dont let (cursor < 0)
+  internal_update();
+  cursor -= (cursor > 0) ? 1 : 0;
+  start_line -= (cursor < start_line) ? 1 : 0;
+}
+
+void Table::cursor_down() { // increment but dont let (cursor > options.size)
+  internal_update();
+  cursor += (cursor < cells.size() - 1) ? 1 : 0;
+  start_line += (cursor >= start_line + visible_rows) ? 1 : 0;
+}
+
+void Table::internal_update() {
+  visible_rows = 0;
+  while (true) {
+    // calculates lines used by displaying another row of cells
+    int space_used = (visible_rows + 1) + (line_seperation * visible_rows);
+
+    if (space_used > table_height - overhead) {
+      break;
+    }
+    visible_rows++;
+  }
+
+  if (cursor < start_line || start_line + visible_rows < cursor) {
+    start_line = cursor;
+  }
+}
+
 } // namespace termui

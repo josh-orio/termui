@@ -15,15 +15,18 @@ std::string Button::render() {
   }
 
   if (text.length() > w) {
-    outbuff += text.substr(0, w - 3) + "...";
-  } else if (text.length() < w) {
+    outbuff += text.substr(0, w - 1) + symbol::ELLIPSIS;
+
+  } else if (text.length() < w) { // center the text
     int diff = w - text.length();
     int l = diff / 2;
     int r = diff - l;
     text = std::string(l, ' ') + text + std::string(r, ' ');
     outbuff += text;
+
   } else {
     outbuff += text;
+    
   }
 
   outbuff += format::NONE;

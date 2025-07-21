@@ -10,12 +10,12 @@ std::string ProgressBar::render() {
 
   outbuff += fg_col;
   for (int i = 0; i < completion * width; i++) {
-    outbuff += "█";
+    outbuff += symbol::BLOCK;
   }
 
   outbuff += bg_col;
   for (int i = completion * width; i < width; i++) {
-    outbuff += "█";
+    outbuff += symbol::BLOCK;
   }
 
   outbuff += format::NONE;

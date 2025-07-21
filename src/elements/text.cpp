@@ -34,7 +34,7 @@ std::string Text::render() {
     }
   }
 
-  if (copy.size() > 0) { // data remaining, didnt fit in text box, print ...
+  if (copy.size() > 0) { // data remaining, didnt fit in text box, print ellipsis
     formatted[h - 1] = formatted[h - 1].substr(0, w - 1) + symbol::ELLIPSIS;
   }
 
