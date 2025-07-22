@@ -8,21 +8,32 @@ MultiSelect::MultiSelect(std::vector<std::string> elements, int w, int h, int ls
   start_line = 0;
 
   selection_map = std::vector(elements.size(), false);
+
+  active_color = fg_color(29);
 }
 
 std::string MultiSelect::render() {
   internal_update();
-  std::string outbuff;
 
+  std::string outbuff;
   for (int i = start_line; i < std::min((int)elements.size(), start_line + visible_lines); i++) {
 
     std::string tmp = elements[i]; // do trimming if required
 
-    outbuff += std::format("{}{} {} {}{}", (i == cursor) ? fg_color(29) : "", (i == cursor) ? ">" : " ",
-                           (selection_map[i]) ? symbol::TICK : symbol::DOT, tmp, (i == cursor) ? format::NONE : "");
+    if (selection_map[i]) {
+      tmp = symbol::TICK + " " + tmp;
+    } else {
+      tmp = "  " + tmp;
+    }
 
+    if (i == cursor) {
+      tmp = fg_apply("> " + tmp, active_color);
+    } else {
+      tmp = "  " + tmp;
+    }
+
+    outbuff += tmp;
     outbuff += curs_left(2 + 2 + elements[i].size()); // + curs_down(1);
-
     outbuff += curs_down(line_spacing + 1);
   }
 

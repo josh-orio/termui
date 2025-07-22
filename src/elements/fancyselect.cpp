@@ -7,22 +7,24 @@ FancySelect::FancySelect(std::vector<std::string> elements, std::vector<std::str
     : elements(elements), desc(desc), w(w), h(h), line_spacing(ls) {
   cursor = 0;
   start_line = 0;
+
+  active_color= fg_color(219);
 }
 
 std::string FancySelect::render() {
-  internal_update(); //
+  internal_update();
+  
   std::string outbuff;
-
   for (int i = start_line; i < std::min((int)elements.size(), start_line + visible_rows); i++) {
 
     if (i == cursor) {
-      outbuff += fg_color(219) + format::BOLD + symbol::VERTICAL + " " + elements[i];
+      outbuff += fg_apply(bold_text(symbol::VERTICAL + " " + elements[i]), active_color);
       outbuff += curs_left(2 + elements[i].size()) + curs_down(1);
-      outbuff += symbol::VERTICAL + fg::DEFAULT + format::BOLD_OFF + " " + desc[i];
+      outbuff += fg_apply(bold_text(symbol::VERTICAL + " "), active_color) + desc[i];
       outbuff += curs_left(2 + desc[i].size());
 
     } else {
-      outbuff += "  " + format::BOLD + elements[i] + format::BOLD_OFF;
+      outbuff += "  " + bold_text(elements[i]);
       outbuff += curs_left(2 + elements[i].size()) + curs_down(1);
       outbuff += "  " + desc[i];
       outbuff += curs_left(2 + desc[i].size());

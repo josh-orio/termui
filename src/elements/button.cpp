@@ -8,12 +8,6 @@ Button::Button(int w, std::string text, std::string active_color, std::string id
 std::string Button::render() {
   std::string outbuff;
 
-  if (selected) {
-    outbuff += active_color;
-  } else {
-    outbuff += idle_color;
-  }
-
   if (text.length() > w) {
     outbuff += text.substr(0, w - 1) + symbol::ELLIPSIS;
 
@@ -26,10 +20,13 @@ std::string Button::render() {
 
   } else {
     outbuff += text;
-    
   }
 
-  outbuff += format::NONE;
+  if (selected) {
+    outbuff = fg_apply(outbuff, active_color);
+  } else {
+    outbuff = fg_apply(outbuff, idle_color);
+  }
 
   return outbuff;
 }

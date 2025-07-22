@@ -7,16 +7,17 @@ Select::Select(std::vector<std::string> elements, int w, int h, int ls)
     : elements(elements), w(w), h(h), line_spacing(ls) {
   cursor = 0;
   start_line = 0;
+
+  active_color = fg_color(29);
 }
 
 std::string Select::render() {
   internal_update();
 
   std::string outbuff;
-
   for (int i = start_line; i < std::min((int)elements.size(), start_line + visible_lines); i++) {
     if (i == cursor) {
-      outbuff += fg_color(29) + "> " + elements[i] + format::NONE;
+      outbuff += fg_apply("> " + elements[i], active_color);
       outbuff += curs_left(2 + elements[i].size());
 
     } else {
@@ -25,7 +26,6 @@ std::string Select::render() {
     }
 
     outbuff += curs_down(line_spacing + 1);
-    // outbuff += std::to_string(line_spacing);
   }
 
   return outbuff;

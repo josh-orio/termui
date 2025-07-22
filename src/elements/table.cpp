@@ -2,30 +2,33 @@
 
 namespace termui {
 
-Table::Table(std::vector<std::string> columns, std::vector<int> column_widths,
-             std::vector<std::vector<std::string>> cells)
-    : columns(columns), column_widths(column_widths), cells(cells) {
+Table::Table(std::vector<std::string> columns, std::vector<std::vector<std::string>> cells, int table_height,
+             std::vector<int> column_widths, int cell_height, int line_seperation)
+    : columns(columns), cells(cells), table_height(table_height), column_widths(column_widths),
+      cell_height(cell_height), line_seperation(line_seperation) {
 
   table_width = 1;
   for (auto c : column_widths) {
     table_width += c + 1;
   }
 
-  table_height = 20; // need to reimplement cell height and line sep
+  // table_height = 20; // need to reimplement cell height and line sep
 
   start_line = 0;
-  cursor = 1;
+  cursor = 0;
   overhead = 3 + 1; // header(3) + footer(1)
-  visible_rows = table_height - overhead;
 
   cell_height = 1;
 
-  row_color = bg_color(56);
+  active_color = bg_color(56);
+  box_color = fg_color(238);
 }
 
 std::string Table::render() {
+  internal_update();
+
   std::string outbuff;
-  outbuff += Box(table_width, table_height, fg_color(238)).render();
+  outbuff += Box(table_width, table_height, box_color).render();
 
   outbuff += curs_up(table_height - 2) + curs_left(table_width - 1);
 
@@ -44,7 +47,7 @@ std::string Table::render() {
   outbuff += header;
 
   outbuff += curs_down(1) + curs_left(table_width - 2);
-  outbuff += fg_color(238) + div_line(table_width - 2) + format::NONE;
+  outbuff += fg_apply(div_line(table_width - 2), box_color);
   outbuff += curs_down(1) + curs_left(table_width - 2);
 
   std::string row_text; // just a buffer for this row output
@@ -53,7 +56,7 @@ std::string Table::render() {
     row_text = "";
 
     if (i == cursor) {
-      row_text += Text("", table_width - 2, cell_height, "", row_color)
+      row_text += Text("", table_width - 2, cell_height, "", active_color)
                       .render(); // this is plain inefficient (filling in bg for highlighted row)
       if (cell_height > 1) {
         row_text += curs_up(cell_height - 1); // ansi 0 arg treated as 1
@@ -63,7 +66,7 @@ std::string Table::render() {
 
     for (int ii = 0; ii < columns.size(); ii++) {
       if (i == cursor) {
-        cell_text = Text(cells[i][ii], column_widths[i], cell_height, "", row_color).render();
+        cell_text = Text(cells[i][ii], column_widths[i], cell_height, "", active_color).render();
       } else {
         cell_text = Text(cells[i][ii], column_widths[i], cell_height, "", "").render();
       }
@@ -78,7 +81,7 @@ std::string Table::render() {
     }
 
     outbuff += row_text;
-    outbuff += curs_down(1) + curs_left(table_width - 2); // go down (line sep), got to col 0 of table
+    outbuff += curs_down(line_seperation + 1) + curs_left(table_width - 2); // go down (line sep), got to col 0 of table
   }
 
   return outbuff;

@@ -75,6 +75,7 @@ public:
   int w, h;
   int cursor;
   int line_spacing;
+  std::string active_color;
 
   Select(std::vector<std::string> elements, int w, int h, int ls = 0);
 
@@ -97,6 +98,7 @@ public:
   int w, h;
   int cursor;
   int line_spacing;
+  std::string active_color;
 
   MultiSelect(std::vector<std::string> elements, int w, int h, int ls = 0);
 
@@ -119,6 +121,7 @@ public:
   int w, h;
   int cursor;
   int line_spacing;
+  std::string active_color;
 
   FancySelect(std::vector<std::string> elements, std::vector<std::string> desc, int w, int h, int ls = 1);
 
@@ -141,12 +144,13 @@ public:
   std::vector<std::vector<std::string>> cells; // organized as row major
 
   int cursor;
-  int line_seperation; // number of blank lines between rows
-  int cell_height;     // number of lines to a cell
+  int line_seperation;      // number of blank lines between rows
+  int cell_height;          // number of lines to a cell
+  std::string active_color; // background of selected row
+  std::string box_color;    // color of table borders
 
-  std::string row_color;
-
-  Table(std::vector<std::string> columns, std::vector<int> column_widths, std::vector<std::vector<std::string>> cells);
+  Table(std::vector<std::string> columns, std::vector<std::vector<std::string>> cells, int table_height,
+        std::vector<int> column_widths, int cell_height = 1, int line_seperation = 0);
 
   std::string render();
 
@@ -156,9 +160,9 @@ public:
 private:
   int visible_rows; // number of table rows that fit the h restraint
   int start_line;   // index value of first visible row
+  int overhead;     // number of lines reserved for header & footer
   int table_width;
   int table_height;
-  int overhead; // number of lines reserved for header & footer
 
   void internal_update();
 };

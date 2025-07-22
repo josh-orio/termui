@@ -10,17 +10,15 @@ Input::Input(std::string field, std::string &value, std::string placeholder, std
 std::string Input::render() {
   std::string outbuff;
 
-  outbuff += ftc + field;
-
   if (vertical) {
-    outbuff += format::NONE + curs_down(1) + curs_left(field.size());
+    outbuff += fg_apply(field, ftc);
+    outbuff += curs_left(field.size()) + curs_down(1);
   } else {
-    outbuff += ": " + format::NONE;
+    outbuff += fg_apply(field, ftc) + ": ";
   }
 
   if (value.empty()) {
-    outbuff += fg_color(242);
-
+    outbuff += fg_color(242); // place holder color doesnt need to be accessed
     if (placeholder.size() > max_w) {
       outbuff += std::string(placeholder.begin(), placeholder.begin() + max_w) + symbol::ELLIPSIS;
       outbuff += curs_left(max_w + 1); // so cursor can blink over start of placeholder
@@ -28,10 +26,9 @@ std::string Input::render() {
     } else {
       outbuff += placeholder;
       outbuff += curs_left(placeholder.size());
-
     }
 
-    outbuff += format::NONE;
+    outbuff += fg::DEFAULT;
 
   } else {
     if (value.size() > max_w) {
@@ -39,12 +36,11 @@ std::string Input::render() {
 
     } else {
       outbuff += value;
-      
     }
   }
 
   if (active) {
-    outbuff += term::SHOW_CURSOR;
+    outbuff += term::SHOW_CURSOR; // this will still interfere, change soon
   }
 
   return outbuff;

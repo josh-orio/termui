@@ -8,8 +8,6 @@ Text::Text(std::string data, int w, int h, std::string fg_col, std::string bg_co
 std::string Text::render() {
   std::string outbuff;
 
-  outbuff += fg_col + bg_col;
-
   std::vector<std::string> formatted;
   std::string copy = data;
 
@@ -47,7 +45,8 @@ std::string Text::render() {
     }
   }
 
-  outbuff += format::NONE;
+  outbuff = fg_apply(outbuff, fg_col);
+  outbuff = bg_apply(outbuff, bg_col);
 
   return outbuff;
 }

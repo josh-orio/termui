@@ -16,7 +16,7 @@ std::string Box::render() {
   outbuff += "╰" + div_line(w - 2) + "╯"; // bottom line and rounded corners
 
   if (!color.empty()) {
-    outbuff = color + outbuff + fg::DEFAULT;
+    outbuff = fg_apply(outbuff, color);
   }
 
   return outbuff;
