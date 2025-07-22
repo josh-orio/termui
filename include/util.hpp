@@ -15,6 +15,10 @@ std::string bg_color(int c);
 std::string fg_color(int r, int g, int b);
 std::string bg_color(int r, int g, int b);
 
+// apply color codes
+std::string fg_apply(std::string text, std::string col);
+std::string bg_apply(std::string text, std::string col);
+
 std::string whitespace(int len);
 std::string div_line(int len);
 std::string line_sep(int len);
