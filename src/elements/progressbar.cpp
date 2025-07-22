@@ -2,23 +2,23 @@
 
 namespace termui {
 
-ProgressBar::ProgressBar(int width, float completion, std::string fg_col, std::string bg_col)
+ProgressBar::ProgressBar(int width, float completion, int fg_col, int bg_col)
     : width(width), completion(completion), fg_col(fg_col), bg_col(bg_col){};
 
 std::string ProgressBar::render() {
   std::string outbuff;
 
-  outbuff += fg_col;
+  std::string tmp;
   for (int i = 0; i < completion * width; i++) {
-    outbuff += symbol::BLOCK;
+    tmp += symbol::BLOCK;
   }
+  outbuff += fg_apply(tmp, fg_col);
 
-  outbuff += bg_col;
+  tmp = "";
   for (int i = completion * width; i < width; i++) {
-    outbuff += symbol::BLOCK;
+    tmp += symbol::BLOCK;
   }
-
-  outbuff += format::NONE;
+  outbuff += fg_apply(tmp, bg_col);
 
   return outbuff;
 }

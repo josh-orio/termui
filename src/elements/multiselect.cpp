@@ -9,7 +9,7 @@ MultiSelect::MultiSelect(std::vector<std::string> elements, int w, int h, int ls
 
   selection_map = std::vector(elements.size(), false);
 
-  active_color = fg_color(29);
+  active_color = 29;
 }
 
 std::string MultiSelect::render() {

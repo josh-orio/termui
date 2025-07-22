@@ -16,9 +16,9 @@ class Text {
 public:
   std::string data;
   int w, h;
-  std::string fg_col, bg_col;
+  int fg_col, bg_col;
 
-  Text(std::string data, int w, int h, std::string fg_col, std::string bg_col);
+  Text(std::string data, int w, int h, int fg_col, int bg_col);
 
   std::string render();
 };
@@ -26,12 +26,11 @@ public:
 class Input {
 public:
   std::string field, value, placeholder;
-  std::string ftc;
+  int ftc;
   bool active, vertical;
   int max_w;
 
-  Input(std::string field, std::string &value, std::string placeholder, std::string ftc /* field text color */,
-        bool vertical);
+  Input(std::string field, std::string &value, std::string placeholder, int ftc /* field text color */, bool vertical);
 
   std::string render();
 };
@@ -39,9 +38,9 @@ public:
 class Box {
 public:
   int w, h;
-  std::string color;
+  int color;
 
-  Box(int w, int h, std::string color);
+  Box(int w, int h, int color);
 
   std::string render();
 };
@@ -51,9 +50,9 @@ public:
   int w;
   bool selected;
   std::string text;
-  std::string active_color, idle_color;
+  int active_color, idle_color;
 
-  Button(int w, std::string text, std::string active_color, std::string idle_color);
+  Button(int w, std::string text, int active_color, int idle_color);
 
   std::string render();
 };
@@ -62,9 +61,9 @@ class ProgressBar {
 public:
   int width;
   float completion;
-  std::string fg_col, bg_col;
+  int fg_col, bg_col;
 
-  ProgressBar(int width, float completion, std::string fg_col, std::string bg_col);
+  ProgressBar(int width, float completion, int fg_col, int bg_col);
 
   std::string render();
 };
@@ -75,7 +74,7 @@ public:
   int w, h;
   int cursor;
   int line_spacing;
-  std::string active_color;
+  int active_color;
 
   Select(std::vector<std::string> elements, int w, int h, int ls = 0);
 
@@ -98,7 +97,7 @@ public:
   int w, h;
   int cursor;
   int line_spacing;
-  std::string active_color;
+  int active_color;
 
   MultiSelect(std::vector<std::string> elements, int w, int h, int ls = 0);
 
@@ -121,7 +120,7 @@ public:
   int w, h;
   int cursor;
   int line_spacing;
-  std::string active_color;
+  int active_color;
 
   FancySelect(std::vector<std::string> elements, std::vector<std::string> desc, int w, int h, int ls = 1);
 
@@ -144,10 +143,10 @@ public:
   std::vector<std::vector<std::string>> cells; // organized as row major
 
   int cursor;
-  int line_seperation;      // number of blank lines between rows
-  int cell_height;          // number of lines to a cell
-  std::string active_color; // background of selected row
-  std::string box_color;    // color of table borders
+  int line_seperation; // number of blank lines between rows
+  int cell_height;     // number of lines to a cell
+  int active_color;    // background of selected row
+  int box_color;       // color of table borders
 
   Table(std::vector<std::string> columns, std::vector<std::vector<std::string>> cells, int table_height,
         std::vector<int> column_widths, int cell_height = 1, int line_seperation = 0);

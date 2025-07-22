@@ -8,12 +8,12 @@ FancySelect::FancySelect(std::vector<std::string> elements, std::vector<std::str
   cursor = 0;
   start_line = 0;
 
-  active_color= fg_color(219);
+  active_color = 219;
 }
 
 std::string FancySelect::render() {
   internal_update();
-  
+
   std::string outbuff;
   for (int i = start_line; i < std::min((int)elements.size(), start_line + visible_rows); i++) {
 

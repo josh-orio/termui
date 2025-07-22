@@ -2,7 +2,7 @@
 
 namespace termui {
 
-Button::Button(int w, std::string text, std::string active_color, std::string idle_color)
+Button::Button(int w, std::string text, int active_color, int idle_color)
     : w(w), text(text), active_color(active_color), idle_color(idle_color) {}
 
 std::string Button::render() {
@@ -23,9 +23,9 @@ std::string Button::render() {
   }
 
   if (selected) {
-    outbuff = fg_apply(outbuff, active_color);
+    outbuff = bg_apply(outbuff, active_color);
   } else {
-    outbuff = fg_apply(outbuff, idle_color);
+    outbuff = bg_apply(outbuff, idle_color);
   }
 
   return outbuff;

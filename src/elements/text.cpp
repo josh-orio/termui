@@ -2,7 +2,7 @@
 
 namespace termui {
 
-Text::Text(std::string data, int w, int h, std::string fg_col, std::string bg_col)
+Text::Text(std::string data, int w, int h, int fg_col, int bg_col)
     : data(data), w(w), h(h), fg_col(fg_col), bg_col(bg_col){};
 
 std::string Text::render() {

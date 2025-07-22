@@ -12,16 +12,13 @@ Table::Table(std::vector<std::string> columns, std::vector<std::vector<std::stri
     table_width += c + 1;
   }
 
-  // table_height = 20; // need to reimplement cell height and line sep
-
   start_line = 0;
   cursor = 0;
+
   overhead = 3 + 1; // header(3) + footer(1)
 
-  cell_height = 1;
-
-  active_color = bg_color(56);
-  box_color = fg_color(238);
+  active_color = 56;
+  box_color = 238;
 }
 
 std::string Table::render() {
@@ -34,11 +31,8 @@ std::string Table::render() {
 
   std::string header;
   for (int i = 0; i < columns.size(); i++) {
-    if (columns[i].size() > column_widths[i] - 2) {
-      header += Text(columns[i], column_widths[i], 1, "", "").render();
-    } else if (columns[i].size() <= column_widths[i] - 2) {
-      header += Text(columns[i], column_widths[i], 1, "", "").render();
-    }
+    header += Text(columns[i], column_widths[i], 1, clr::DEFAULT, clr::DEFAULT).render();
+
     if (i != columns.size() - 1) {
       header += " ";
     }
@@ -56,7 +50,7 @@ std::string Table::render() {
     row_text = "";
 
     if (i == cursor) {
-      row_text += Text("", table_width - 2, cell_height, "", active_color)
+      row_text += Text("", table_width - 2, cell_height, clr::DEFAULT, active_color)
                       .render(); // this is plain inefficient (filling in bg for highlighted row)
       if (cell_height > 1) {
         row_text += curs_up(cell_height - 1); // ansi 0 arg treated as 1
@@ -66,9 +60,9 @@ std::string Table::render() {
 
     for (int ii = 0; ii < columns.size(); ii++) {
       if (i == cursor) {
-        cell_text = Text(cells[i][ii], column_widths[i], cell_height, "", active_color).render();
+        cell_text = Text(cells[i][ii], column_widths[i], cell_height, clr::DEFAULT, active_color).render();
       } else {
-        cell_text = Text(cells[i][ii], column_widths[i], cell_height, "", "").render();
+        cell_text = Text(cells[i][ii], column_widths[i], cell_height, clr::DEFAULT, clr::DEFAULT).render();
       }
 
       row_text += cell_text;

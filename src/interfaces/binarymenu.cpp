@@ -32,21 +32,21 @@ void BinaryMenu::display() {
   int purple = 56;
   int dark_grey = 238; // replace with custom colors
 
-  Text t(title, w - 4, 1, fg_color(purple), format::BOLD);
-  Text body(text, w - 4, (text.size() / (w - 4)) + 1, fg::DEFAULT, format::NONE);
+  Text t(title, w - 4, 1, (purple), clr::DEFAULT);
+  Text body(text, w - 4, (text.size() / (w - 4)) + 1, clr::DEFAULT, clr::DEFAULT);
 
-  Button aff(8, affirmative, bg_color(pastel_pink), bg_color(dark_grey));
-  Button neg(8, negative, bg_color(pastel_pink), bg_color(dark_grey));
+  Button aff(8, affirmative, (pastel_pink), (dark_grey));
+  Button neg(8, negative, (pastel_pink), (dark_grey));
 
   h = 1 + t.h + 1 + body.h + 1 + 1 + 1; // please clean this up, also this overrides height from constructor
-  Box b(w, h, fg_color(dark_grey));
+  Box b(w, h, (dark_grey));
 
   cons.print((cons.height - h) / 2, (cons.width - w) / 2, b.render());
 
   cons.curs_up(h - 2);
   cons.curs_left(w - 2);
 
-  cons.print(t.render());
+  cons.print(bt(t.render()));
 
   if (!text.empty()) {
     cons.curs_down(2);

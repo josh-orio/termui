@@ -24,31 +24,9 @@ inline std::string BLINK_OFF = "\e[25m";
 inline std::string REVERSE_VIDEO_OFF = "\e[27m";
 inline std::string CONCEAL_OFF = "\e[28m";
 inline std::string CROSSED_OUT_OFF = "\e[29m";
+inline std::string FG_DEFAULT = "\e[39m";
+inline std::string BG_DEFAULT = "\e[49m";
 } // namespace format
-
-namespace fg { /* text color codes */
-inline std::string BLACK = "\e[30m";
-inline std::string RED = "\e[31m";
-inline std::string GREEN = "\e[32m";
-inline std::string YELLOW = "\e[33m";
-inline std::string BLUE = "\e[34m";
-inline std::string MAGENTA = "\e[35m";
-inline std::string CYAN = "\e[36m";
-inline std::string WHITE = "\e[37m";
-inline std::string DEFAULT = "\e[39m";
-} // namespace fg
-
-namespace bg { /* text background color codes */
-inline std::string BLACK = "\e[40m";
-inline std::string RED = "\e[41m";
-inline std::string GREEN = "\e[42m";
-inline std::string YELLOW = "\e[43m";
-inline std::string BLUE = "\e[44m";
-inline std::string MAGENTA = "\e[45m";
-inline std::string CYAN = "\e[46m";
-inline std::string WHITE = "\e[47m";
-inline std::string DEFAULT = "\e[49m";
-} // namespace bg
 
 namespace term { /* random terminal manipulation codes */
 inline std::string CLEAR_CONSOLE = "\e[2J";

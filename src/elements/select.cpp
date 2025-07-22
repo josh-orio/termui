@@ -8,7 +8,7 @@ Select::Select(std::vector<std::string> elements, int w, int h, int ls)
   cursor = 0;
   start_line = 0;
 
-  active_color = fg_color(29);
+  active_color = 29;
 }
 
 std::string Select::render() {

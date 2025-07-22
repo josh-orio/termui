@@ -2,7 +2,7 @@
 
 namespace termui {
 
-Box::Box(int w, int h, std::string color) : w(w), h(h), color(color) {}
+Box::Box(int w, int h, int color) : w(w), h(h), color(color) {}
 
 std::string Box::render() {
   std::string outbuff;
@@ -15,7 +15,7 @@ std::string Box::render() {
   outbuff += curs_down(1) + curs_left(w);
   outbuff += "╰" + div_line(w - 2) + "╯"; // bottom line and rounded corners
 
-  if (!color.empty()) {
+  if (color != clr::DEFAULT) {
     outbuff = fg_apply(outbuff, color);
   }
 
