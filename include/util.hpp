@@ -7,17 +7,25 @@
 
 namespace termui {
 
-// 8 bit color
-std::string fg_color(int c);
-std::string bg_color(int c);
+namespace clr {          /* common colors and their 8 bit codes*/
+inline int DEFAULT = -1; // not a color, just tricks an if
+inline int RED = 1;
+inline int GREEN = 2;
+inline int BLUE = 4;
+inline int YELLOW = 3;
+inline int ORANGE = 208;
+inline int PINK = 219;
+inline int MAGENTA = 201;
+inline int PURPLE = 56;
+inline int LIME = 76;
+inline int TEAL = 75;
+inline int BLACK = 232;
+inline int WHITE = 255;
+} // namespace clr
 
-// 24 bit color
-std::string fg_color(int r, int g, int b);
-std::string bg_color(int r, int g, int b);
-
-// apply color codes
-std::string fg_apply(std::string text, std::string col);
-std::string bg_apply(std::string text, std::string col);
+// apply 8 bit colors
+std::string fg_apply(std::string text, int col);
+std::string bg_apply(std::string text, int col);
 
 std::string whitespace(int len);
 std::string div_line(int len);

@@ -2,17 +2,22 @@
 
 namespace termui {
 
-// 8 bit color
-std::string fg_color(int c) { return std::format("\e[38;5;{}m", c); }
-std::string bg_color(int c) { return std::format("\e[48;5;{}m", c); }
+// apply 8 bit colors
+std::string fg_apply(std::string text, int col) {
+  if (col != clr::DEFAULT) {
+    return std::format("\e[38;5;{}m", col) + text + format::FG_DEFAULT;
+  } else {
+    return text;
+  }
+}
 
-// 24 bit color
-std::string fg_color(int r, int g, int b) { return std::format("\e[38;2;{};{};{}m", r, g, b); }
-std::string bg_color(int r, int g, int b) { return std::format("\e[48;2;{};{};{}m", r, g, b); }
-
-// apply color codes
-std::string fg_apply(std::string text, std::string col) { return col + text + fg::DEFAULT; }
-std::string bg_apply(std::string text, std::string col) { return col + text + bg::DEFAULT; }
+std::string bg_apply(std::string text, int col) {
+  if (col != clr::DEFAULT) {
+    return std::format("\e[48;5;{}m", col) + text + format::BG_DEFAULT;
+  } else {
+    return text;
+  }
+}
 
 std::string whitespace(int len) { return std::string(len, ' '); }
 
