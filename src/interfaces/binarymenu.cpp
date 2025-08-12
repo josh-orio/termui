@@ -2,11 +2,22 @@
 
 namespace termui {
 
-BinaryMenu::BinaryMenu(std::string title, std::string text, std::string affirmative, std::string negative, int w, int h)
-    : title(title), text(text), affirmative(affirmative), negative(negative), w(w), h(h) {
+BinaryMenu::BinaryMenu() = default;
+BinaryMenu::BinaryMenu(const std::string &t, const std::string &x, const std::string &aff, const std::string &neg)
+    : title(std::make_shared<std::string>(t)), text(std::make_shared<std::string>(x)), affirmative(std::make_shared<std::string>(aff)),
+      negative(std::make_shared<std::string>(neg)) {
   cons = Console(false, false, false, true);
-  status = 1; // default to affirmative
-};
+}
+BinaryMenu::BinaryMenu(std::string &&t, std::string &&x, std::string &&aff, std::string &&neg)
+    : title(std::make_shared<std::string>(std::move(t))), text(std::make_shared<std::string>(std::move(x))),
+      affirmative(std::make_shared<std::string>(std::move(aff))), negative(std::make_shared<std::string>(std::move(neg))) {
+  cons = Console(false, false, false, true);
+}
+BinaryMenu::BinaryMenu(std::shared_ptr<std::string> sharedT, std::shared_ptr<std::string> sharedX, std::shared_ptr<std::string> sharedAff,
+                       std::shared_ptr<std::string> sharedNeg)
+    : title(std::move(sharedT)), text(std::move(sharedX)), affirmative(std::move(sharedAff)), negative(std::move(sharedNeg)) {
+  cons = Console(false, false, false, true);
+}
 
 bool BinaryMenu::show() {
   cons.show(); // configure terminal
@@ -26,20 +37,15 @@ bool BinaryMenu::show() {
 }
 
 void BinaryMenu::display() {
-  cons.update_size();
+  update_size();
 
-  int pastel_pink = 219;
-  int purple = 56;
-  int dark_grey = 238; // replace with custom colors
+  Text t(title, w - 4, 1, clr::PURPLE, clr::DEFAULT);
+  Text body(text, w - 4, 2, clr::DEFAULT, clr::DEFAULT);
 
-  Text t(title, w - 4, 1, (purple), clr::DEFAULT);
-  Text body(text, w - 4, (text.size() / (w - 4)) + 1, clr::DEFAULT, clr::DEFAULT);
+  Button aff(affirmative, 8, clr::PASTELPINK, clr::DARKGREY);
+  Button neg(negative, 8, clr::PASTELPINK, clr::DARKGREY);
 
-  Button aff(8, affirmative, (pastel_pink), (dark_grey));
-  Button neg(8, negative, (pastel_pink), (dark_grey));
-
-  h = 1 + t.h + 1 + body.h + 1 + 1 + 1; // please clean this up, also this overrides height from constructor
-  Box b(w, h, (dark_grey));
+  Box b(w, h, clr::DARKGREY);
 
   cons.print((cons.height - h) / 2, (cons.width - w) / 2, b.render());
 
@@ -47,12 +53,10 @@ void BinaryMenu::display() {
   cons.curs_left(w - 2);
 
   cons.print(bt(t.render()));
+  cons.curs_down(2);
+  cons.curs_left(t.w);
 
-  if (!text.empty()) {
-    cons.curs_down(2);
-    cons.curs_left(t.w);
-    cons.print(body.render());
-  }
+  cons.print(body.render());
 
   if (status == 1) {
     aff.selected = true;
@@ -64,12 +68,11 @@ void BinaryMenu::display() {
   }
 
   cons.curs_down(2);
-  cons.curs_left(t.w);
+  cons.curs_left(aff.w + 1 + neg.w);
 
   cons.print(aff.render() + " " + neg.render());
 
-  cons.print(cons.height, 2, faint_text(std::format("[{}] move [{}] select", symbol::HBD, symbol::ENTER)));
-
+  cons.print(cons.height, 2, faint_text(std::format("[{}] move [{}] select", unicode::HBD, unicode::ENTER)));
   cons.flush();
 }
 
@@ -96,6 +99,13 @@ bool BinaryMenu::process_input() {
   } else {
     return true;
   }
+}
+
+void BinaryMenu::update_size() {
+  cons.update_size();
+
+  w = 0.25 * cons.width;
+  h = 8;
 }
 
 } // namespace termui

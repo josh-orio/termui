@@ -28,14 +28,23 @@ void EchoModeToggle::on() {
 }
 
 void CursorModeToggle::off() { std::cout << term::HIDE_CURSOR; }
-
 void CursorModeToggle::on() { std::cout << term::SHOW_CURSOR; }
 
 void AlternateBufferToggle::enable() { std::cout << term::ALT_BUFFER; }
-
 void AlternateBufferToggle::disable() { std::cout << term::PRIMARY_BUFFER; }
 
-Console::Console(){};
+Console::Console() {
+  struct winsize w;
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+  width = w.ws_col, height = w.ws_row;
+
+  buffered = false;
+  echos = false;
+  cursor = false;
+  altterm = true;
+
+  outbuff.clear();
+}
 
 Console::Console(bool b, bool e, bool c, bool a) {
   struct winsize w;
@@ -75,9 +84,9 @@ void Console::print(int row, int col, std::string s) { outbuff += std::format("\
 void Console::print(std::string s) { outbuff += s; }
 
 void Console::flush() {
+  clear_scrollback();
   clear_screen();
-  std::cout << outbuff
-            << std::flush; // might not (wont) print without std::flush (due to read() in await_input i think?)
+  std::cout << outbuff << std::flush; // might not (wont) print without std::flush (due to read() in await_input i think?)
   clear_outbuff();
 }
 
@@ -91,7 +100,7 @@ std::string Console::poll_input() {
   int nbytes;
 
   nbytes = read(STDIN_FILENO, keys, sizeof(keys));
-  
+
   return std::string(keys, nbytes);
 }
 

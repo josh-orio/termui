@@ -2,12 +2,40 @@
 
 namespace termui {
 
-Menu::Menu(const std::string &t, const std::vector<std::string> &o, int ls) : title(t), options(o) {
+Menu::Menu() = default;
+Menu::Menu(std::string &t, std::vector<std::string> &e, int ls) : title(std::make_shared<std::string>(t)), list(nullptr), line_seperation(ls) {
   cons = Console(false, false, false, true);
-  line_seperation = ls;
-  cursor = 0;
-  start_line = 0;
-  overhead = 4; // header(3) + footer(1)
+  list = std::make_shared<List>(e, cons.width - 4, cons.height - 4, ls);
+}
+Menu::Menu(std::string &t, std::vector<item::ListItem> &e, int ls) : title(std::make_shared<std::string>(t)), list(nullptr), line_seperation(ls) {
+  cons = Console(false, false, false, true);
+  list = std::make_shared<List>(e, cons.width - 4, cons.height - 4, ls);
+}
+Menu::Menu(std::string &&t, std::vector<std::string> &&e, int ls) : title(std::make_shared<std::string>(std::move(t))), list(nullptr), line_seperation(ls) {
+  cons = Console(false, false, false, true);
+  list = std::make_shared<List>(e, cons.width - 4, cons.height - 4, ls);
+}
+Menu::Menu(std::string &&t, std::vector<item::ListItem> &&e, int ls) : title(std::make_shared<std::string>(std::move(t))), list(nullptr), line_seperation(ls) {
+  cons = Console(false, false, false, true);
+  // cons.update_size();
+  list = std::make_shared<List>(e, cons.width - 4, cons.height - 4, ls);
+}
+Menu::Menu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> e, int ls) : title(std::move(t)), list(), line_seperation(ls) {
+  cons = Console(false, false, false, true);
+
+  (*list).getElements().reserve((*e).size());
+  for (const auto &str : *e) {
+    (*list).getElements().emplace_back(std::move(str));
+  }
+}
+Menu::Menu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<item::ListItem>> e, int ls)
+    : title(std::move(t)), list(std::make_shared<List>()), line_seperation(ls) {
+  cons = Console(false, false, false, true);
+
+  (*list).getElements().reserve((*e).size());
+  for (const auto &elem : *e) {
+    (*list).getElements().emplace_back(elem);
+  }
 }
 
 int Menu::show() {
@@ -24,24 +52,8 @@ int Menu::show() {
 void Menu::display() {
   update_size();
 
-  cons.print(2, 2, title);
-
-  int space_used = 0;
-  for (int i = start_line; i < std::min((int)options.size(), start_line + visible_lines); i++) {
-    if (i == cursor) {
-      cons.print(space_used + 4, 2, bt("> " + options[i]));
-    } else {
-      cons.print(space_used + 4, 4, options[i]);
-    }
-    space_used++;
-
-    for (int ii = 0; ii < line_seperation; ii++) {
-      if (space_used < cons.height - overhead) {
-        space_used++;
-      }
-    }
-  }
-
+  cons.print(2, 2, (*title));
+  cons.print(4, 2, (*list).render());
   cons.print(cons.height, 2, faint_text("[ESC] close  [↑/↓] scroll [↵] select"));
   cons.flush();
 }
@@ -49,13 +61,11 @@ bool Menu::process_input() {
   std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::U_ARROW) { // decrement but dont let (cursor < 0)
-    cursor -= (cursor > 0) ? 1 : 0;
-    start_line -= (cursor < start_line) ? 1 : 0;
+    (*list).cursor_up();
     return true;
 
   } else if (ec == key::D_ARROW) { // increment but dont let (cursor > options.size)
-    cursor += (cursor < options.size() - 1) ? 1 : 0;
-    start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
+    (*list).cursor_down();
     return true;
 
   } else if (ec == key::ENTER) { // enter selects the option
@@ -69,19 +79,6 @@ bool Menu::process_input() {
   }
 };
 
-void Menu::update_size() {
-  cons.update_size();
-
-  visible_lines = 0;
-  while (true) {
-    // calculates lines used by displaying another row of cells
-    int space_used = (visible_lines + 1) + (line_seperation * visible_lines);
-
-    if (space_used > (cons.height - overhead)) {
-      break;
-    }
-    visible_lines++;
-  }
-}
+void Menu::update_size() { cons.update_size(); }
 
 } // namespace termui

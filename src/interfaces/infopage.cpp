@@ -2,13 +2,28 @@
 
 namespace termui {
 
-Info::Info(const std::string &t, const std::string &c) : title(t), content(c) {
+InfoPage::InfoPage() = default;
+InfoPage::InfoPage(const std::string &t, const std::string &c) : title(std::make_shared<std::string>(t)), content(std::make_shared<std::string>(c)) {
   cons = Console(false, false, false, true);
+
+  line_cursor = 0;
+  overhead = 4; // header(3) + footer(1)
+}
+InfoPage::InfoPage(std::string &&t, std::string &&c)
+    : title(std::make_shared<std::string>(std::move(t))), content(std::make_shared<std::string>(std::move(c))) {
+  cons = Console(false, false, false, true);
+
+  line_cursor = 0;
+  overhead = 4; // header(3) + footer(1)
+}
+InfoPage::InfoPage(std::shared_ptr<std::string> sharedT, std::shared_ptr<std::string> sharedC) : title(std::move(sharedT)), content(std::move(sharedC)) {
+  cons = Console(false, false, false, true);
+
   line_cursor = 0;
   overhead = 4; // header(3) + footer(1)
 }
 
-void Info::show() {
+void InfoPage::show() {
   cons.show(); // configure terminal
 
   do {
@@ -18,11 +33,11 @@ void Info::show() {
   cons.close(); // reset terminal
 }
 
-void Info::display() {
+void InfoPage::display() {
   update_size();
 
   std::vector<std::string> formatted = {};
-  std::string copy = content;
+  std::string copy = (*content);
 
   // a bit of preprocessing to fit the text in the terminal
   while (copy.length() > 0) {
@@ -48,7 +63,7 @@ void Info::display() {
 
   content_lines = formatted.size();
 
-  cons.print(2, 2, title);
+  cons.print(2, 2, (*title));
 
   int space_used = 0;
   for (int i = line_cursor; i < std::min(line_cursor + visible_lines, (int)formatted.size()); i++) {
@@ -60,7 +75,7 @@ void Info::display() {
   cons.flush();
 }
 
-bool Info::process_input() {
+bool InfoPage::process_input() {
   std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::U_ARROW) {
@@ -79,7 +94,7 @@ bool Info::process_input() {
   }
 }
 
-void Info::update_size() {
+void InfoPage::update_size() {
   cons.update_size();
 
   text_width = cons.width - 4; // 2 space padding on each side

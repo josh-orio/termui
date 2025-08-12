@@ -21,6 +21,12 @@ inline int LIME = 76;
 inline int TEAL = 75;
 inline int BLACK = 232;
 inline int WHITE = 255;
+inline int BLUEPURPLE = 56;
+inline int NEONY_PURPLE = 21;
+inline int MIDBLUE = 33;
+inline int DARKGREY = 238;
+inline int LIGHTGREY = 242;
+inline int PASTELPINK = 219;
 } // namespace clr
 
 // apply 8 bit colors
@@ -42,6 +48,11 @@ std::string bt(std::string s); // bold text
 std::string rv(std::string s); // reverse video
 std::string ft(std::string s); // faint
 
+std::string curs_up(int n);
+std::string curs_down(int n);
+std::string curs_right(int n);
+std::string curs_left(int n);
+
 namespace key { /* used for comparison operations when reading off input buffers */
 inline std::string ENTER{10};
 inline std::string ESC{27};
@@ -51,36 +62,6 @@ inline std::string D_ARROW = "\e[B";
 inline std::string R_ARROW = "\e[C";
 inline std::string L_ARROW = "\e[D";
 } // namespace key
-
-namespace symbol { /* often reused unicode symbols */
-inline std::string BLOCK = "█";
-inline std::string L8 = "▏";
-
-inline std::string TICK = "✓";
-inline std::string DOT = "·";
-
-inline std::string VERTICAL = "│";
-
-inline std::string TOP_LEFT_ROUND = "╭";
-inline std::string TOP_RIGHT_ROUND = "╮";
-inline std::string BOTTOM_LEFT_ROUND = "╰";
-inline std::string BOTTOM_RIGHT_ROUND = "╯";
-
-inline std::string ELLIPSIS = "…";
-inline std::string L_ARROW = "←";
-inline std::string R_ARROW = "→";
-inline std::string U_ARROW = "↑";
-inline std::string D_ARROW = "↓";
-inline std::string HBD = "←/→"; // horizontal bi directional
-inline std::string VBD = "↑/↓"; // vertical bi directional
-inline std::string ENTER = "↵";
-inline std::string TAB = "⇥";
-} // namespace symbol
-
-std::string curs_up(int n);
-std::string curs_down(int n);
-std::string curs_right(int n);
-std::string curs_left(int n);
 
 enum class align { NONE, LEFT, RIGHT, CENTER, TOP, BOTTOM };
 

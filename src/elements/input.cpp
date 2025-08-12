@@ -2,43 +2,43 @@
 
 namespace termui {
 
-Input::Input(std::string field, std::string &value, std::string placeholder, int ftc, bool vertical)
-    : field(field), value(value), placeholder(placeholder), ftc(ftc), vertical(vertical) {
-  max_w = -1; // max size_t
-}
+Input::Input() = default;
+Input::Input(const std::string &rVal, const std::string &rPlh, int w, int fg_col, int bg_col)
+    : val(std::make_shared<std::string>(rVal)), plh(std::make_shared<std::string>(rPlh)), w(w), active_col(fg_col), idle_col(bg_col) {}
+Input::Input(const std::string &lVal, std::string &&lPlh, int w, int fg_col, int bg_col)
+    : val(std::make_shared<std::string>(lVal)), plh(std::make_shared<std::string>(std::move(lPlh))), w(w), active_col(fg_col), idle_col(bg_col) {}
+Input::Input(std::shared_ptr<std::string> sharedVal, std::shared_ptr<std::string> sharedPlh, int w, int fg_col, int bg_col)
+    : val(std::move(sharedVal)), plh(std::move(sharedPlh)), w(w), active_col(fg_col), idle_col(bg_col) {}
+Input::Input(std::shared_ptr<std::string> sharedVal, std::string &&lPlh, int w, int fg_col, int bg_col)
+    : val(std::move(sharedVal)), plh(std::make_shared<std::string>(std::move(lPlh))), w(w), active_col(fg_col), idle_col(bg_col) {}
+
+const std::string &Input::getVal() const { return *val; }
+std::string &Input::getVal() { return *val; }
+
+const std::string &Input::getPlh() const { return *plh; }
+std::string &Input::getPlh() { return *plh; }
 
 std::string Input::render() {
   std::string outbuff;
 
-  if (vertical) {
-    outbuff += fg_apply(field, ftc);
-    outbuff += curs_left(field.size()) + curs_down(1);
-  } else {
-    outbuff += fg_apply(field, ftc) + ": ";
-  }
+  std::string value = (*val).data();
+  std::string placeholder = (*plh).data();
 
-  if (value.empty()) {
-    if (placeholder.size() > max_w) {
-      outbuff += fg_apply(std::string(placeholder.begin(), placeholder.begin() + max_w) + symbol::ELLIPSIS,
-                          242);        // static color code
-      outbuff += curs_left(max_w + 1); // so cursor can blink over start of placeholder
-
+  if (!value.empty()) {
+    if (value.length() > w) {
+      outbuff += unicode::ELLIPSIS + value.substr(value.length() - w + 1, value.length());
     } else {
-      outbuff += fg_apply(placeholder, 242);
-      outbuff += curs_left(placeholder.size());
+      outbuff += value + std::string(w - value.length(), ' ');
     }
-
+    outbuff = fg_apply(outbuff, active_col);
   } else {
-    if (value.size() > max_w) {
-      outbuff += symbol::ELLIPSIS + std::string(value.end() - max_w, value.end());
 
+    if (placeholder.length() > w) {
+      outbuff += placeholder.substr(0, w - 1) + unicode::ELLIPSIS;
     } else {
-      outbuff += value;
+      outbuff += placeholder + std::string(w - placeholder.length(), ' ');
     }
-  }
-
-  if (active) {
-    outbuff += term::SHOW_CURSOR; // this will still interfere, change soon
+    outbuff = fg_apply(outbuff, idle_col);
   }
 
   return outbuff;

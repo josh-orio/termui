@@ -2,24 +2,33 @@
 
 namespace termui {
 
-Button::Button(int w, std::string text, int active_color, int idle_color)
-    : w(w), text(text), active_color(active_color), idle_color(idle_color) {}
+Button::Button() = default;
+Button::Button(const std::string &rT, int w, int active_color, int idle_color)
+    : text(std::make_shared<std::string>(rT)), w(w), active_color(active_color), idle_color(idle_color) {}
+Button::Button(std::string &&lT, int w, int active_color, int idle_color)
+    : text(std::make_shared<std::string>(std::move(lT))), w(w), active_color(active_color), idle_color(idle_color) {}
+Button::Button(std::shared_ptr<std::string> sharedT, int w, int active_color, int idle_color)
+    : text(std::move(sharedT)), w(w), active_color(active_color), idle_color(idle_color) {}
+
+const std::string &Button::getText() const { return *text; }
+std::string &Button::getText() { return *text; }
 
 std::string Button::render() {
   std::string outbuff;
 
-  if (text.length() > w) {
-    outbuff += text.substr(0, w - 1) + symbol::ELLIPSIS;
+  std::string txt = (*text).data();
 
-  } else if (text.length() < w) { // center the text
-    int diff = w - text.length();
+  if (txt.length() > w) {
+    outbuff += txt.substr(0, w - 1) + unicode::ELLIPSIS;
+
+  } else if (txt.length() < w) { // center the text
+    int diff = w - txt.length();
     int l = diff / 2;
     int r = diff - l;
-    text = std::string(l, ' ') + text + std::string(r, ' ');
-    outbuff += text;
+    outbuff += std::string(l, ' ') + txt + std::string(r, ' ');
 
   } else {
-    outbuff += text;
+    outbuff += txt;
   }
 
   if (selected) {

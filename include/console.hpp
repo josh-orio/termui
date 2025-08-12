@@ -74,7 +74,6 @@ public:
   void curs_left(int n);
 
   std::string poll_input(); // read (upto 8) chars off stdin into inbuff
-
 };
 
 } // namespace termui
