@@ -19,7 +19,7 @@ List::List(std::vector<std::string> &lStrs, int w, int h, int ls, int col)
   }
 }
 List::List(std::vector<std::string> &&rStrs, int w, int h, int ls, int col) : w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {
-  (*elements).reserve(rStrs.size()); // avoid re‑allocations
+  (*elements).reserve(rStrs.size());
 
   for (auto &&str : rStrs) {
     (*elements).emplace_back(std::move(str));
@@ -71,9 +71,9 @@ void List::cursor_up() { // decrement but dont let (cursor < 0)
   start_line -= (cursor < start_line) ? 1 : 0;
 }
 
-void List::cursor_down() { // increment but dont let (cursor > options.size)
+void List::cursor_down() { // increment but dont let (cursor > elements.size)
   internal_update();
-  cursor += (cursor < (*elements).size() - 1) ? 1 : 0; // ?????
+  cursor += (cursor < (*elements).size() - 1) ? 1 : 0;
   start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
 }
 

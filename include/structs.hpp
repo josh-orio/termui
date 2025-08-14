@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace termui {
 
@@ -14,7 +15,7 @@ private:
 
 public:
   ListItem();
-  ListItem(std::string &t);
+  ListItem(const std::string &t);
   ListItem(std::string &&t);
   ListItem(std::shared_ptr<std::string> shared);
 
@@ -31,7 +32,7 @@ private:
 
 public:
   MultiListItem();
-  MultiListItem(std::string &t);
+  MultiListItem(const std::string &t);
   MultiListItem(std::string &&t);
   MultiListItem(std::shared_ptr<std::string> shared);
 
@@ -51,7 +52,7 @@ private:
 
 public:
   FancyListItem();
-  FancyListItem(std::string &t, const std::string &d);
+  FancyListItem(const std::string &t, const std::string &d);
   FancyListItem(std::string &&t, std::string &&d);
   FancyListItem(std::shared_ptr<std::string> t, std::shared_ptr<std::string> d);
 

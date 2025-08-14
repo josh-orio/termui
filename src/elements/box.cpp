@@ -9,8 +9,7 @@ std::string Box::render() {
 
   outbuff += "╭" + div_line(w - 2) + "╮"; // top line and rounded corners
   for (int i = 0; i < h - 2; i++) {
-    outbuff += curs_down(1) + curs_left(w) + unicode::VERTICAL;
-    outbuff += curs_right(w - 2) + unicode::VERTICAL;
+    outbuff += curs_down(1) + curs_left(w) + unicode::VERTICAL + std::string(w - 2, ' ') + unicode::VERTICAL; // spaces 'fill' bgnd
   }
   outbuff += curs_down(1) + curs_left(w);
   outbuff += "╰" + div_line(w - 2) + "╯"; // bottom line and rounded corners

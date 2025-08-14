@@ -108,15 +108,15 @@ public:
   std::shared_ptr<std::vector<std::string>> responses;
 
   InputPage();
-  InputPage(std::string &t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 1); // existing t + existing vectors of strings
-  InputPage(std::string &t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 1); // shared t + .share()
+  InputPage(std::string &t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0); // existing t + existing vectors of strings
+  InputPage(std::string &t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 0); // shared t + .share()
 
-  InputPage(std::string &&t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 1); // rvalue t + existing vectors of strings
-  InputPage(std::string &&t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 1); // rvalue t + .share()
+  InputPage(std::string &&t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0); // rvalue t + existing vectors of strings
+  InputPage(std::string &&t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 0); // rvalue t + .share()
 
-  InputPage(std::shared_ptr<std::string> t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 1); // shared t + existing vectors of strings
+  InputPage(std::shared_ptr<std::string> t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0); // shared t + existing vectors of strings
   InputPage(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r,
-            int ls = 1); // all .share()
+            int ls = 0); // all .share()
 
   std::shared_ptr<std::vector<std::string>> shareFields() const;
 

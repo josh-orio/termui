@@ -5,7 +5,7 @@ namespace termui {
 namespace item {
 
 FancyListItem::FancyListItem() = default;
-FancyListItem::FancyListItem(std::string &t, const std::string &d) : text(std::make_shared<std::string>(t)), desc(std::make_shared<std::string>(d)) {}
+FancyListItem::FancyListItem(const std::string &t, const std::string &d) : text(std::make_shared<std::string>(t)), desc(std::make_shared<std::string>(d)) {}
 FancyListItem::FancyListItem(std::string &&t, std::string &&d)
     : text(std::make_shared<std::string>(std::move(t))), desc(std::make_shared<std::string>(std::move(d))) {}
 FancyListItem::FancyListItem(std::shared_ptr<std::string> t, std::shared_ptr<std::string> d) : text(std::move(t)), desc(std::move(d)) {}

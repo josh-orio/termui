@@ -5,7 +5,7 @@ namespace termui {
 namespace item {
 
 ListItem::ListItem() = default;
-ListItem::ListItem(std::string &t) : text(std::make_shared<std::string>(t)) {}
+ListItem::ListItem(const std::string &t) : text(std::make_shared<std::string>(t)) {}
 ListItem::ListItem(std::string &&t) : text(std::make_shared<std::string>(std::move(t))) {}
 ListItem::ListItem(std::shared_ptr<std::string> shared) : text(std::move(shared)) {}
 

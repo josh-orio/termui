@@ -8,6 +8,7 @@
 namespace termui {
 
 namespace clr {          /* common colors and their 8 bit codes*/
+                         // NOTE: colors likely vary between terminals, names might not accurately reflect real appearance
 inline int DEFAULT = -1; // not a color, just tricks an if
 inline int RED = 1;
 inline int GREEN = 2;
@@ -27,6 +28,7 @@ inline int MIDBLUE = 33;
 inline int DARKGREY = 238;
 inline int LIGHTGREY = 242;
 inline int PASTELPINK = 219;
+inline int LIGHTBLUE = 39;
 } // namespace clr
 
 // apply 8 bit colors

@@ -41,10 +41,10 @@ public:
   int active_col, idle_col;
 
   Input();
-  Input(const std::string &rVal, const std::string &rPlh, int w, int fg_col, int bg_col);
-  Input(const std::string &lVal, std::string &&lPlh, int w, int fg_col, int bg_col);
-  Input(std::shared_ptr<std::string> sharedVal, std::shared_ptr<std::string> sharedPlh, int w, int fg_col, int bg_col);
-  Input(std::shared_ptr<std::string> sharedVal, std::string &&lPlh, int w, int fg_col, int bg_col);
+  Input(const std::string &rVal, const std::string &rPlh, int w, int valCol, int plhCol);
+  Input(const std::string &lVal, std::string &&lPlh, int w, int valCol, int plhCol);
+  Input(std::shared_ptr<std::string> sharedVal, std::shared_ptr<std::string> sharedPlh, int w, int valCol, int plhCol);
+  Input(std::shared_ptr<std::string> sharedVal, std::string &&lPlh, int w, int valCol, int plhCol);
 
   const std::string &getVal() const;
   std::string &getVal();

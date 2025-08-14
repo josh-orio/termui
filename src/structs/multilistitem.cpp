@@ -5,7 +5,7 @@ namespace termui {
 namespace item {
 
 MultiListItem::MultiListItem() = default;
-MultiListItem::MultiListItem(std::string &t) : text(std::make_shared<std::string>(t)), selected(false) {}
+MultiListItem::MultiListItem(const std::string &t) : text(std::make_shared<std::string>(t)), selected(false) {}
 MultiListItem::MultiListItem(std::string &&t) : text(std::make_shared<std::string>(std::move(t))), selected(false) {}
 MultiListItem::MultiListItem(std::shared_ptr<std::string> shared) : text(std::move(shared)), selected(false) {}
 

@@ -3,14 +3,14 @@
 namespace termui {
 
 Input::Input() = default;
-Input::Input(const std::string &rVal, const std::string &rPlh, int w, int fg_col, int bg_col)
-    : val(std::make_shared<std::string>(rVal)), plh(std::make_shared<std::string>(rPlh)), w(w), active_col(fg_col), idle_col(bg_col) {}
-Input::Input(const std::string &lVal, std::string &&lPlh, int w, int fg_col, int bg_col)
-    : val(std::make_shared<std::string>(lVal)), plh(std::make_shared<std::string>(std::move(lPlh))), w(w), active_col(fg_col), idle_col(bg_col) {}
-Input::Input(std::shared_ptr<std::string> sharedVal, std::shared_ptr<std::string> sharedPlh, int w, int fg_col, int bg_col)
-    : val(std::move(sharedVal)), plh(std::move(sharedPlh)), w(w), active_col(fg_col), idle_col(bg_col) {}
-Input::Input(std::shared_ptr<std::string> sharedVal, std::string &&lPlh, int w, int fg_col, int bg_col)
-    : val(std::move(sharedVal)), plh(std::make_shared<std::string>(std::move(lPlh))), w(w), active_col(fg_col), idle_col(bg_col) {}
+Input::Input(const std::string &rVal, const std::string &rPlh, int w, int valCol, int plhCol)
+    : val(std::make_shared<std::string>(rVal)), plh(std::make_shared<std::string>(rPlh)), w(w), active_col(valCol), idle_col(plhCol) {}
+Input::Input(const std::string &lVal, std::string &&lPlh, int w, int valCol, int plhCol)
+    : val(std::make_shared<std::string>(lVal)), plh(std::make_shared<std::string>(std::move(lPlh))), w(w), active_col(valCol), idle_col(plhCol) {}
+Input::Input(std::shared_ptr<std::string> sharedVal, std::shared_ptr<std::string> sharedPlh, int w, int valCol, int plhCol)
+    : val(std::move(sharedVal)), plh(std::move(sharedPlh)), w(w), active_col(valCol), idle_col(plhCol) {}
+Input::Input(std::shared_ptr<std::string> sharedVal, std::string &&lPlh, int w, int valCol, int plhCol)
+    : val(std::move(sharedVal)), plh(std::make_shared<std::string>(std::move(lPlh))), w(w), active_col(valCol), idle_col(plhCol) {}
 
 const std::string &Input::getVal() const { return *val; }
 std::string &Input::getVal() { return *val; }
