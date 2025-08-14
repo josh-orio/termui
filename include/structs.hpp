@@ -13,15 +13,15 @@ private:
   std::shared_ptr<std::string> text;
 
 public:
-  ListItem() = default;
-  ListItem(const std::string &t) : text(std::make_shared<std::string>(t)) {}
-  ListItem(std::string &&t) : text(std::make_shared<std::string>(std::move(t))) {}
-  ListItem(std::shared_ptr<std::string> shared) : text(std::move(shared)) {}
+  ListItem();
+  ListItem(std::string &t);
+  ListItem(std::string &&t);
+  ListItem(std::shared_ptr<std::string> shared);
 
-  std::shared_ptr<std::string> share() const { return text; }
+  std::shared_ptr<std::string> share() const;
 
-  const std::string &getText() const { return *text; }
-  std::string &getText() { return *text; }
+  const std::string &getText() const;
+  std::string &getText();
 };
 
 struct MultiListItem {
@@ -30,19 +30,19 @@ private:
   bool selected;
 
 public:
-  MultiListItem() = default;
-  MultiListItem(const std::string &t) : text(std::make_shared<std::string>(t)), selected(false) {}
-  MultiListItem(std::string &&t) : text(std::make_shared<std::string>(std::move(t))), selected(false) {}
-  MultiListItem(std::shared_ptr<std::string> shared) : text(std::move(shared)), selected(false) {}
+  MultiListItem();
+  MultiListItem(std::string &t);
+  MultiListItem(std::string &&t);
+  MultiListItem(std::shared_ptr<std::string> shared);
 
-  std::shared_ptr<std::string> share() const { return text; }
+  std::shared_ptr<std::string> share() const;
 
-  const std::string &getText() const { return *text; }
-  std::string &getText() { return *text; }
+  const std::string &getText() const;
+  std::string &getText();
 
-  bool &isSelected() { return selected; }
+  bool &isSelected();
 
-  void flip() { selected = !selected; }
+  void flip();
 };
 
 struct FancyListItem {
@@ -50,18 +50,18 @@ private:
   std::shared_ptr<std::string> text, desc;
 
 public:
-  FancyListItem() = default;
-  FancyListItem(const std::string &t, const std::string &d) : text(std::make_shared<std::string>(t)), desc(std::make_shared<std::string>(d)) {}
-  FancyListItem(std::string &&t, std::string &&d) : text(std::make_shared<std::string>(std::move(t))), desc(std::make_shared<std::string>(std::move(d))) {}
-  FancyListItem(std::shared_ptr<std::string> t, std::shared_ptr<std::string> d) : text(std::move(t)), desc(std::move(d)) {}
+  FancyListItem();
+  FancyListItem(std::string &t, const std::string &d);
+  FancyListItem(std::string &&t, std::string &&d);
+  FancyListItem(std::shared_ptr<std::string> t, std::shared_ptr<std::string> d);
 
-  std::shared_ptr<std::string> share() const { return text; }
+  std::shared_ptr<std::string> share() const;
 
-  const std::string &getText() const { return *text; }
-  std::string &getText() { return *text; }
+  const std::string &getText() const;
+  std::string &getText();
 
-  const std::string &getDesc() const { return *desc; }
-  std::string &getDesc() { return *desc; }
+  const std::string &getDesc() const;
+  std::string &getDesc();
 };
 
 struct TableColumn {
@@ -70,33 +70,32 @@ private:
   int w;
 
 public:
-  TableColumn() = default;
-  TableColumn(const std::string &t, int w) : text(std::make_shared<std::string>(t)), w(w) {}
-  TableColumn(std::string &&t, int w) : text(std::make_shared<std::string>(std::move(t))), w(w) {}
-  TableColumn(std::shared_ptr<std::string> shared, int w) : text(std::move(shared)), w(w) {}
+  TableColumn();
+  TableColumn(std::string &t, int w);
+  TableColumn(std::string &&t, int w);
+  TableColumn(std::shared_ptr<std::string> shared, int w);
 
-  std::shared_ptr<std::string> share() const { return text; }
+  std::shared_ptr<std::string> share() const;
 
-  const std::string &getText() const { return *text; }
-  std::string &getText() { return *text; }
+  const std::string &getText() const;
+  std::string &getText();
 
-  int getWidth() { return w; }
+  int getWidth();
 };
 
 struct TableRow {
 public:
   std::shared_ptr<std::vector<std::string>> cells;
 
-  TableRow() = default;
-  TableRow(const std::vector<std::string> &t) : cells(std::make_shared<std::vector<std::string>>(t)) {}
-  TableRow(std::vector<std::string> &&t) : cells(std::make_shared<std::vector<std::string>>(std::move(t))) {}
-  TableRow(std::shared_ptr<std::vector<std::string>> sharedT)
-      : cells(std::move(sharedT)) {} // caller still owns the original shared_ptr unless it was moved into the argument
+  TableRow();
+  TableRow(std::vector<std::string> &t);
+  TableRow(std::vector<std::string> &&t);
+  TableRow(std::shared_ptr<std::vector<std::string>> sharedT); // caller still owns the original shared_ptr unless it was moved into the argument
 
-  std::shared_ptr<std::vector<std::string>> share() const { return cells; }
+  std::shared_ptr<std::vector<std::string>> share() const;
 
-  const std::vector<std::string> &getCells() const { return *cells; }
-  std::vector<std::string> &getCells() { return *cells; }
+  const std::vector<std::string> &getCells() const;
+  std::vector<std::string> &getCells();
 };
 
 } // namespace item
