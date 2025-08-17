@@ -61,7 +61,7 @@ std::string SelectList::render() {
       tmp = unicode::DOT + " " + tmp;
     }
 
-    if (i == cursor) {
+    if (i + start_line == cursor) {
       tmp = fg_apply(tmp, active_color);
     }
 
@@ -74,13 +74,15 @@ std::string SelectList::render() {
 }
 
 void SelectList::cursor_up() { // decrement but dont let (cursor < 0)
+  internal_update();
   cursor -= (cursor > 0) ? 1 : 0;
   start_line -= (cursor < start_line) ? 1 : 0;
 }
 
 void SelectList::cursor_down() { // increment but dont let (cursor > options.size)
+  internal_update();
   cursor += (cursor < (*elements).size() - 1) ? 1 : 0;
-  start_line += (cursor >= start_line + h) ? 1 : 0;
+  start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
 }
 
 void SelectList::select() { (*elements)[cursor].flip(); }
@@ -95,10 +97,6 @@ void SelectList::internal_update() {
       break;
     }
     visible_lines++;
-  }
-
-  if (cursor < start_line || start_line + visible_lines < cursor) {
-    start_line = cursor;
   }
 }
 

@@ -42,8 +42,9 @@ void InputBox::show() {
 void InputBox::display() {
   update_size();
 
-  Box b(w, h, clr::LIGHTGREY);
+  cons.print(cons.height, 2, faint_text("[ESC] close")); // print ctl strip to avoid interfering with the cursor
 
+  Box b(w, h, clr::LIGHTGREY);
   cons.print((cons.height - h) / 2, (cons.width - w) / 2, b.render());
 
   cons.curs_up(h - 2);
@@ -52,20 +53,19 @@ void InputBox::display() {
   Text f(field, w - 4, 1, clr::MAGENTA, clr::DEFAULT);
   Input r((*response), (*placeholder), w - 4, clr::DEFAULT, clr::DARKGREY);
 
-  //   if ((*response).empty()) {
-  //     r.getText() = (*placeholder).data();
-  //     r.fg_col=clr::DARKGREY;
-  //   } else {
-  //     r.getText() = (*response).data();
-  //   }
-
   cons.print(bt(f.render()));
   cons.curs_down(2);
   cons.curs_left(f.w);
 
   cons.print(r.render());
 
-  cons.print(cons.height, 2, faint_text("[ESC] close"));
+  if ((*response).empty()) {
+    cons.curs_left(r.w);
+  } else {
+    cons.curs_left(r.w - (*response).length());
+  }
+  cons.ct.on(); // enable blinking cursor at start of plh or end of val
+
   cons.flush();
 }
 
@@ -82,9 +82,8 @@ bool InputBox::process_input() {
     }
     return true;
 
-  } else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // add char
-                                                                    // accept ascii characters in range 32 - 126
-                                                                    // input sanitization is done in classes, not here
+  } else if ((std::string{32} <= ec) &&
+             (ec <= std::string{126})) { // add char accept ascii characters in range 32 - 126 input sanitization is done in classes, not here
     (*response) += ec;
     return true;
 

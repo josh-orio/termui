@@ -3,24 +3,24 @@
 namespace termui {
 
 Menu::Menu() = default;
-Menu::Menu(std::string &t, std::vector<std::string> &e, int ls) : title(std::make_shared<std::string>(t)), list(nullptr), line_seperation(ls) {
+Menu::Menu(std::string &t, std::vector<std::string> &e, int ls) : title(std::make_shared<std::string>(t)), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
   list = std::make_shared<List>(e, cons.width - 4, cons.height - 4, ls);
 }
-Menu::Menu(std::string &t, std::vector<item::ListItem> &e, int ls) : title(std::make_shared<std::string>(t)), list(nullptr), line_seperation(ls) {
+Menu::Menu(std::string &t, std::vector<item::ListItem> &e, int ls) : title(std::make_shared<std::string>(t)), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
   list = std::make_shared<List>(e, cons.width - 4, cons.height - 4, ls);
 }
-Menu::Menu(std::string &&t, std::vector<std::string> &&e, int ls) : title(std::make_shared<std::string>(std::move(t))), list(nullptr), line_seperation(ls) {
+Menu::Menu(std::string &&t, std::vector<std::string> &&e, int ls) : title(std::make_shared<std::string>(std::move(t))), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
   list = std::make_shared<List>(e, cons.width - 4, cons.height - 4, ls);
 }
-Menu::Menu(std::string &&t, std::vector<item::ListItem> &&e, int ls) : title(std::make_shared<std::string>(std::move(t))), list(nullptr), line_seperation(ls) {
+Menu::Menu(std::string &&t, std::vector<item::ListItem> &&e, int ls) : title(std::make_shared<std::string>(std::move(t))), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
-  // cons.update_size();
   list = std::make_shared<List>(e, cons.width - 4, cons.height - 4, ls);
 }
-Menu::Menu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> e, int ls) : title(std::move(t)), list(), line_seperation(ls) {
+Menu::Menu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> e, int ls)
+    : title(std::move(t)), list(std::make_shared<List>()), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
 
   (*list).getElements().reserve((*e).size());
@@ -29,7 +29,7 @@ Menu::Menu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::stri
   }
 }
 Menu::Menu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<item::ListItem>> e, int ls)
-    : title(std::move(t)), list(std::make_shared<List>()), line_seperation(ls) {
+    : title(std::move(t)), list(std::make_shared<List>()), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
 
   (*list).getElements().reserve((*e).size());
@@ -79,6 +79,12 @@ bool Menu::process_input() {
   }
 };
 
-void Menu::update_size() { cons.update_size(); }
+void Menu::update_size() {
+  cons.update_size();
+
+  (*list).h = cons.height - voh;
+  (*list).w = cons.width - hoh;
+  (*list).line_spacing = line_seperation;
+}
 
 } // namespace termui

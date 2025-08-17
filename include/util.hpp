@@ -1,5 +1,5 @@
-#ifndef FORMATTING_HPP
-#define FORMATTING_HPP
+#ifndef UTIL_HPP
+#define UTIL_HPP
 
 #include "ansi.hpp"
 #include <format>
@@ -29,6 +29,7 @@ inline int DARKGREY = 238;
 inline int LIGHTGREY = 242;
 inline int PASTELPINK = 219;
 inline int LIGHTBLUE = 39;
+inline int LIGHTPURPLE = 93;
 } // namespace clr
 
 // apply 8 bit colors

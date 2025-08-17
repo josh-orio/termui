@@ -50,7 +50,7 @@ std::string List::render() {
 
   for (int i = 0; i < subset.size(); i++) {
     std::string element(subset.at(i).getText());
-    if (i == cursor) {
+    if (i + start_line == cursor) {
       outbuff += fg_apply("> " + element, active_color);
       outbuff += curs_left(2 + element.size());
 
@@ -87,10 +87,6 @@ void List::internal_update() {
       break;
     }
     visible_lines++;
-  }
-
-  if (cursor < start_line || start_line + visible_lines < cursor) {
-    start_line = cursor;
   }
 }
 

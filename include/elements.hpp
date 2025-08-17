@@ -38,9 +38,13 @@ private:
 
 public:
   int w;
-  int active_col, idle_col;
+  int valCol, plhCol; // color codes for value and placeholder text
 
   Input();
+  // without placeholders
+  Input(const std::string &rVal, int w, int valCol);
+  Input(std::shared_ptr<std::string> sharedVal, int w, int valCol);
+  // with placeholders
   Input(const std::string &rVal, const std::string &rPlh, int w, int valCol, int plhCol);
   Input(const std::string &lVal, std::string &&lPlh, int w, int valCol, int plhCol);
   Input(std::shared_ptr<std::string> sharedVal, std::shared_ptr<std::string> sharedPlh, int w, int valCol, int plhCol);
@@ -188,7 +192,8 @@ public:
   int line_seperation; // number of blank lines between rows
   int cell_height;     // number of lines to a cell
   int active_color;    // background of selected row
-  int box_color;       // color of table borders
+  int table_height;
+  int table_width;
 
   Table();
   Table(const std::vector<item::TableColumn> &cols, const std::vector<item::TableRow> &rs, int table_height, int cell_height = 1, int line_seperation = 0,
@@ -209,8 +214,7 @@ private:
   int visible_rows; // number of table rows that fit the h restraint
   int start_line;   // index value of first visible row
   int overhead;     // number of lines reserved for header & footer
-  int table_height;
-  int table_width;
+  int box_color;    // color of table borders
 
   void internal_update();
 };

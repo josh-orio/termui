@@ -4,27 +4,27 @@ namespace termui {
 
 FancyMenu::FancyMenu() = default;
 FancyMenu::FancyMenu(std::string &t, std::vector<std::string> &e, std::vector<std::string> &d, int ls)
-    : title(std::make_shared<std::string>(t)), list(nullptr), line_seperation(ls) {
+    : title(std::make_shared<std::string>(t)), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
   list = std::make_shared<FancyList>(e, d, cons.width - 4, cons.height - 4, ls);
 }
 FancyMenu::FancyMenu(std::string &t, std::vector<item::FancyListItem> &e, int ls)
-    : title(std::make_shared<std::string>(t)), list(nullptr), line_seperation(ls) {
+    : title(std::make_shared<std::string>(t)), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
   list = std::make_shared<FancyList>(e, cons.width - 4, cons.height - 4, ls);
 }
 FancyMenu::FancyMenu(std::string &&t, std::vector<std::string> &&e, std::vector<std::string> &&d, int ls)
-    : title(std::make_shared<std::string>(std::move(t))), list(nullptr), line_seperation(ls) {
+    : title(std::make_shared<std::string>(std::move(t))), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
   list = std::make_shared<FancyList>(e, d, cons.width - 4, cons.height - 4, ls);
 }
 FancyMenu::FancyMenu(std::string &&t, std::vector<item::FancyListItem> &&e, int ls)
-    : title(std::make_shared<std::string>(std::move(t))), list(nullptr), line_seperation(ls) {
+    : title(std::make_shared<std::string>(std::move(t))), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
   list = std::make_shared<FancyList>(e, cons.width - 4, cons.height - 4, ls);
 }
 FancyMenu::FancyMenu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> e, std::shared_ptr<std::vector<std::string>> d, int ls)
-    : title(std::move(t)), list(), line_seperation(ls) {
+    : title(std::move(t)), list(std::make_shared<FancyList>()), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
 
   (*list).getElements().reserve((*e).size());
@@ -37,7 +37,7 @@ FancyMenu::FancyMenu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector
   }
 }
 FancyMenu::FancyMenu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<item::FancyListItem>> e, int ls)
-    : title(std::move(t)), list(std::make_shared<FancyList>()), line_seperation(ls) {
+    : title(std::move(t)), list(std::make_shared<FancyList>()), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
 
   (*list).getElements().reserve((*e).size());
@@ -87,6 +87,12 @@ bool FancyMenu::process_input() {
   }
 };
 
-void FancyMenu::update_size() { cons.update_size(); }
+void FancyMenu::update_size() {
+  cons.update_size();
+
+  (*list).h = cons.height - voh;
+  (*list).w = cons.width - hoh;
+  (*list).line_spacing = line_seperation;
+}
 
 } // namespace termui

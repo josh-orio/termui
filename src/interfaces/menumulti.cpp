@@ -3,28 +3,27 @@
 namespace termui {
 
 MultiMenu::MultiMenu() = default;
-MultiMenu::MultiMenu(std::string &t, std::vector<std::string> &e, int ls)
-    : title(std::make_shared<std::string>(t)), list(nullptr), line_seperation(ls), voh(4), hoh(2) {
+MultiMenu::MultiMenu(std::string &t, std::vector<std::string> &e, int ls) : title(std::make_shared<std::string>(t)), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
-  list = std::make_shared<SelectList>(e, cons.width-hoh, cons.height-voh, ls);
+  list = std::make_shared<SelectList>(e, cons.width - hoh, cons.height - voh, ls);
 }
 MultiMenu::MultiMenu(std::string &t, std::vector<item::MultiListItem> &e, int ls)
-    : title(std::make_shared<std::string>(t)), list(nullptr), line_seperation(ls), voh(4), hoh(2) {
+    : title(std::make_shared<std::string>(t)), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
-  list = std::make_shared<SelectList>(e, cons.width-hoh, cons.height-voh, ls);
+  list = std::make_shared<SelectList>(e, cons.width - hoh, cons.height - voh, ls);
 }
 MultiMenu::MultiMenu(std::string &&t, std::vector<std::string> &&e, int ls)
-    : title(std::make_shared<std::string>(std::move(t))), list(nullptr), line_seperation(ls), voh(4), hoh(2) {
+    : title(std::make_shared<std::string>(std::move(t))), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
-  list = std::make_shared<SelectList>(e, cons.width-hoh, cons.height-voh, ls);
+  list = std::make_shared<SelectList>(e, cons.width - hoh, cons.height - voh, ls);
 }
 MultiMenu::MultiMenu(std::string &&t, std::vector<item::MultiListItem> &&e, int ls)
-    : title(std::make_shared<std::string>(std::move(t))), list(nullptr), line_seperation(ls), voh(4), hoh(2) {
+    : title(std::make_shared<std::string>(std::move(t))), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
-  list = std::make_shared<SelectList>(e, cons.width-hoh, cons.height-voh, ls);
+  list = std::make_shared<SelectList>(e, cons.width - hoh, cons.height - voh, ls);
 }
 MultiMenu::MultiMenu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> e, int ls)
-    : title(std::move(t)), list(std::make_shared<SelectList>() ), line_seperation(ls), voh(4), hoh(2) {
+    : title(std::move(t)), list(std::make_shared<SelectList>()), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
 
   (*list).getElements().reserve((*e).size());
@@ -33,7 +32,7 @@ MultiMenu::MultiMenu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector
   }
 }
 MultiMenu::MultiMenu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<item::MultiListItem>> e, int ls)
-    : title(std::move(t)), list(std::make_shared<SelectList>()), line_seperation(ls), voh(4), hoh(2) {
+    : title(std::move(t)), list(std::make_shared<SelectList>()), line_seperation(ls), voh(5), hoh(2) {
   cons = Console(false, false, false, true);
 
   (*list).getElements().reserve((*e).size());
@@ -91,6 +90,7 @@ void MultiMenu::update_size() {
 
   (*list).h = cons.height - voh;
   (*list).w = cons.width - hoh;
+  (*list).line_spacing = line_seperation;
 }
 
 } // namespace termui

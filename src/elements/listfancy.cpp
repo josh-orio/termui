@@ -62,16 +62,16 @@ std::string FancyList::render() {
     std::string text(subset.at(i).getText());
     std::string desc(subset.at(i).getDesc());
 
-    if (i == cursor) {
+    if (i + start_line == cursor) {
       outbuff += fg_apply(bold_text(unicode::VERTICAL + " " + text), active_color);
       outbuff += curs_left(2 + text.size()) + curs_down(1);
-      outbuff += fg_apply(bold_text(unicode::VERTICAL + " "), active_color) + desc;
+      outbuff += fg_apply(bold_text(unicode::VERTICAL + " "), active_color) + fg_apply(desc, clr::LIGHTGREY);
       outbuff += curs_left(2 + desc.size());
 
     } else {
       outbuff += "  " + bold_text(text);
       outbuff += curs_left(2 + text.size()) + curs_down(1);
-      outbuff += "  " + desc;
+      outbuff += "  " + fg_apply(desc, clr::LIGHTGREY);
       outbuff += curs_left(2 + desc.size());
 
     } // might want to replace this block
@@ -83,13 +83,15 @@ std::string FancyList::render() {
 }
 
 void FancyList::cursor_up() { // decrement but dont let (cursor < 0)
+  internal_update();
   cursor -= (cursor > 0) ? 1 : 0;
   start_line -= (cursor < start_line) ? 1 : 0;
 }
 
 void FancyList::cursor_down() { // increment but dont let (cursor > elements.size)
+  internal_update();
   cursor += (cursor < (*elements).size() - 1) ? 1 : 0;
-  start_line += (cursor >= start_line + h) ? 1 : 0;
+  start_line += (cursor >= start_line + visible_rows) ? 1 : 0;
 }
 
 void FancyList::internal_update() {
@@ -102,10 +104,6 @@ void FancyList::internal_update() {
       break;
     }
     visible_rows++;
-  }
-
-  if (cursor < start_line || start_line + visible_rows < cursor) {
-    start_line = cursor;
   }
 }
 
