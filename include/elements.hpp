@@ -19,9 +19,9 @@ public:
   int fg_col, bg_col;
 
   Text();
-  Text(const std::string &rT, int w, int h, int fg_col, int bg_col);
-  Text(std::string &&lT, int w, int h, int fg_col, int bg_col);
-  Text(std::shared_ptr<std::string> sharedT, int w, int h, int fg_col, int bg_col);
+  Text(const std::string &rT, int w, int h, int fg_col=clr::DEFAULT, int bg_col=clr::DEFAULT);
+  Text(std::string &&lT, int w, int h, int fg_col=clr::DEFAULT, int bg_col=clr::DEFAULT);
+  Text(std::shared_ptr<std::string> sharedT, int w, int h, int fg_col=clr::DEFAULT, int bg_col=clr::DEFAULT);
 
   std::shared_ptr<std::string> share() const; // share function shares a pointer to the content for this class only text needs to be shared, but more advanced
                                               // classes may need multiple share function
@@ -42,13 +42,13 @@ public:
 
   Input();
   // without placeholders
-  Input(const std::string &rVal, int w, int valCol);
-  Input(std::shared_ptr<std::string> sharedVal, int w, int valCol);
+  Input(const std::string &rVal, int w, int valCol=clr::DEFAULT);
+  Input(std::shared_ptr<std::string> sharedVal, int w, int valCol=clr::DEFAULT);
   // with placeholders
-  Input(const std::string &rVal, const std::string &rPlh, int w, int valCol, int plhCol);
-  Input(const std::string &lVal, std::string &&lPlh, int w, int valCol, int plhCol);
-  Input(std::shared_ptr<std::string> sharedVal, std::shared_ptr<std::string> sharedPlh, int w, int valCol, int plhCol);
-  Input(std::shared_ptr<std::string> sharedVal, std::string &&lPlh, int w, int valCol, int plhCol);
+  Input(const std::string &rVal, const std::string &rPlh, int w, int valCol=clr::DEFAULT, int plhCol=clr::DARKGREY);
+  Input(const std::string &lVal, std::string &&lPlh, int w, int valCol=clr::DEFAULT, int =clr::DARKGREY);
+  Input(std::shared_ptr<std::string> sharedVal, std::shared_ptr<std::string> sharedPlh, int w, int valCol=clr::DEFAULT, int plhCol=clr::DARKGREY);
+  Input(std::shared_ptr<std::string> sharedVal, std::string &&lPlh, int w, int valCol, int plhCol=clr::DEFAULT=clr::DARKGREY);
 
   const std::string &getVal() const;
   std::string &getVal();

@@ -16,8 +16,6 @@ public:
   std::shared_ptr<std::string> title, content;
   int w, h;
 
-  // still need to fill in width and height stuff here
-
   InfoBox();
   InfoBox(const std::string &t, const std::string &c);
   InfoBox(std::string &&t, std::string &&c);
@@ -58,7 +56,9 @@ private:
   int text_width;    // width of text accounting for padding
   int content_lines; // total number of lines of content
   int visible_lines; // total number of lines in view
-  int overhead;      // number of lines reserved for header & footer
+  // int overhead;      // number of lines reserved for header & footer
+  int voh;    // vertical overhead (3 header + 2 footer)
+  int hoh;    // horizontal overhead (2 left + 2 right)
 
   void display();
   bool process_input(); /* return values:
@@ -105,28 +105,35 @@ class InputPage {
 public:
   std::shared_ptr<const std::string> title;
   std::shared_ptr<std::vector<std::string>> fields;
-  std::shared_ptr<std::vector<std::string>> responses;
+  std::shared_ptr<std::vector<Input>> responses;
+
+  int col;
 
   InputPage();
-  InputPage(std::string &t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0); // existing t + existing vectors of strings
-  InputPage(std::string &t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 0); // shared t + .share()
+  InputPage(std::string &t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0,
+            int col = clr::PASTELPINK); // existing t + existing vectors of strings
+  InputPage(std::string &t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 0,
+            int col = clr::PASTELPINK); // shared t + .share()
 
-  InputPage(std::string &&t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0); // rvalue t + existing vectors of strings
-  InputPage(std::string &&t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 0); // rvalue t + .share()
+  InputPage(std::string &&t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0,
+            int col = clr::PASTELPINK); // rvalue t + existing vectors of strings
+  InputPage(std::string &&t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 0,
+            int col = clr::PASTELPINK); // rvalue t + .share()
 
-  InputPage(std::shared_ptr<std::string> t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0); // shared t + existing vectors of strings
-  InputPage(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r,
-            int ls = 0); // all .share()
+  InputPage(std::shared_ptr<std::string> t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0,
+            int col = clr::PASTELPINK); // shared t + existing vectors of strings
+  InputPage(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 0,
+            int col = clr::PASTELPINK); // all .share()
 
-  std::shared_ptr<std::vector<std::string>> shareFields() const;
+  // std::shared_ptr<std::vector<std::string>> shareFields() const;
 
-  const std::vector<std::string> &getFields() const;
-  std::vector<std::string> &getFields();
+  // const std::vector<std::string> &getFields() const;
+  // std::vector<std::string> &getFields();
 
-  std::shared_ptr<std::vector<std::string>> shareResponses() const;
+  // std::shared_ptr<std::vector<std::string>> shareResponses() const;
 
-  const std::vector<std::string> &getResponses() const;
-  std::vector<std::string> &getResponses();
+  // const std::vector<std::string> &getResponses() const;
+  // std::vector<std::string> &getResponses();
 
   int show(); /* return values:
   -1: exit
@@ -140,7 +147,9 @@ private:
   int visible_lines;   // total number of lines in view
   int start_line;      // index value of first line which shows in view
   int line_seperation; // number of blank lines between elements
-  int overhead;        // number of lines reserved for header & footer
+  // int overhead;        // number of lines reserved for header (3) & footer (2)
+  int voh;    // vertical overhead (3 header + 2 footer)
+  int hoh;    // horizontal overhead (2 left + 2 right)
 
   void display();
   int process_input(); /* return values:
@@ -177,6 +186,8 @@ public:
 private:
   Console cons;
   int cursor; // current scroll value
+  int voh;    // vertical overhead
+  int hoh;    // horizontal overhead
 
   void display();
   bool process_input();
@@ -231,32 +242,13 @@ public:
 private:
   Console cons;
   int cursor; // current scroll value
+  int voh;    // vertical overhead
+  int hoh;    // horizontal overhead
 
   void display();
   bool process_input();
 
   void update_size();
-};
-
-class SpreadSheet {};
-
-class Editor {
-public:
-  const std::string &title;
-  std::string &text;
-
-  Editor(const std::string &title, std::string &text);
-
-  void show();
-
-private:
-  Console cons;
-  int cursor;
-  int overhead;
-  int visible_lines;
-
-  void display();
-  bool process_input();
 };
 
 class BinaryMenu {
@@ -282,6 +274,58 @@ private:
 
   void display();
   bool process_input();
+
+  void update_size();
+};
+
+class Editor {
+public:
+  std::shared_ptr<std::string> title, content;
+
+  Editor();
+  Editor(const std::string &title, const std::string &content);
+  Editor(std::shared_ptr<std::string> sharedTitle, std::shared_ptr<std::string> sharedContent);
+
+  void show();
+
+private:
+  Console cons;
+  int line_cursor;   // current scroll value
+  int text_width;    // width of text accounting for padding
+  int content_lines; // total number of lines of content
+  int visible_lines; // total number of lines in view
+  int voh;           // vertical overhead
+  int hoh;           // horizontal overhead
+
+  void display();
+  bool process_input(); /* return values:
+   t: continue
+   f: exit
+   */
+
+  void update_size();
+};
+
+class Spreadsheet {
+public:
+  std::shared_ptr<std::string> title;
+  std::shared_ptr<Table> data;
+
+  Spreadsheet();
+  Spreadsheet(const std::string &title, Table &table);
+  Spreadsheet(std::shared_ptr<std::string> title, std::shared_ptr<Table> table);
+
+  void show();
+
+private:
+  Console cons;
+  int voh; // number of lines reserved for header (3) & footer (2)
+
+  void display();
+  bool process_input(); /* return values:
+   t: continue
+   f: exit
+   */
 
   void update_size();
 };

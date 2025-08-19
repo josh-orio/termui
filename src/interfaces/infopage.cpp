@@ -3,25 +3,12 @@
 namespace termui {
 
 InfoPage::InfoPage() = default;
-InfoPage::InfoPage(const std::string &t, const std::string &c) : title(std::make_shared<std::string>(t)), content(std::make_shared<std::string>(c)) {
-  cons = Console(false, false, false, true);
-
-  line_cursor = 0;
-  overhead = 4; // header(3) + footer(1)
-}
+InfoPage::InfoPage(const std::string &t, const std::string &c)
+    : title(std::make_shared<std::string>(t)), content(std::make_shared<std::string>(c)), cons(), voh(5), hoh(4), line_cursor(0) {}
 InfoPage::InfoPage(std::string &&t, std::string &&c)
-    : title(std::make_shared<std::string>(std::move(t))), content(std::make_shared<std::string>(std::move(c))) {
-  cons = Console(false, false, false, true);
-
-  line_cursor = 0;
-  overhead = 4; // header(3) + footer(1)
-}
-InfoPage::InfoPage(std::shared_ptr<std::string> sharedT, std::shared_ptr<std::string> sharedC) : title(std::move(sharedT)), content(std::move(sharedC)) {
-  cons = Console(false, false, false, true);
-
-  line_cursor = 0;
-  overhead = 4; // header(3) + footer(1)
-}
+    : title(std::make_shared<std::string>(std::move(t))), content(std::make_shared<std::string>(std::move(c))), cons(), voh(5), hoh(4), line_cursor(0) {}
+InfoPage::InfoPage(std::shared_ptr<std::string> sharedT, std::shared_ptr<std::string> sharedC)
+    : title(std::move(sharedT)), content(std::move(sharedC)), cons(), voh(5), hoh(4), line_cursor(0) {}
 
 void InfoPage::show() {
   cons.show(); // configure terminal
@@ -63,7 +50,7 @@ void InfoPage::display() {
 
   content_lines = formatted.size();
 
-  cons.print(2, 2, (*title));
+  cons.print(2, 2, bt(*title));
 
   int space_used = 0;
   for (int i = line_cursor; i < std::min(line_cursor + visible_lines, (int)formatted.size()); i++) {
@@ -97,8 +84,8 @@ bool InfoPage::process_input() {
 void InfoPage::update_size() {
   cons.update_size();
 
-  text_width = cons.width - 4; // 2 space padding on each side
-  visible_lines = cons.height - overhead;
+  visible_lines = cons.height - voh;
+  text_width = cons.width - hoh;
 }
 
 } // namespace termui

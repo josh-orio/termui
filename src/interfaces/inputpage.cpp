@@ -4,67 +4,60 @@
 namespace termui {
 InputPage::InputPage() = default;
 InputPage::InputPage(std::string &t, std::vector<std::string> &f, std::vector<std::string> &r, int ls, int col) // existing t + existing vectors of strings
-    : title(std::make_shared<std::string>(t)), fields(std::make_shared<std::vector<std::string>>(f)), responses(std::make_shared<std::vector<Input>>()),
-      line_seperation(ls), col(col), overhead(5) {
-  cons = Console(false, false, false, true);
+    : title(std::make_shared<std::string>(t)), fields(std::make_shared<std::vector<std::string>>(f)), responses(std::make_shared<std::vector<Input>>()), cons(),
+      line_seperation(ls), col(col), voh(5) {
 
   (*responses).reserve(r.size());
   for (const auto &elem : r) {
-    (*responses).emplace_back(elem, 1 /* updated in update_size */, clr::DEFAULT);
+    (*responses).emplace_back(elem, 1 /* updated in update_size */);
   }
 };
 InputPage::InputPage(std::string &t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls,
                      int col) // shared t + .share()
-    : title(std::make_shared<std::string>(t)), fields(f), responses(std::make_shared<std::vector<Input>>()), line_seperation(ls), col(col), overhead(5) {
-  cons = Console(false, false, false, true);
+    : title(std::make_shared<std::string>(t)), fields(f), responses(std::make_shared<std::vector<Input>>()), line_seperation(ls), col(col), voh(5) {
 
   (*responses).reserve((*r).size());
   for (const auto &elem : *r) {
-    (*responses).emplace_back(elem, 1 /* updated in update_size */, clr::DEFAULT);
+    (*responses).emplace_back(elem, 1 /* updated in update_size */);
   }
 };
 
 InputPage::InputPage(std::string &&t, std::vector<std::string> &f, std::vector<std::string> &r, int ls, int col) // rvalue t + existing vectors of strings
     : title(std::make_shared<std::string>(std::move(t))), fields(std::make_shared<std::vector<std::string>>(f)),
-      responses(std::make_shared<std::vector<Input>>()), line_seperation(ls), col(col), overhead(5) {
-  cons = Console(false, false, false, true);
+      responses(std::make_shared<std::vector<Input>>()), line_seperation(ls), col(col), voh(5) {
 
   (*responses).reserve(r.size());
   for (const auto &elem : r) {
-    (*responses).emplace_back(elem, 1 /* updated in update_size */, clr::DEFAULT);
+    (*responses).emplace_back(elem, 1 /* updated in update_size */);
   }
 };
 InputPage::InputPage(std::string &&t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls,
                      int col) // rvalue t + .share()
-    : title(std::make_shared<std::string>(std::move(t))), fields(f), responses(std::make_shared<std::vector<Input>>()), line_seperation(ls), col(col),
-      overhead(5) {
-  cons = Console(false, false, false, true);
+    : title(std::make_shared<std::string>(std::move(t))), fields(f), responses(std::make_shared<std::vector<Input>>()), line_seperation(ls), col(col), voh(5) {
 
   (*responses).reserve((*r).size());
   for (const auto &elem : *r) {
-    (*responses).emplace_back(elem, 1 /* updated in update_size */, clr::DEFAULT);
+    (*responses).emplace_back(elem, 1 /* updated in update_size */);
   }
 };
 
 InputPage::InputPage(std::shared_ptr<std::string> t, std::vector<std::string> &f, std::vector<std::string> &r, int ls,
                      int col) // shared t + existing vectors of strings
     : title(t), fields(std::make_shared<std::vector<std::string>>(f)), responses(std::make_shared<std::vector<Input>>()), line_seperation(ls), col(col),
-      overhead(5) {
-  cons = Console(false, false, false, true);
+      voh(5) {
 
   (*responses).reserve(r.size());
   for (const auto &elem : r) {
-    (*responses).emplace_back(elem, 1 /* updated in update_size */, clr::DEFAULT);
+    (*responses).emplace_back(elem, 1 /* updated in update_size */);
   }
 };
 InputPage::InputPage(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls,
                      int col) // all .share()
-    : title(t), fields(f), responses(std::make_shared<std::vector<Input>>()), line_seperation(ls), col(col), overhead(5) {
-  cons = Console(false, false, false, true);
+    : title(t), fields(f), responses(std::make_shared<std::vector<Input>>()), line_seperation(ls), col(col), voh(5) {
 
   (*responses).reserve((*r).size());
   for (const auto &elem : *r) {
-    (*responses).emplace_back(elem, 1 /* updated in update_size */, clr::DEFAULT);
+    (*responses).emplace_back(elem, 1 /* updated in update_size */);
   }
 };
 
@@ -111,7 +104,7 @@ void InputPage::display() {
     std::string fld(subsetF.at(i));
     std::string rsp(subsetR.at(i).render());
 
-    if (i+start_line == cursor) {
+    if (i + start_line == cursor) {
       cons.print(fg_apply(bt("> " + fld) + ": " + rsp, col));
       // cons.print((curs_down(line_seperation+1) + curs_left(4 + fld.length() + rsp.length())));
       cons.print((curs_down(line_seperation + 1) + curs_left(4 + fld.length() + (*responses).at(i).w)));
@@ -211,7 +204,7 @@ void InputPage::update_size() {
     // calculates lines used by displaying another row of cells
     int space_used = (visible_lines + 1) + (line_seperation * visible_lines);
 
-    if (space_used > (cons.height - overhead)) {
+    if (space_used > (cons.height - voh)) {
       break;
     }
     visible_lines++;
