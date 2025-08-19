@@ -11,9 +11,6 @@ file(GLOB TERMUI_INCLUDE "include/*.hpp")
 add_library(termui ${TERMUI_SOURCES})
 target_include_directories(termui PRIVATE include)
 
-find_package(nlohmann_json REQUIRED)
-target_link_libraries(termui PUBLIC nlohmann_json::nlohmann_json)
-
 set_target_properties(termui
     PROPERTIES
     CMAKE_CXX_STANDARD 20
