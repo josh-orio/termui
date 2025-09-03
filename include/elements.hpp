@@ -1,7 +1,7 @@
 #ifndef ELEMENTS_HPP
 #define ELEMENTS_HPP
 
-#include "structs.hpp"
+#include "str.hpp"
 #include "unicode.hpp"
 #include "util.hpp"
 #include <memory>
@@ -12,19 +12,18 @@ namespace termui {
 
 class Text {
 private:
-  std::shared_ptr<std::string> text;
+  termui::string text;
 
 public:
   int w, h;
   int fg_col, bg_col;
 
   Text();
-  Text(const std::string &rT, int w, int h, int fg_col=clr::DEFAULT, int bg_col=clr::DEFAULT);
-  Text(std::string &&lT, int w, int h, int fg_col=clr::DEFAULT, int bg_col=clr::DEFAULT);
-  Text(std::shared_ptr<std::string> sharedT, int w, int h, int fg_col=clr::DEFAULT, int bg_col=clr::DEFAULT);
+  Text(const termui::string &t, int w, int h, int fg_col = clr::DEFAULT, int bg_col = clr::DEFAULT);
+  Text(const std::string &t, int w, int h, int fg_col = clr::DEFAULT, int bg_col = clr::DEFAULT);
+  Text(std::shared_ptr<std::string> &t, int w, int h, int fg_col = clr::DEFAULT, int bg_col = clr::DEFAULT);
 
-  std::shared_ptr<std::string> share() const; // share function shares a pointer to the content for this class only text needs to be shared, but more advanced
-                                              // classes may need multiple share function
+  std::shared_ptr<std::string> share() const;
 
   const std::string &getText() const;
   std::string &getText();
@@ -34,21 +33,22 @@ public:
 
 class Input {
 private:
-  std::shared_ptr<std::string> val, plh; // value, placeholder
+  termui::string val, plh; // value, placeholder
 
 public:
   int w;
   int valCol, plhCol; // color codes for value and placeholder text
 
   Input();
-  // without placeholders
-  Input(const std::string &rVal, int w, int valCol=clr::DEFAULT);
-  Input(std::shared_ptr<std::string> sharedVal, int w, int valCol=clr::DEFAULT);
-  // with placeholders
-  Input(const std::string &rVal, const std::string &rPlh, int w, int valCol=clr::DEFAULT, int plhCol=clr::DARKGREY);
-  Input(const std::string &lVal, std::string &&lPlh, int w, int valCol=clr::DEFAULT, int =clr::DARKGREY);
-  Input(std::shared_ptr<std::string> sharedVal, std::shared_ptr<std::string> sharedPlh, int w, int valCol=clr::DEFAULT, int plhCol=clr::DARKGREY);
-  Input(std::shared_ptr<std::string> sharedVal, std::string &&lPlh, int w, int valCol, int plhCol=clr::DEFAULT=clr::DARKGREY);
+  Input(const termui::string &val, const termui::string &plh, int w, int valCol = clr::DEFAULT, int plhCol = clr::LIGHTGREY); // with placeholder
+  Input(const termui::string &val, const std::string &plh, int w, int valCol = clr::DEFAULT, int plhCol = clr::LIGHTGREY);    // with std str placeholder
+  Input(const termui::string &val, int w, int valCol = clr::DEFAULT);                                                         // without placeholder
+  Input(std::shared_ptr<std::string> val, std::shared_ptr<std::string> plh, int w, int valCol = clr::DEFAULT, int plhCol = clr::LIGHTGREY); // with placeholder
+  Input(std::shared_ptr<std::string> val, const std::string &plh, int w, int valCol = clr::DEFAULT, int plhCol = clr::LIGHTGREY); // with std str placeholder
+  Input(std::shared_ptr<std::string> val, int w, int valCol = clr::DEFAULT);                                                      // without placeholder
+
+  std::shared_ptr<std::string> shareVal() const;
+  std::shared_ptr<std::string> sharePlh() const;
 
   const std::string &getVal() const;
   std::string &getVal();
@@ -61,7 +61,7 @@ public:
 
 class Button {
 private:
-  std::shared_ptr<std::string> text;
+  termui::string text;
 
 public:
   int w;
@@ -69,9 +69,10 @@ public:
   int active_color, idle_color;
 
   Button();
-  Button(const std::string &rT, int w, int active_color, int idle_color);
-  Button(std::string &&lT, int w, int active_color, int idle_color);
-  Button(std::shared_ptr<std::string> sharedT, int w, int active_color, int idle_color);
+  Button(const termui::string &t, int w, int active_color, int idle_color);
+  Button(const std::string &t, int w, int active_color, int idle_color);
+
+  std::shared_ptr<std::string> shareText() const;
 
   const std::string &getText() const;
   std::string &getText();
@@ -81,7 +82,7 @@ public:
 
 class List {
 private:
-  std::shared_ptr<std::vector<item::ListItem>> elements;
+  termui::strings elements;
 
   int visible_lines;
   int start_line;
@@ -94,19 +95,13 @@ public:
   int line_spacing;
   int active_color;
 
-  List();
-  List(const std::vector<item::ListItem> &rE, int w, int h, int ls = 0, int col = clr::PASTELPINK);
-  List(std::vector<item::ListItem> &&lE, int w, int h, int ls = 0, int col = clr::PASTELPINK);
-  List(std::shared_ptr<std::vector<item::ListItem>> sharedE, int w, int h, int ls = 0, int col = clr::PASTELPINK);
+  List(const termui::strings &strs, int w, int h, int ls = 0, int col = clr::PASTELPINK);
 
-  List(std::vector<std::string> &lStrs, int w, int h, int ls = 0, int col = clr::PASTELPINK);
-  List(std::vector<std::string> &&rStrs, int w, int h, int ls = 0, int col = clr::PASTELPINK);
-  List(std::shared_ptr<std::vector<std::string>> sharedStrs, int w, int h, int ls = 0, int col = clr::PASTELPINK);
+  const termui::strings &getStrings() const { return elements; }
+  termui::strings &getStrings() { return elements; }
 
-  std::shared_ptr<std::vector<item::ListItem>> share() const;
-
-  const std::vector<item::ListItem> &getElements() const;
-  std::vector<item::ListItem> &getElements();
+  const std::string &getElement(int i) const { return elements.getItem(i); }
+  std::string &getElement(int i) { return elements.getItem(i); }
 
   std::string render();
 
@@ -116,7 +111,8 @@ public:
 
 class SelectList {
 private:
-  std::shared_ptr<std::vector<item::MultiListItem>> elements;
+  termui::strings elements;
+  std::vector<bool> selmap;
 
   int visible_lines;
   int start_line;
@@ -129,18 +125,15 @@ public:
   int line_spacing;
   int active_color;
 
-  SelectList();
-  SelectList(const std::vector<item::MultiListItem> &e, int w, int h, int ls = 0, int col = clr::PASTELPINK);
-  SelectList(std::vector<item::MultiListItem> &&e, int w, int h, int ls = 0, int col = clr::PASTELPINK);
-  SelectList(std::shared_ptr<std::vector<item::MultiListItem>> shared, int w, int h, int ls = 0, int col = clr::PASTELPINK);
-  SelectList(std::vector<std::string> &lStrs, int w, int h, int ls = 0, int col = clr::PASTELPINK);
-  SelectList(std::vector<std::string> &&rStrs, int w, int h, int ls = 0, int col = clr::PASTELPINK);
-  SelectList(std::shared_ptr<std::vector<std::string>> sharedStrs, int w, int h, int ls = 0, int col = clr::PASTELPINK);
+  SelectList(const termui::strings &strs, int w, int h, int ls = 0, int col = clr::PASTELPINK);
 
-  std::shared_ptr<std::vector<item::MultiListItem>> share() const;
+  const termui::strings &getStrings() const;
+  termui::strings &getStrings();
 
-  const std::vector<item::MultiListItem> &getElements() const;
-  std::vector<item::MultiListItem> &getElements();
+  const std::string &getElement(int i) const;
+  std::string &getElement(int i);
+
+  bool getSelection(int i);
 
   std::string render();
 
@@ -151,7 +144,7 @@ public:
 
 class FancyList {
 private:
-  std::shared_ptr<std::vector<item::FancyListItem>> elements;
+  termui::strings text, desc;
 
   int visible_rows;
   int start_line;
@@ -164,18 +157,13 @@ public:
   int line_spacing;
   int active_color;
 
-  FancyList();
-  FancyList(std::vector<item::FancyListItem> &e, int w, int h, int ls = 1, int col = clr::PASTELPINK);
-  FancyList(std::vector<item::FancyListItem> &&e, int w, int h, int ls = 1, int col = clr::PASTELPINK);
-  FancyList(std::shared_ptr<std::vector<item::FancyListItem>> shared, int w, int h, int ls = 1, int col = clr::PASTELPINK);
-  FancyList(std::vector<std::string> &e, std::vector<std::string> &d, int w, int h, int ls = 1, int col = clr::PASTELPINK);
-  FancyList(std::vector<std::string> &&e, std::vector<std::string> &&d, int w, int h, int ls = 1, int col = clr::PASTELPINK);
-  FancyList(std::shared_ptr<std::vector<std::string>> e, std::shared_ptr<std::vector<std::string>> d, int w, int h, int ls = 1, int col = clr::PASTELPINK);
+  FancyList(const termui::strings &tstrs, const termui::strings &dstrs, int w, int h, int ls = 0, int col = clr::PASTELPINK);
 
-  std::shared_ptr<std::vector<item::FancyListItem>> share() const;
+  const std::string &getText(int i) const;
+  std::string &getText(int i);
 
-  const std::vector<item::FancyListItem> &getElements() const;
-  std::vector<item::FancyListItem> &getElements();
+  const std::string &getDesc(int i) const;
+  std::string &getDesc(int i);
 
   std::string render();
 
@@ -184,10 +172,12 @@ public:
 };
 
 class Table {
-public:
-  std::shared_ptr<std::vector<item::TableColumn>> columns;
-  std::shared_ptr<std::vector<item::TableRow>> rows;
+private:
+  termui::strings cols;
+  std::vector<int> colwidths;
+  std::vector<termui::strings> rows;
 
+public:
   int cursor;
   int line_seperation; // number of blank lines between rows
   int cell_height;     // number of lines to a cell
@@ -195,20 +185,32 @@ public:
   int table_height;
   int table_width;
 
-  Table();
-  Table(const std::vector<item::TableColumn> &cols, const std::vector<item::TableRow> &rs, int table_height, int cell_height = 1, int line_seperation = 0,
-        int col = clr::BLUEPURPLE);
-  Table(std::vector<item::TableColumn> &&cols, std::vector<item::TableRow> &&rs, int table_height, int cell_height = 1, int line_seperation = 0,
-        int col = clr::BLUEPURPLE);
-  Table(std::shared_ptr<std::vector<item::TableColumn>> cols, std::shared_ptr<std::vector<item::TableRow>> rs, int table_height, int cell_height = 1,
+  Table(const termui::strings &cols, std::vector<int> colwidths, const std::vector<termui::strings> &rows, int table_height, int cell_height = 1,
         int line_seperation = 0, int col = clr::BLUEPURPLE);
+
+  const termui::strings &getCols() const;
+  termui::strings &getCols();
+
+  // get colw
+  const int &colWidth(int i) const;
+  int &colWidth(int i);
+
+  // get row
+  const termui::strings &getRow(int i) const;
+  termui::strings &getRow(int i);
+
+  // get cell by x y
+  const std::string &getCell(int row, int col) const;
+  std::string &getCell(int row, int col);
+
+  // dimensions
+  int colCount();
+  int rowCount();
 
   std::string render();
 
   void cursor_up();
   void cursor_down();
-
-  item::TableColumn &getCol(int i);
 
 private:
   int visible_rows; // number of table rows that fit the h restraint
@@ -248,16 +250,6 @@ public:
   DashedArea(int w, int h, int col);
 
   std::string render();
-};
-
-class Spinner {
-public:
-  Spinner();
-
-  std::string render();
-
-private:
-  const std::string symbols = "⠋⠙⠸⠴⠦⠇";
 };
 
 } // namespace termui

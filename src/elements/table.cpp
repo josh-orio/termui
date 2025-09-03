@@ -2,40 +2,25 @@
 
 namespace termui {
 
-Table::Table() = default;
-Table::Table(const std::vector<item::TableColumn> &cols, const std::vector<item::TableRow> &rs, int table_height, int cell_height, int line_seperation, int col)
-    : columns(std::make_shared<std::vector<item::TableColumn>>(cols)), rows(std::make_shared<std::vector<item::TableRow>>(rs)), table_height(table_height),
-      cell_height(cell_height), line_seperation(line_seperation), active_color(col) {
-
-  box_color = clr::DARKGREY;
-
-  table_width = 1;
-  for (auto &c : *columns) {
-    table_width += c.getWidth() + 1;
-  }
-}
-Table::Table(std::vector<item::TableColumn> &&cols, std::vector<item::TableRow> &&rs, int table_height, int cell_height, int line_seperation, int col)
-    : columns(std::make_shared<std::vector<item::TableColumn>>(std::move(cols))), rows(std::make_shared<std::vector<item::TableRow>>(std::move(rs))),
-      table_height(table_height), cell_height(cell_height), line_seperation(line_seperation), active_color(col) {
-  box_color = clr::DARKGREY;
-
-  table_width = 1;
-  for (auto &c : *columns) {
-    table_width += c.getWidth() + 1;
-  }
-}
-Table::Table(std::shared_ptr<std::vector<item::TableColumn>> cols, std::shared_ptr<std::vector<item::TableRow>> rs, int table_height, int cell_height,
+Table::Table(const termui::strings &cols, std::vector<int> colwidths, const std::vector<termui::strings> &rs, int table_height, int cell_height,
              int line_seperation, int col)
-    : columns(std::move(cols)), rows(std::move(rs)), table_height(table_height), cell_height(cell_height), line_seperation(line_seperation), active_color(col) {
-  box_color = clr::DARKGREY;
+    : cols(cols), colwidths(colwidths), rows(rs), table_height(table_height), cell_height(cell_height), line_seperation(line_seperation), active_color(col),
+      cursor(0), start_line(0), box_color(clr::DARKGREY), overhead(4) {}
 
-  table_width = 1;
-  for (auto &c : *columns) {
-    table_width += c.getWidth() + 1;
-  }
-}
+const termui::strings &Table::getCols() const { return cols; }
+termui::strings &Table::getCols() { return cols; }
 
-item::TableColumn &Table::getCol(int i) { return columns->at(i); };
+const int &Table::colWidth(int i) const { return colwidths.at(i); }
+int &Table::colWidth(int i) { return colwidths.at(i); }
+
+const termui::strings &Table::getRow(int i) const { return rows.at(i); }
+termui::strings &Table::getRow(int i) { return rows.at(i); }
+
+const std::string &Table::getCell(int row, int col) const { return rows.at(row).getItem(col); }
+std::string &Table::getCell(int row, int col) { return rows.at(row).getItem(col); }
+
+int Table::colCount() { return cols.size(); }
+int Table::rowCount() { return rows.size(); }
 
 std::string Table::render() {
   internal_update();
@@ -46,10 +31,10 @@ std::string Table::render() {
   outbuff += curs_up(table_height - 2) + curs_left(table_width - 1);
 
   std::string header;
-  for (int i = 0; i < (*columns).size(); i++) {
-    header += Text(columns->at(i).getText(), columns->at(i).getWidth(), 1, clr::DEFAULT, clr::DEFAULT).render();
+  for (int i = 0; i < cols.size(); i++) {
+    header += Text(cols.getItem(i), colwidths.at(i), 1, clr::DEFAULT, clr::DEFAULT).render();
 
-    if (i != columns->size() - 1) {
+    if (i != cols.size() - 1) {
       header += " ";
     }
   }
@@ -62,8 +47,7 @@ std::string Table::render() {
   std::string row_text; // just a buffer for this row output
   std::string cell_text;
 
-  // replace these with Text blocks, append direct to outbuff
-  for (int i = start_line; i < std::min((int)(*rows).size(), start_line + visible_rows); i++) {
+  for (int i = start_line; i < std::min((int)rows.size(), start_line + visible_rows); i++) {
     row_text = "";
 
     if (i == cursor) {
@@ -74,15 +58,15 @@ std::string Table::render() {
       row_text += curs_left(table_width - 2); // go back to row origin, up if cell multiline, left to start of col 0
     }
 
-    for (int ii = 0; ii < (*columns).size(); ii++) {
+    for (int ii = 0; ii < cols.size(); ii++) {
       if (i == cursor) {
-        cell_text = Text((*rows).at(i).cells->at(ii).data(), (*columns).at(i).getWidth(), cell_height, clr::DEFAULT, active_color).render();
+        cell_text = Text(rows.at(i).getItem(ii), /*(*rows).at(i).cells->at(ii).data(),*/ colwidths.at(i), cell_height, clr::DEFAULT, active_color).render();
       } else {
-        cell_text = Text((*rows).at(i).cells->at(ii).data(), (*columns).at(i).getWidth(), cell_height, clr::DEFAULT, clr::DEFAULT).render();
+        cell_text = Text(rows.at(i).getItem(ii), /*(*rows).at(i).cells->at(ii).data(),*/ colwidths.at(i), cell_height, clr::DEFAULT, clr::DEFAULT).render();
       }
 
       row_text += cell_text;
-      if (ii != (*columns).size() - 1) { // if not last column
+      if (ii != cols.size() - 1) { // if not last column
         if (cell_height > 1) {
           row_text += curs_up(cell_height - 1); // ansi 0 arg treated as 1
         }
@@ -103,13 +87,14 @@ void Table::cursor_up() { // decrement but dont let (cursor < 0)
   start_line -= (cursor < start_line) ? 1 : 0;
 }
 
-void Table::cursor_down() { // increment but dont let (cursor > options.size)
+void Table::cursor_down() { // increment but dont let (cursor > rows.size)
   internal_update();
-  cursor += (cursor < rows->size() - 1) ? 1 : 0;
+  cursor += (cursor < rows.size() - 1) ? 1 : 0;
   start_line += (cursor >= start_line + visible_rows) ? 1 : 0;
 }
 
 void Table::internal_update() {
+
   visible_rows = 0;
   while (true) {
     // calculates lines used by displaying another row of cells
@@ -123,6 +108,11 @@ void Table::internal_update() {
 
   if (cursor < start_line || start_line + visible_rows < cursor) {
     start_line = cursor;
+  }
+
+  table_width = 1;
+  for (auto &c : colwidths) {
+    table_width += c + 1;
   }
 }
 

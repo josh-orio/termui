@@ -2,77 +2,36 @@
 
 namespace termui {
 
-FancyList::FancyList() = default;
-FancyList::FancyList(std::vector<item::FancyListItem> &e, int w, int h, int ls, int col)
-    : elements(std::make_shared<std::vector<item::FancyListItem>>(e)), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {}
-FancyList::FancyList(std::vector<item::FancyListItem> &&e, int w, int h, int ls, int col)
-    : elements(std::make_shared<std::vector<item::FancyListItem>>(std::move(e))), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {}
-FancyList::FancyList(std::shared_ptr<std::vector<item::FancyListItem>> shared, int w, int h, int ls, int col)
-    : elements(std::move(shared)), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {}
+FancyList::FancyList(const termui::strings &tstrs, const termui::strings &dstrs, int w, int h, int ls, int col)
+    : text(tstrs), desc(dstrs), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {}
 
-FancyList::FancyList(std::vector<std::string> &e, std::vector<std::string> &d, int w, int h, int ls, int col)
-    : elements(std::make_shared<std::vector<item::FancyListItem>>()), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {
-  (*elements).reserve(e.size());
+const std::string &FancyList::getText(int i) const { return text.getItem(i); }
+std::string &FancyList::getText(int i) { return text.getItem(i); }
 
-  auto it1 = e.begin();
-  auto it2 = d.begin();
-
-  for (; it1 != e.end() && it2 != d.end(); ++it1, ++it2) {
-    (*elements).emplace_back(*it1, *it2);
-  }
-}
-FancyList::FancyList(std::vector<std::string> &&e, std::vector<std::string> &&d, int w, int h, int ls, int col)
-    : elements(std::make_shared<std::vector<item::FancyListItem>>()), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {
-  (*elements).reserve(e.size());
-
-  auto it1 = e.begin();
-  auto it2 = d.begin();
-
-  for (; it1 != e.end() && it2 != d.end(); ++it1, ++it2) {
-    (*elements).emplace_back(std::move(*it1), std::move(*it2));
-  }
-}
-FancyList::FancyList(std::shared_ptr<std::vector<std::string>> e, std::shared_ptr<std::vector<std::string>> d, int w, int h, int ls, int col)
-    : elements(std::make_shared<std::vector<item::FancyListItem>>()), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {
-  if (e) {
-    (*elements).reserve((*e).size());
-
-    auto it1 = (*e).begin();
-    auto it2 = (*d).begin();
-
-    for (; it1 != (*e).end() && it2 != (*d).end(); ++it1, ++it2) {
-      (*elements).emplace_back(*it1, *it2);
-    }
-  }
-}
-
-std::shared_ptr<std::vector<item::FancyListItem>> FancyList::share() const { return elements; }
-
-const std::vector<item::FancyListItem> &FancyList::getElements() const { return *elements; }
-std::vector<item::FancyListItem> &FancyList::getElements() { return *elements; }
+const std::string &FancyList::getDesc(int i) const { return desc.getItem(i); }
+std::string &FancyList::getDesc(int i) { return desc.getItem(i); }
 
 std::string FancyList::render() {
   internal_update();
 
   std::string outbuff;
 
-  std::vector<item::FancyListItem> subset((*elements).begin() + start_line, (*elements).begin() + std::min((int)(*elements).size(), start_line + visible_rows));
-
-  for (int i = 0; i < subset.size(); i++) {
-    std::string text(subset.at(i).getText());
-    std::string desc(subset.at(i).getDesc());
+  std::string t, d;
+  for (int i = start_line; i < std::min((int)text.size(), start_line + visible_rows); i++) {
+    t = text.getItem(i);
+    d = desc.getItem(i);
 
     if (i + start_line == cursor) {
-      outbuff += fg_apply(bold_text(unicode::VERTICAL + " " + text), active_color);
-      outbuff += curs_left(2 + text.size()) + curs_down(1);
-      outbuff += fg_apply(bold_text(unicode::VERTICAL + " "), active_color) + fg_apply(desc, clr::LIGHTGREY);
-      outbuff += curs_left(2 + desc.size());
+      outbuff += fg_apply(bold_text(unicode::VERTICAL + " " + t), active_color);
+      outbuff += curs_left(2 + t.size()) + curs_down(1);
+      outbuff += fg_apply(bold_text(unicode::VERTICAL + " "), active_color) + fg_apply(d, clr::LIGHTGREY);
+      outbuff += curs_left(2 + d.size());
 
     } else {
-      outbuff += "  " + bold_text(text);
-      outbuff += curs_left(2 + text.size()) + curs_down(1);
-      outbuff += "  " + fg_apply(desc, clr::LIGHTGREY);
-      outbuff += curs_left(2 + desc.size());
+      outbuff += "  " + bold_text(t);
+      outbuff += curs_left(2 + t.size()) + curs_down(1);
+      outbuff += "  " + fg_apply(d, clr::LIGHTGREY);
+      outbuff += curs_left(2 + d.size());
 
     } // might want to replace this block
 
@@ -90,7 +49,7 @@ void FancyList::cursor_up() { // decrement but dont let (cursor < 0)
 
 void FancyList::cursor_down() { // increment but dont let (cursor > elements.size)
   internal_update();
-  cursor += (cursor < (*elements).size() - 1) ? 1 : 0;
+  cursor += (cursor < text.size() - 1) ? 1 : 0;
   start_line += (cursor >= start_line + visible_rows) ? 1 : 0;
 }
 

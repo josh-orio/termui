@@ -3,20 +3,16 @@
 namespace termui {
 
 Button::Button() = default;
-Button::Button(const std::string &rT, int w, int active_color, int idle_color)
-    : text(std::make_shared<std::string>(rT)), w(w), active_color(active_color), idle_color(idle_color) {}
-Button::Button(std::string &&lT, int w, int active_color, int idle_color)
-    : text(std::make_shared<std::string>(std::move(lT))), w(w), active_color(active_color), idle_color(idle_color) {}
-Button::Button(std::shared_ptr<std::string> sharedT, int w, int active_color, int idle_color)
-    : text(std::move(sharedT)), w(w), active_color(active_color), idle_color(idle_color) {}
+Button::Button(const termui::string &t, int w, int active_color, int idle_color) : text(t), w(w), active_color(active_color), idle_color(idle_color) {}
+Button::Button(const std::string &t, int w, int active_color, int idle_color) : text(t), w(w), active_color(active_color), idle_color(idle_color) {}
 
-const std::string &Button::getText() const { return *text; }
-std::string &Button::getText() { return *text; }
+const std::string &Button::getText() const { return text.text(); }
+std::string &Button::getText() { return text.text(); }
 
 std::string Button::render() {
   std::string outbuff;
 
-  std::string txt = (*text).data();
+  std::string txt = text.text();
 
   if (txt.length() > w) {
     outbuff += txt.substr(0, w - 1) + unicode::ELLIPSIS;

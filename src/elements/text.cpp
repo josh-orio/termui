@@ -3,23 +3,15 @@
 namespace termui {
 
 Text::Text() = default;
-Text::Text(const std::string &rT, int w, int h, int fg_col, int bg_col) : text(std::make_shared<std::string>(rT)), w(w), h(h), fg_col(fg_col), bg_col(bg_col) {}
-Text::Text(std::string &&lT, int w, int h, int fg_col, int bg_col)
-    : text(std::make_shared<std::string>(std::move(lT))), w(w), h(h), fg_col(fg_col), bg_col(bg_col) {}
-Text::Text(std::shared_ptr<std::string> sharedT, int w, int h, int fg_col, int bg_col) : text(std::move(sharedT)), w(w), h(h), fg_col(fg_col), bg_col(bg_col) {}
-
-std::shared_ptr<std::string> Text::share() const { return text; }
-// share function shares a pointer to the content
-// for this class only text needs to be shared, but more advanced classes may need multiple share function
-
-const std::string &Text::getText() const { return *text; }
-std::string &Text::getText() { return *text; }
+Text::Text(const termui::string &t, int w, int h, int fg_col, int bg_col) : text(t), w(w), h(h), fg_col(fg_col), bg_col(bg_col) {}
+Text::Text(const std::string &t, int w, int h, int fg_col, int bg_col) : text(t), w(w), h(h), fg_col(fg_col), bg_col(bg_col) {}
+Text::Text(std::shared_ptr<std::string> &t, int w, int h, int fg_col, int bg_col) : text(t), w(w), h(h), fg_col(fg_col), bg_col(bg_col) {}
 
 std::string Text::render() {
   std::string outbuff;
 
   std::vector<std::string> formatted;
-  std::string copy = (*text).data();
+  std::string copy = text.text();
 
   for (int i = 0; i < h; i++) {
     int next = 0;

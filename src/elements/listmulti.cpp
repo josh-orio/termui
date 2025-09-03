@@ -1,71 +1,40 @@
 #include "elements.hpp"
 
 namespace termui {
-SelectList::SelectList() = default;
-SelectList::SelectList(const std::vector<item::MultiListItem> &e, int w, int h, int ls, int col)
-    : elements(std::make_shared<std::vector<item::MultiListItem>>(e)), w(w), h(h), line_spacing(ls), active_color(col) {}
-SelectList::SelectList(std::vector<item::MultiListItem> &&e, int w, int h, int ls, int col)
-    : elements(std::make_shared<std::vector<item::MultiListItem>>(std::move(e))), w(w), h(h), line_spacing(ls), active_color(col) {}
-SelectList::SelectList(std::shared_ptr<std::vector<item::MultiListItem>> shared, int w, int h, int ls, int col)
-    : elements(std::move(shared)), w(w), h(h), line_spacing(ls), active_color(col) {}
 
-SelectList::SelectList(std::vector<std::string> &lStrs, int w, int h, int ls, int col)
-    : elements(std::make_shared<std::vector<item::MultiListItem>>()), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {
-  (*elements).reserve(lStrs.size());
+SelectList::SelectList(const termui::strings &strs, int w, int h, int ls, int col)
+    : elements(strs), selmap(strs.size(), false), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {}
 
-  for (const auto &str : lStrs) {
-    (*elements).emplace_back(str);
-  }
-}
-SelectList::SelectList(std::vector<std::string> &&rStrs, int w, int h, int ls, int col)
-    : elements(std::make_shared<std::vector<item::MultiListItem>>()), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {
-  (*elements).reserve(rStrs.size()); // avoid re‑allocations
+const termui::strings &SelectList::getStrings() const { return elements; }
+termui::strings &SelectList::getStrings() { return elements; }
 
-  for (auto &&str : rStrs) {
-    (*elements).emplace_back(std::move(str));
-  }
-}
-SelectList::SelectList(std::shared_ptr<std::vector<std::string>> sharedStrs, int w, int h, int ls, int col)
-    : elements(std::make_shared<std::vector<item::MultiListItem>>()), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {
-  if (sharedStrs) {
-    (*elements).reserve((*sharedStrs).size());
+const std::string &SelectList::getElement(int i) const { return elements.getItem(i); }
+std::string &SelectList::getElement(int i) { return elements.getItem(i); }
 
-    for (const auto &str : *sharedStrs) {
-      (*elements).emplace_back(str);
-    }
-  }
-}
-
-std::shared_ptr<std::vector<item::MultiListItem>> SelectList::share() const { return elements; }
-
-const std::vector<item::MultiListItem> &SelectList::getElements() const { return *elements; }
-std::vector<item::MultiListItem> &SelectList::getElements() { return *elements; }
+bool SelectList::getSelection(int i) { return selmap[i]; }
 
 std::string SelectList::render() {
   internal_update();
 
   std::string outbuff;
 
-  std::vector<item::MultiListItem> subset((*elements).begin() + start_line,
-                                          (*elements).begin() + std::min((int)(*elements).size(), start_line + visible_lines));
+  std::string text;
+  for (int i = start_line; i < std::min((int)elements.size(), start_line + visible_lines); i++) {
+    text = elements.getItem(i); // do trimming if required
 
-  for (int i = 0; i < subset.size(); i++) {
-    std::string text(subset.at(i).getText());
+    int rtl = text.length(); // return length
 
-    std::string tmp = text; // do trimming if required
-    int rtl = tmp.length();
-
-    if (subset.at(i).isSelected()) {
-      tmp = unicode::TICK + " " + tmp;
+    if (selmap.at(i)) {
+      text = unicode::TICK + " " + text;
     } else {
-      tmp = unicode::DOT + " " + tmp;
+      text = unicode::DOT + " " + text;
     }
 
     if (i + start_line == cursor) {
-      tmp = fg_apply(tmp, active_color);
+      text = fg_apply(text, active_color);
     }
 
-    outbuff += tmp;
+    outbuff += text;
     outbuff += curs_left(2 + rtl); // accounts for trimming
     outbuff += curs_down(line_spacing + 1);
   }
@@ -81,11 +50,11 @@ void SelectList::cursor_up() { // decrement but dont let (cursor < 0)
 
 void SelectList::cursor_down() { // increment but dont let (cursor > options.size)
   internal_update();
-  cursor += (cursor < (*elements).size() - 1) ? 1 : 0;
+  cursor += (cursor < elements.size() - 1) ? 1 : 0;
   start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
 }
 
-void SelectList::select() { (*elements)[cursor].flip(); }
+void SelectList::select() { selmap[cursor] = !selmap[cursor]; }
 
 void SelectList::internal_update() {
   visible_lines = 0;
