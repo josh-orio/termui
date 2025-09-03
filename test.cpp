@@ -1,37 +1,71 @@
+#include "include/elements.hpp"
 #include "include/interfaces.hpp"
+#include "include/str.hpp"
 #include "include/termui.hpp"
-#include <iostream>
+#include "include/util.hpp"
+#include <ostream>
+#include <string>
+#include <vector>
 
 int main() {
-  termui::Menu(termui::rv(termui::bt(" Menu ")), {"Option 1", "Option 2", "Option 3", "Option 4"}).show();
+  // Elements examples
 
-  std::vector<std::string> responses (8);
-  termui::Input i(termui::rv(termui::bt(" Input ")),
-                  {"Field 1", "Field 2", "Field 3", "Field 4", "Field 5", "Field 6", "Field 7", "Field 8"}, responses);
+  // Text
+  termui::string example("some text in a shared string");
+  termui::Text text(example, 10, 1);
+  termui::Text text2(example, 10, 1, termui::clr::BLUE, termui::clr::DARKGREY);
 
-  int i_status = 0;
-  while (i_status != -1) {
-    i_status = i.show();
-    if (i_status >= 0) {
-      // create a menu and feed the result back to i
-      std::vector<std::string> o{"Option 1", "Option 2"};
-      i.responses[i_status] = o[termui::Menu(termui::rv(termui::bt(" Sub-Menu ")), o).show()];
-    }
-  }
+  // Input
+  termui::string placeholder("placeholder...");
+  termui::string response;
+  termui::Input input(response, placeholder, 20);
 
-  std::string inf = "this\nis\ninfo\nand\nthis\nis\nmore\ninfo\nand\nthis\nis\neven\nmore\ninfo.";
-  termui::Info(termui::rv(termui::bt(" Info ")), inf).show();
+  // Button
+  termui::string click("click me!");
+  termui::Button button(click, 10, termui::clr::MAGENTA, termui::clr::DARKGREY);
 
-  std::vector<std::string> c{"Name", "Job", "Address"};
-  nlohmann::json j;
-  for (int i = 0; i < 20; i++) {
-    j[i] = {{"Name", std::to_string(i) +
-                         "NameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameName"},
-            {"Job", "Programmer"},
-            {"Address", "Home"}};
-  }
+  // Lists
+  termui::strings people({"Peter", "Lois", "Chris", "Meg", "Stewie", "Brian"});
+  termui::strings bio({"Father", "Mother", "Eldest Son", "Daughter", "Youngest Son", "Dog"});
+  termui::List list1(people, 20, 5);
+  termui::SelectList list2(people, 20, 5);
+  termui::FancyList list3(people, bio, 20, 5);
 
-  termui::Table(termui::rv(termui::bt(" Table ")), c, j).show();
+  // Table
+  termui::Table table(termui::strings({"Key", "Value"}), {termui::strings({"1", "One"}), termui::strings({"2", "Two"})}, {2, 2}, 10);
+
+  // Decorators
+  termui::Box box(10, 10, termui::clr::RED);
+  termui::ProgressBar bar(10, 0.5, termui::clr::RED, termui::clr::DARKGREY);
+  termui::DashedArea dash(10, 10, termui::clr::RED);
+
+  // Interface examples
+
+  // Info displays
+  termui::string info_title("Info"), info("this is some information.");
+  termui::InfoBox(info_title, info);
+  termui::InfoPage(info_title, info);
+
+  // Input methods
+  termui::string input_title("Input"), input_response(""), input_placeholder("Start typing...");
+  termui::strings input_fields(3, "Some value"), input_responses(3, "");
+  termui::InputBox(input_title, input_response, input_placeholder);
+  termui::InputPage(input_title, input_fields, input_responses);
+
+  // List interfaces
+  // reuses family guy strings
+  termui::Menu(termui::string("Menu"), people);
+  termui::MultiMenu(termui::string(" Multi Menu"), people);
+  termui::FancyMenu(termui::string(" Multi Menu"), people, bio);
+  termui::BinaryMenu("Question", "Do you like family guy?", "Yes", "No");
+
+  // Text editor
+  termui::string some_text_file("");
+  termui::Editor("VSCode Lite", some_text_file);
+
+  // Spreadsheet
+  termui::Spreadsheet("Q2 earnings report", termui::strings({"Idk what an earnings report looks like", "\% Change"}),
+                      {termui::strings({"Something", "1.54%"}), termui::strings({"Something else", "0.67%"})});
 
   return 0;
 }

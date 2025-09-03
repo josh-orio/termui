@@ -17,7 +17,7 @@ Then you can access all the interfaces by:
 #include <termui/termui.hpp>
 ```
 
-For examples of how to use the library, see test.cpp
+For examples of how to use the library, see ```test.cpp```.
 
 ## Data Management
 
@@ -56,7 +56,3 @@ The following elements are available:
 - ProgressBar
 - Table
 - Text
-
-## Structs
-
-The super classes make use of structs that encapsulate fragments of information. All structs are defined in ```include/structs.hpp``` and source is stored in ```src/structs/```.
