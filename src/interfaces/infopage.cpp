@@ -2,13 +2,8 @@
 
 namespace termui {
 
-InfoPage::InfoPage() = default;
-InfoPage::InfoPage(const std::string &t, const std::string &c)
-    : title(std::make_shared<std::string>(t)), content(std::make_shared<std::string>(c)), cons(), voh(5), hoh(4), line_cursor(0) {}
-InfoPage::InfoPage(std::string &&t, std::string &&c)
-    : title(std::make_shared<std::string>(std::move(t))), content(std::make_shared<std::string>(std::move(c))), cons(), voh(5), hoh(4), line_cursor(0) {}
-InfoPage::InfoPage(std::shared_ptr<std::string> sharedT, std::shared_ptr<std::string> sharedC)
-    : title(std::move(sharedT)), content(std::move(sharedC)), cons(), voh(5), hoh(4), line_cursor(0) {}
+InfoPage::InfoPage(const termui::string &t, const termui::string &c) : title(t), content(c), cons(), voh(5), hoh(4), line_cursor(0) {}
+InfoPage::InfoPage(const std::string &t, const std::string &c) : title(t), content(c), cons(), voh(5), hoh(4), line_cursor(0) {}
 
 void InfoPage::show() {
   cons.show(); // configure terminal
@@ -24,7 +19,7 @@ void InfoPage::display() {
   update_size();
 
   std::vector<std::string> formatted = {};
-  std::string copy = (*content);
+  std::string copy = content.text(); //(*content);
 
   // a bit of preprocessing to fit the text in the terminal
   while (copy.length() > 0) {
@@ -50,7 +45,7 @@ void InfoPage::display() {
 
   content_lines = formatted.size();
 
-  cons.print(2, 2, bt(*title));
+  cons.print(2, 2, bt(title.text())); //*title));
 
   int space_used = 0;
   for (int i = line_cursor; i < std::min(line_cursor + visible_lines, (int)formatted.size()); i++) {

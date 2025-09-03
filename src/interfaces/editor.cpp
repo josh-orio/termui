@@ -2,11 +2,8 @@
 
 namespace termui {
 
-Editor::Editor() = default;
-Editor::Editor(const std::string &title, const std::string &content)
-    : title(std::make_shared<std::string>(title)), content(std::make_shared<std::string>(content)), cons(), voh(5), hoh(5), line_cursor(0) {}
-Editor::Editor(std::shared_ptr<std::string> sharedTitle, std::shared_ptr<std::string> sharedContent)
-    : title(std::move(sharedTitle)), content(std::move(sharedContent)), cons(), voh(5), hoh(5), line_cursor(0) {}
+Editor::Editor(const std::string &title, const termui::string &content) : title(title), content(content), voh(5), hoh(5) {}
+Editor::Editor(const termui::string &title, const termui::string &content) : title(title), content(content), voh(5), hoh(5) {}
 
 void Editor::show() {
   cons.show(); // configure terminal
@@ -21,7 +18,7 @@ void Editor::show() {
 void Editor::display() {
   update_size();
 
-  cons.print(2, 2, bt(*title));
+  cons.print(2, 2, bt(title.text()));
   cons.print(cons.height, 2, faint_text("[ESC] close  [↑/↓/←/→] reposition"));
 
   // draw line counters
@@ -30,7 +27,7 @@ void Editor::display() {
   }
 
   std::vector<std::string> formatted = {};
-  std::string copy = *content;
+  std::string copy = content.text();
 
   // a bit of preprocessing to fit the text in the terminal
   while (copy.length() > 0) {
@@ -60,6 +57,7 @@ void Editor::display() {
     space_used++;
   }
 
+  // move cursor to cursor position
   cons.ct.on();
   cons.flush();
 }
@@ -71,30 +69,29 @@ bool Editor::process_input() {
     return false;
 
   } else if (ec == key::DEL) { // remove last char
-    if ((*content).size() > 0) {
-      (*content) = std::string((*content).begin(), (*content).end() - 1);
+    if (content.text().size() > 0) {
+      content.text() = std::string(content.text().begin(), content.text().end() - 1);
     }
     return true;
 
-  } else if (ec == key::L_ARROW) { // remove last ch
+  } else if (ec == key::L_ARROW) {
     return true;
 
-  } else if (ec == key::U_ARROW) { // remove last ch
+  } else if (ec == key::U_ARROW) {
     return true;
 
-  } else if (ec == key::D_ARROW) { // remove last ch
+  } else if (ec == key::D_ARROW) {
     return true;
 
-  } else if (ec == key::R_ARROW) { // remove last ch
+  } else if (ec == key::R_ARROW) {
     return true;
 
-  } else if (ec == key::ENTER) { // line break not in range
-    (*content) += '\n';
+  } else if (ec == key::ENTER) { // add line break
+    content.text() += '\n';
     return true;
 
-  } else if ((std::string{32} <= ec) && (ec <= std::string{126})) {
-    // add char accept ascii characters in range 32 - 126 input sanitization is done in classes, not here
-    (*content) += ec;
+  } else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
+    content.text() += ec;
     return true;
 
   } else {
@@ -104,9 +101,9 @@ bool Editor::process_input() {
 
 void Editor::update_size() {
   cons.update_size();
-  visible_lines = cons.height - voh;
 
-  text_width = cons.width-6;
+  visible_lines = cons.height - voh;
+  text_width = cons.width - hoh;
 }
 
 } // namespace termui

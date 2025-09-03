@@ -2,22 +2,10 @@
 
 namespace termui {
 
-BinaryMenu::BinaryMenu() = default;
-BinaryMenu::BinaryMenu(const std::string &t, const std::string &x, const std::string &aff, const std::string &neg)
-    : title(std::make_shared<std::string>(t)), text(std::make_shared<std::string>(x)), affirmative(std::make_shared<std::string>(aff)),
-      negative(std::make_shared<std::string>(neg)) {
-  cons = Console(false, false, false, true);
-}
-BinaryMenu::BinaryMenu(std::string &&t, std::string &&x, std::string &&aff, std::string &&neg)
-    : title(std::make_shared<std::string>(std::move(t))), text(std::make_shared<std::string>(std::move(x))),
-      affirmative(std::make_shared<std::string>(std::move(aff))), negative(std::make_shared<std::string>(std::move(neg))) {
-  cons = Console(false, false, false, true);
-}
-BinaryMenu::BinaryMenu(std::shared_ptr<std::string> sharedT, std::shared_ptr<std::string> sharedX, std::shared_ptr<std::string> sharedAff,
-                       std::shared_ptr<std::string> sharedNeg)
-    : title(std::move(sharedT)), text(std::move(sharedX)), affirmative(std::move(sharedAff)), negative(std::move(sharedNeg)) {
-  cons = Console(false, false, false, true);
-}
+BinaryMenu::BinaryMenu(const termui::string &title, const termui::string &text, const termui::string &affirmative, const termui::string &negative)
+    : title(title), text(text), affirmative(affirmative), negative(negative), cons() {}
+BinaryMenu::BinaryMenu(const std::string &title, const std::string &text, const std::string &affirmative, const std::string &negative)
+    : title(title), text(text), affirmative(affirmative), negative(negative), cons() {}
 
 bool BinaryMenu::show() {
   cons.show(); // configure terminal

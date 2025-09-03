@@ -2,18 +2,8 @@
 
 namespace termui {
 
-InfoBox::InfoBox() = default;
-InfoBox::InfoBox(const std::string &t, const std::string &c) : title(std::make_shared<std::string>(t)), content(std::make_shared<std::string>(c)), w(15), h(5) {
-  cons = Console(false, false, false, true);
-}
-InfoBox::InfoBox(std::string &&t, std::string &&c)
-    : title(std::make_shared<std::string>(std::move(t))), content(std::make_shared<std::string>(std::move(c))), w(15), h(5) {
-  cons = Console(false, false, false, true);
-}
-InfoBox::InfoBox(std::shared_ptr<std::string> sharedT, std::shared_ptr<std::string> sharedC)
-    : title(std::move(sharedT)), content(std::move(sharedC)), w(15), h(5) {
-  cons = Console(false, false, false, true);
-}
+InfoBox::InfoBox(const termui::string &t, const termui::string &c) : title(t), content(c), cons(), w(15), h(5) {}
+InfoBox::InfoBox(const std::string &t, const std::string &c) : title(t), content(c), cons(), w(15), h(5) {}
 
 void InfoBox::show() {
   cons.show(); // configure terminal

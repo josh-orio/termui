@@ -3,7 +3,6 @@
 
 #include "console.hpp"
 #include "elements.hpp"
-#include "structs.hpp"
 #include "unicode.hpp"
 #include "util.hpp"
 #include <memory>
@@ -13,13 +12,11 @@ namespace termui {
 
 class InfoBox {
 public:
-  std::shared_ptr<std::string> title, content;
+  termui::string title, content;
   int w, h;
 
-  InfoBox();
+  InfoBox(const termui::string &t, const termui::string &c);
   InfoBox(const std::string &t, const std::string &c);
-  InfoBox(std::string &&t, std::string &&c);
-  InfoBox(std::shared_ptr<std::string> sharedT, std::shared_ptr<std::string> sharedC);
 
   void show();
 
@@ -41,12 +38,10 @@ private:
 
 class InfoPage {
 public:
-  std::shared_ptr<std::string> title, content;
+  termui::string title, content;
 
-  InfoPage();
+  InfoPage(const termui::string &t, const termui::string &c);
   InfoPage(const std::string &t, const std::string &c);
-  InfoPage(std::string &&t, std::string &&c);
-  InfoPage(std::shared_ptr<std::string> sharedT, std::shared_ptr<std::string> sharedC);
 
   void show();
 
@@ -56,9 +51,8 @@ private:
   int text_width;    // width of text accounting for padding
   int content_lines; // total number of lines of content
   int visible_lines; // total number of lines in view
-  // int overhead;      // number of lines reserved for header & footer
-  int voh;    // vertical overhead (3 header + 2 footer)
-  int hoh;    // horizontal overhead (2 left + 2 right)
+  int voh;           // vertical overhead (3 header + 2 footer)
+  int hoh;           // horizontal overhead (2 left + 2 right)
 
   void display();
   bool process_input(); /* return values:
@@ -71,14 +65,11 @@ private:
 
 class InputBox {
 public:
-  std::shared_ptr<std::string> field, response, placeholder;
+  termui::string field, response, placeholder;
   int w, h;
 
-  InputBox();
-  InputBox(std::string &f, std::string &r, std::string &p);
-  InputBox(std::string &&f, std::string &r, std::string &&p);
-  InputBox(std::shared_ptr<std::string> f, std::shared_ptr<std::string> r, std::shared_ptr<std::string> p);
-  InputBox(std::string &&f, std::shared_ptr<std::string> r, std::string &&p);
+  InputBox(const termui::string &field, const termui::string &response, const termui::string &placeholder);
+  InputBox(const std::string &field, const termui::string &response, const std::string &placeholder);
 
   std::shared_ptr<std::string> shareField() const;
 
@@ -103,27 +94,13 @@ private:
 
 class InputPage {
 public:
-  std::shared_ptr<const std::string> title;
-  std::shared_ptr<std::vector<std::string>> fields;
-  std::shared_ptr<std::vector<Input>> responses;
+  termui::string title;
+  termui::strings fields, responses;
 
   int col;
 
-  InputPage();
-  InputPage(std::string &t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0,
-            int col = clr::PASTELPINK); // existing t + existing vectors of strings
-  InputPage(std::string &t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 0,
-            int col = clr::PASTELPINK); // shared t + .share()
-
-  InputPage(std::string &&t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0,
-            int col = clr::PASTELPINK); // rvalue t + existing vectors of strings
-  InputPage(std::string &&t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 0,
-            int col = clr::PASTELPINK); // rvalue t + .share()
-
-  InputPage(std::shared_ptr<std::string> t, std::vector<std::string> &f, std::vector<std::string> &r, int ls = 0,
-            int col = clr::PASTELPINK); // shared t + existing vectors of strings
-  InputPage(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> f, std::shared_ptr<std::vector<std::string>> r, int ls = 0,
-            int col = clr::PASTELPINK); // all .share()
+  InputPage(const termui::string &title, const termui::strings &fields, const termui::strings &responses, int ls = 0, int col = clr::PASTELPINK);
+  InputPage(const std::string &title, const std::vector<std::string> &fields, const termui::strings &responses, int ls = 0, int col = clr::PASTELPINK);
 
   // std::shared_ptr<std::vector<std::string>> shareFields() const;
 
@@ -142,14 +119,14 @@ public:
 
 private:
   Console cons;
+
   int cursor;          // current scroll value
   bool selected;       // element selection indicator
   int visible_lines;   // total number of lines in view
   int start_line;      // index value of first line which shows in view
   int line_seperation; // number of blank lines between elements
-  // int overhead;        // number of lines reserved for header (3) & footer (2)
-  int voh;    // vertical overhead (3 header + 2 footer)
-  int hoh;    // horizontal overhead (2 left + 2 right)
+  int voh;             // vertical overhead (3 header + 2 footer)
+  int hoh;             // horizontal overhead (2 left + 2 right)
 
   void display();
   int process_input(); /* return values:
@@ -163,28 +140,25 @@ private:
 
 class Menu {
 public:
-  std::shared_ptr<std::string> title;
-  std::shared_ptr<List> list;
+  termui::string title;
+  termui::strings elements;
 
   int line_seperation;
 
-  Menu();                                                                                           // vector instantiation
-  Menu(std::string &t, std::vector<std::string> &e, int ls = 0);                                    // existing vector of strings
-  Menu(std::string &t, std::vector<item::ListItem> &e, int ls = 0);                                 // existing vector of items
-  Menu(std::string &&t, std::vector<std::string> &&e, int ls = 0);                                  // rvalue vec of str
-  Menu(std::string &&t, std::vector<item::ListItem> &&e, int ls = 0);                               // rvalue vec of LI
-  Menu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> e, int ls = 0);    // .share()
-  Menu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<item::ListItem>> e, int ls = 0); // from List.share()
+  Menu(const termui::string &t, const termui::strings &e, int ls = 0);
+  Menu(const std::string &t, const std::vector<std::string> &e, int ls = 0);
 
-  std::shared_ptr<List> shareList() const { return list; }
+  // std::shared_ptr<List> shareList() const { return list; }
 
-  const std::vector<item::ListItem> &getElements() const { return (*list).getElements(); }
-  std::vector<item::ListItem> &getElements() { return (*list).getElements(); }
+  // const std::vector<std::shared_ptr<item::ListItem>> &getElements() const { return (*list).getElements(); }
+  // std::vector<std::shared_ptr<item::ListItem>> &getElements() { return (*list).getElements(); }
 
   int show(); // returns index of selected option
 
 private:
   Console cons;
+  List list;
+
   int cursor; // current scroll value
   int voh;    // vertical overhead
   int hoh;    // horizontal overhead
@@ -197,22 +171,24 @@ private:
 
 class MultiMenu {
 public:
-  std::shared_ptr<std::string> title;
-  std::shared_ptr<SelectList> list;
+  termui::string title;
+  termui::strings elements;
   int line_seperation;
 
-  MultiMenu();
-  MultiMenu(std::string &t, std::vector<std::string> &e, int ls = 0);
-  MultiMenu(std::string &t, std::vector<item::MultiListItem> &e, int ls = 0);
-  MultiMenu(std::string &&t, std::vector<std::string> &&e, int ls = 0);
-  MultiMenu(std::string &&t, std::vector<item::MultiListItem> &&e, int ls = 0);
-  MultiMenu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> e, int ls = 0);
-  MultiMenu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<item::MultiListItem>> e, int ls = 0);
+  MultiMenu(const termui::string &t, const termui::strings &e, int ls = 0);
+  MultiMenu(const std::string &t, const std::vector<std::string> &e, int ls = 0);
 
-  int show(); // returns index of selected option
+  bool isSelected(int i);
+
+  int show(); /* return values:
+  -1: exit
+  >=0: element selected (return value as index)
+  */
 
 private:
   Console cons;
+  SelectList list;
+
   int cursor; // current scroll value
   int voh;    // vertical overhead
   int hoh;    // horizontal overhead
@@ -225,22 +201,19 @@ private:
 
 class FancyMenu {
 public:
-  std::shared_ptr<std::string> title;
-  std::shared_ptr<FancyList> list;
+  termui::string title;
+  termui::strings text, desc;
   int line_seperation;
 
-  FancyMenu();
-  FancyMenu(std::string &t, std::vector<std::string> &e, std::vector<std::string> &d, int ls = 1);
-  FancyMenu(std::string &t, std::vector<item::FancyListItem> &e, int ls = 1);
-  FancyMenu(std::string &&t, std::vector<std::string> &&e, std::vector<std::string> &&d, int ls = 1);
-  FancyMenu(std::string &&t, std::vector<item::FancyListItem> &&e, int ls = 1);
-  FancyMenu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<std::string>> e, std::shared_ptr<std::vector<std::string>> d, int ls = 1);
-  FancyMenu(std::shared_ptr<std::string> t, std::shared_ptr<std::vector<item::FancyListItem>> e, int ls = 1);
+  FancyMenu(const termui::string &title, const termui::strings &texts, const termui::strings &descs, int ls = 1);
+  FancyMenu(const std::string &title, const std::vector<std::string> &texts, const std::vector<std::string> &descs, int ls = 1);
 
   int show(); // returns index of selected option
 
 private:
   Console cons;
+  FancyList list;
+
   int cursor; // current scroll value
   int voh;    // vertical overhead
   int hoh;    // horizontal overhead
@@ -253,14 +226,11 @@ private:
 
 class BinaryMenu {
 public:
-  std::shared_ptr<std::string> title, text, affirmative, negative;
+  termui::string title, text, affirmative, negative;
   int w, h;
 
-  BinaryMenu();
-  BinaryMenu(const std::string &t, const std::string &x, const std::string &aff, const std::string &neg);
-  BinaryMenu(std::string &&t, std::string &&x, std::string &&aff, std::string &&neg);
-  BinaryMenu(std::shared_ptr<std::string> sharedT, std::shared_ptr<std::string> sharedX, std::shared_ptr<std::string> sharedAff,
-             std::shared_ptr<std::string> sharedNeg);
+  BinaryMenu(const termui::string &title, const termui::string &text, const termui::string &affirmative, const termui::string &negative);
+  BinaryMenu(const std::string &title, const std::string &text, const std::string &affirmative, const std::string &negative);
 
   bool show(); /* return values:
   t: affirmative
@@ -280,11 +250,10 @@ private:
 
 class Editor {
 public:
-  std::shared_ptr<std::string> title, content;
+  termui::string title, content;
 
-  Editor();
-  Editor(const std::string &title, const std::string &content);
-  Editor(std::shared_ptr<std::string> sharedTitle, std::shared_ptr<std::string> sharedContent);
+  Editor(const std::string &title, const termui::string &content);
+  Editor(const termui::string &title, const termui::string &content);
 
   void show();
 
@@ -308,18 +277,19 @@ private:
 
 class Spreadsheet {
 public:
-  std::shared_ptr<std::string> title;
-  std::shared_ptr<Table> data;
+  termui::string title;
+  Table table;
 
-  Spreadsheet();
-  Spreadsheet(const std::string &title, Table &table);
-  Spreadsheet(std::shared_ptr<std::string> title, std::shared_ptr<Table> table);
+  Spreadsheet(const termui::string &title, const termui::strings &cols, const std::vector<termui::strings> &data);
+  Spreadsheet(const std::string &title, const std::vector<std::string> &cols, const std::vector<termui::strings> &data);
 
   void show();
 
 private:
   Console cons;
-  int voh; // number of lines reserved for header (3) & footer (2)
+
+  int voh;
+  int hoh;
 
   void display();
   bool process_input(); /* return values:

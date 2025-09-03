@@ -2,32 +2,20 @@
 
 namespace termui {
 
-InputBox::InputBox() = default;
-InputBox::InputBox(std::string &f, std::string &r, std::string &p)
-    : field(std::make_shared<std::string>(f)), response(std::make_shared<std::string>(r)), placeholder(std::make_shared<std::string>(p)) {
-  cons = Console(false, false, false, true);
-};
-InputBox::InputBox(std::string &&f, std::string &r, std::string &&p)
-    : field(std::make_shared<std::string>(std::move(f))), response(std::make_shared<std::string>(r)), placeholder(std::make_shared<std::string>(std::move(p))) {
-  cons = Console(false, false, false, true);
-};
-InputBox::InputBox(std::shared_ptr<std::string> f, std::shared_ptr<std::string> r, std::shared_ptr<std::string> p) : field(f), response(r), placeholder(p) {
-  cons = Console(false, false, false, true);
-};
-InputBox::InputBox(std::string &&f, std::shared_ptr<std::string> r, std::string &&p)
-    : field(std::make_shared<std::string>(std::move(f))), response(r), placeholder(std::make_shared<std::string>(std::move(p))) {
-  cons = Console(false, false, false, true);
-};
+InputBox::InputBox(const termui::string &field, const termui::string &response, const termui::string &placeholder)
+    : field(field), response(response), placeholder(placeholder), cons() {}
+InputBox::InputBox(const std::string &field, const termui::string &response, const std::string &placeholder)
+    : field(field), response(response), placeholder(placeholder), cons() {}
 
-std::shared_ptr<std::string> InputBox::shareField() const { return field; }
+std::shared_ptr<std::string> InputBox::shareField() const { return field.share(); }
 
-const std::string &InputBox::getField() const { return *field; }
-std::string &InputBox::getField() { return *field; }
+const std::string &InputBox::getField() const { return field.text(); }
+std::string &InputBox::getField() { return field.text(); }
 
-std::shared_ptr<std::string> InputBox::shareResponse() const { return response; }
+std::shared_ptr<std::string> InputBox::shareResponse() const { return response.share(); }
 
-const std::string &InputBox::getResponse() const { return *response; }
-std::string &InputBox::getResponse() { return *response; }
+const std::string &InputBox::getResponse() const { return response.text(); }
+std::string &InputBox::getResponse() { return response.text(); }
 
 void InputBox::show() {
   cons.show(); // configure terminal
@@ -51,7 +39,7 @@ void InputBox::display() {
   cons.curs_left(w - 2);
 
   Text f(field, w - 4, 1, clr::MAGENTA, clr::DEFAULT);
-  Input r((*response), (*placeholder), w - 4, clr::DEFAULT, clr::DARKGREY);
+  Input r(response, placeholder, w - 4, clr::DEFAULT, clr::DARKGREY);
 
   cons.print(bt(f.render()));
   cons.curs_down(2);
@@ -59,10 +47,10 @@ void InputBox::display() {
 
   cons.print(r.render());
 
-  if ((*response).empty()) {
+  if (response.text().empty()) {
     cons.curs_left(r.w);
   } else {
-    cons.curs_left(r.w - (*response).length());
+    cons.curs_left(r.w - response.text().length());
   }
   cons.ct.on(); // enable blinking cursor at start of plh or end of val
 
@@ -76,15 +64,13 @@ bool InputBox::process_input() {
     return false;
 
   } else if (ec == key::DEL) { // remove last char
-                               // DEL char clears last char in string
-    if ((*response).size() > 0) {
-      (*response) = std::string((*response).begin(), (*response).end() - 1);
+    if (response.text().size()) {
+      response.text() = std::string(response.text().begin(), response.text().end() - 1);
     }
     return true;
 
-  } else if ((std::string{32} <= ec) &&
-             (ec <= std::string{126})) { // add char accept ascii characters in range 32 - 126 input sanitization is done in classes, not here
-    (*response) += ec;
+  } else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
+    response.text() += ec;
     return true;
 
   } else {
