@@ -5,9 +5,11 @@
 namespace termui {
 
 Spreadsheet::Spreadsheet(const termui::string &title, const termui::strings &cols, const std::vector<termui::strings> &data)
-    : title(title), table(termui::strings(cols), std::vector<int>(cols.size(), 1), data, 1), voh(4), hoh(2) {}
+    : title(title), table(termui::strings(cols), data, std::vector<int>(cols.size(), 1), 1), voh(4), hoh(2) {}
+Spreadsheet::Spreadsheet(const std::string &title, const termui::strings &cols, const std::vector<termui::strings> &data)
+    : title(title), table(termui::strings(cols), data, std::vector<int>(cols.size(), 1), 1), voh(4), hoh(2) {}
 Spreadsheet::Spreadsheet(const std::string &title, const std::vector<std::string> &cols, const std::vector<termui::strings> &data)
-    : title(title), table(termui::strings(cols), std::vector<int>(cols.size(), 1), data, 1), voh(4), hoh(2) {}
+    : title(title), table(termui::strings(cols), data, std::vector<int>(cols.size(), 1), 1), voh(4), hoh(2) {}
 
 void Spreadsheet::show() {
   cons.show(); // configure terminal

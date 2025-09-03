@@ -2,9 +2,9 @@
 
 namespace termui {
 
-Table::Table(const termui::strings &cols, std::vector<int> colwidths, const std::vector<termui::strings> &rs, int table_height, int cell_height,
+Table::Table(const termui::strings &cols, const std::vector<termui::strings> &rows, std::vector<int> colwidths, int table_height, int cell_height,
              int line_seperation, int col)
-    : cols(cols), colwidths(colwidths), rows(rs), table_height(table_height), cell_height(cell_height), line_seperation(line_seperation), active_color(col),
+    : cols(cols), colwidths(colwidths), rows(rows), table_height(table_height), cell_height(cell_height), line_seperation(line_seperation), active_color(col),
       cursor(0), start_line(0), box_color(clr::DARKGREY), overhead(4) {}
 
 const termui::strings &Table::getCols() const { return cols; }

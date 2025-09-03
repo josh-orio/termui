@@ -281,6 +281,7 @@ public:
   Table table;
 
   Spreadsheet(const termui::string &title, const termui::strings &cols, const std::vector<termui::strings> &data);
+  Spreadsheet(const std::string &title, const termui::strings &cols, const std::vector<termui::strings> &data);
   Spreadsheet(const std::string &title, const std::vector<std::string> &cols, const std::vector<termui::strings> &data);
 
   void show();

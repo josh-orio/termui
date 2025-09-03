@@ -185,7 +185,7 @@ public:
   int table_height;
   int table_width;
 
-  Table(const termui::strings &cols, std::vector<int> colwidths, const std::vector<termui::strings> &rows, int table_height, int cell_height = 1,
+  Table(const termui::strings &cols, const std::vector<termui::strings> &rows, std::vector<int> colwidths, int table_height, int cell_height = 1,
         int line_seperation = 0, int col = clr::BLUEPURPLE);
 
   const termui::strings &getCols() const;
