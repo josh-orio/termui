@@ -4,6 +4,8 @@ namespace termui {
 
 InputPage::InputPage(const termui::string &title, const termui::strings &fields, const termui::strings &responses, int ls, int col)
     : title(title), fields(fields), responses(responses), cons(), line_seperation(ls), col(col), voh(5), cursor(0), start_line(0) {}
+InputPage::InputPage(const std::string &title, const termui::strings &fields, const termui::strings &responses, int ls, int col)
+    : title(title), fields(fields), responses(responses), cons(), line_seperation(ls), col(col), voh(5), cursor(0), start_line(0) {}
 InputPage::InputPage(const std::string &title, const std::vector<std::string> &fields, const termui::strings &responses, int ls, int col)
     : title(title), fields(fields), responses(responses), cons(), line_seperation(ls), col(col), voh(5), cursor(0), start_line(0) {}
 

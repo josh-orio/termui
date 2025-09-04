@@ -2,8 +2,10 @@
 
 namespace termui {
 
-MultiMenu::MultiMenu(const termui::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(0) {}
-MultiMenu::MultiMenu(const std::string &t, const std::vector<std::string> &e, int ls) : title(t), list(elements, 1, 1), elements(e), line_seperation(0) {}
+MultiMenu::MultiMenu(const termui::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons() {}
+MultiMenu::MultiMenu(const std::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons() {}
+MultiMenu::MultiMenu(const std::string &t, const std::vector<std::string> &e, int ls)
+    : title(t), list(elements, 1, 1), elements(e), line_seperation(ls), cons() {}
 
 bool MultiMenu::isSelected(int i) { return list.getSelection(i); }
 

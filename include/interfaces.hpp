@@ -100,6 +100,7 @@ public:
   int col;
 
   InputPage(const termui::string &title, const termui::strings &fields, const termui::strings &responses, int ls = 0, int col = clr::PASTELPINK);
+  InputPage(const std::string &title, const termui::strings &fields, const termui::strings &responses, int ls = 0, int col = clr::PASTELPINK);
   InputPage(const std::string &title, const std::vector<std::string> &fields, const termui::strings &responses, int ls = 0, int col = clr::PASTELPINK);
 
   // std::shared_ptr<std::vector<std::string>> shareFields() const;
@@ -146,6 +147,7 @@ public:
   int line_seperation;
 
   Menu(const termui::string &t, const termui::strings &e, int ls = 0);
+  Menu(const std::string &t, const termui::strings &e, int ls = 0);
   Menu(const std::string &t, const std::vector<std::string> &e, int ls = 0);
 
   // std::shared_ptr<List> shareList() const { return list; }
@@ -176,6 +178,7 @@ public:
   int line_seperation;
 
   MultiMenu(const termui::string &t, const termui::strings &e, int ls = 0);
+  MultiMenu(const std::string &t, const termui::strings &e, int ls = 0);
   MultiMenu(const std::string &t, const std::vector<std::string> &e, int ls = 0);
 
   bool isSelected(int i);
@@ -206,6 +209,7 @@ public:
   int line_seperation;
 
   FancyMenu(const termui::string &title, const termui::strings &texts, const termui::strings &descs, int ls = 1);
+  FancyMenu(const std::string &title, const termui::strings &texts, const termui::strings &descs, int ls = 1);
   FancyMenu(const std::string &title, const std::vector<std::string> &texts, const std::vector<std::string> &descs, int ls = 1);
 
   int show(); // returns index of selected option
@@ -252,8 +256,8 @@ class Editor {
 public:
   termui::string title, content;
 
-  Editor(const std::string &title, const termui::string &content);
   Editor(const termui::string &title, const termui::string &content);
+  Editor(const std::string &title, const termui::string &content);
 
   void show();
 

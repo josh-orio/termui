@@ -2,8 +2,9 @@
 
 namespace termui {
 
-Menu::Menu(const termui::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(0) {}
-Menu::Menu(const std::string &t, const std::vector<std::string> &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(0) {}
+Menu::Menu(const termui::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons() {}
+Menu::Menu(const std::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons() {}
+Menu::Menu(const std::string &t, const std::vector<std::string> &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons() {}
 
 int Menu::show() {
   cons.show(); // configure terminal

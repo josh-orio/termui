@@ -4,6 +4,8 @@ namespace termui {
 
 FancyMenu::FancyMenu(const termui::string &title, const termui::strings &texts, const termui::strings &descs, int ls)
     : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons() {}
+FancyMenu::FancyMenu(const std::string &title, const termui::strings &texts, const termui::strings &descs, int ls)
+    : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons() {}
 FancyMenu::FancyMenu(const std::string &title, const std::vector<std::string> &texts, const std::vector<std::string> &descs, int ls)
     : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons() {}
 
