@@ -13,8 +13,8 @@ int Menu::show() {
     display();
   } while (process_input());
 
-  cons.close();  // reset terminal
-  return cursor; // returns selected option
+  cons.close();       // reset terminal
+  return list.cursor; // returns selected option
 }
 
 void Menu::display() {
