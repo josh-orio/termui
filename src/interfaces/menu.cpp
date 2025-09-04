@@ -2,9 +2,11 @@
 
 namespace termui {
 
-Menu::Menu(const termui::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons() {}
-Menu::Menu(const std::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons() {}
-Menu::Menu(const std::string &t, const std::vector<std::string> &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons() {}
+Menu::Menu(const termui::string &t, const termui::strings &e, int ls)
+    : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
+Menu::Menu(const std::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
+Menu::Menu(const std::string &t, const std::vector<std::string> &e, int ls)
+    : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
 
 int Menu::show() {
   cons.show(); // configure terminal
@@ -16,6 +18,8 @@ int Menu::show() {
   cons.close();       // reset terminal
   return list.cursor; // returns selected option
 }
+
+int Menu::cursor() { return list.cursor; }
 
 void Menu::display() {
   update_size();
@@ -50,8 +54,8 @@ bool Menu::process_input() {
 void Menu::update_size() {
   cons.update_size();
 
-  list.h = cons.height - voh;
-  list.w = cons.width - hoh;
+  list.h = cons.height - lvo;
+  list.w = cons.width - lho;
   list.line_spacing = line_seperation;
 }
 

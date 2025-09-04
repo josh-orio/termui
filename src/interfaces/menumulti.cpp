@@ -2,10 +2,12 @@
 
 namespace termui {
 
-MultiMenu::MultiMenu(const termui::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons() {}
-MultiMenu::MultiMenu(const std::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons() {}
+MultiMenu::MultiMenu(const termui::string &t, const termui::strings &e, int ls)
+    : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
+MultiMenu::MultiMenu(const std::string &t, const termui::strings &e, int ls)
+    : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
 MultiMenu::MultiMenu(const std::string &t, const std::vector<std::string> &e, int ls)
-    : title(t), list(elements, 1, 1), elements(e), line_seperation(ls), cons() {}
+    : title(t), list(elements, 1, 1), elements(e), line_seperation(ls), cons(), lvo(5), lho(4) {}
 
 bool MultiMenu::isSelected(int i) { return list.getSelection(i); }
 
@@ -19,6 +21,8 @@ int MultiMenu::show() {
   cons.close();       // reset terminal
   return list.cursor; // returns selected option
 }
+
+int MultiMenu::cursor() { return list.cursor; }
 
 void MultiMenu::display() {
   update_size();
@@ -56,8 +60,8 @@ bool MultiMenu::process_input() {
 void MultiMenu::update_size() {
   cons.update_size();
 
-  list.h = cons.height - voh;
-  list.w = cons.width - hoh;
+  list.h = cons.height - lvo;
+  list.w = cons.width - lho;
   list.line_spacing = line_seperation;
 }
 

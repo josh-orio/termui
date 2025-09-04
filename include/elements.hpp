@@ -157,7 +157,7 @@ public:
   int line_spacing;
   int active_color;
 
-  FancyList(const termui::strings &tstrs, const termui::strings &dstrs, int w, int h, int ls = 0, int col = clr::PASTELPINK);
+  FancyList(const termui::strings &tstrs, const termui::strings &dstrs, int w, int h, int ls = 1, int col = clr::PASTELPINK);
 
   const std::string &getText(int i) const;
   std::string &getText(int i);

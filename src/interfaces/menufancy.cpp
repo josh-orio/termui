@@ -3,11 +3,11 @@
 namespace termui {
 
 FancyMenu::FancyMenu(const termui::string &title, const termui::strings &texts, const termui::strings &descs, int ls)
-    : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons() {}
+    : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
 FancyMenu::FancyMenu(const std::string &title, const termui::strings &texts, const termui::strings &descs, int ls)
-    : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons() {}
+    : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
 FancyMenu::FancyMenu(const std::string &title, const std::vector<std::string> &texts, const std::vector<std::string> &descs, int ls)
-    : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons() {}
+    : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
 
 int FancyMenu::show() {
   cons.show(); // configure terminal
@@ -19,6 +19,8 @@ int FancyMenu::show() {
   cons.close();       // reset terminal
   return list.cursor; // returns selected option
 }
+
+int FancyMenu::cursor() { return list.cursor; }
 
 void FancyMenu::display() {
   update_size();
@@ -53,8 +55,8 @@ bool FancyMenu::process_input() {
 void FancyMenu::update_size() {
   cons.update_size();
 
-  list.h = cons.height - voh;
-  list.w = cons.width - hoh;
+  list.h = cons.height - lvo;
+  list.w = cons.width - lho;
   list.line_spacing = line_seperation;
 }
 

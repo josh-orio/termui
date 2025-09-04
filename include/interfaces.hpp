@@ -155,15 +155,15 @@ public:
   // const std::vector<std::shared_ptr<item::ListItem>> &getElements() const { return (*list).getElements(); }
   // std::vector<std::shared_ptr<item::ListItem>> &getElements() { return (*list).getElements(); }
 
-  int show(); // returns index of selected option
+  int show();   // returns index of selected option
+  int cursor(); // returns cursor
 
 private:
   Console cons;
   List list;
 
-  int cursor; // current scroll value
-  int voh;    // vertical overhead
-  int hoh;    // horizontal overhead
+  int lvo; // list vertical overhead
+  int lho; // list horizontal overhead
 
   void display();
   bool process_input();
@@ -183,18 +183,18 @@ public:
 
   bool isSelected(int i);
 
-  int show(); /* return values:
-  -1: exit
-  >=0: element selected (return value as index)
-  */
+  int show();   /* return values:
+    -1: exit
+    >=0: element selected (return value as index)
+    */
+  int cursor(); // returns cursor
 
 private:
   Console cons;
   SelectList list;
 
-  int cursor; // current scroll value
-  int voh;    // vertical overhead
-  int hoh;    // horizontal overhead
+  int lvo; // list vertical overhead
+  int lho; // list horizontal overhead
 
   void display();
   bool process_input();
@@ -212,15 +212,15 @@ public:
   FancyMenu(const std::string &title, const termui::strings &texts, const termui::strings &descs, int ls = 1);
   FancyMenu(const std::string &title, const std::vector<std::string> &texts, const std::vector<std::string> &descs, int ls = 1);
 
-  int show(); // returns index of selected option
+  int show();   // returns index of selected option
+  int cursor(); // returns cursor
 
 private:
   Console cons;
   FancyList list;
 
-  int cursor; // current scroll value
-  int voh;    // vertical overhead
-  int hoh;    // horizontal overhead
+  int lvo; // list vertical overhead
+  int lho; // list horizontal overhead
 
   void display();
   bool process_input();
