@@ -4,8 +4,8 @@ namespace termui {
 
 Table::Table(const termui::strings &cols, const std::vector<termui::strings> &rows, std::vector<int> colwidths, int table_height, int cell_height,
              int line_seperation, int col)
-    : cols(cols), colwidths(colwidths), rows(rows), table_height(table_height), cell_height(cell_height), line_seperation(line_seperation), active_color(col),
-      cursor(0), start_line(0), box_color(clr::DARKGREY), overhead(4) {}
+    : cols(cols), colwidths(colwidths), rows(rows), cursor(0), line_seperation(line_seperation), cell_height(cell_height), active_color(col),
+      table_height(table_height), start_line(0), overhead(4), box_color(clr::DARKGREY) {}
 
 const termui::strings &Table::getCols() const { return cols; }
 termui::strings &Table::getCols() { return cols; }

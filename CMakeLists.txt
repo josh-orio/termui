@@ -10,7 +10,7 @@ file(GLOB TERMUI_INCLUDE "include/*.hpp")
 
 add_library(termui ${TERMUI_SOURCES})
 target_include_directories(termui PRIVATE include)
-target_compile_options(termui PRIVATE -Wall -Wextra -Wuninitialized)
+target_compile_options(termui PRIVATE -Wall -Wextra -Wuninitialized -Wno-sign-compare)
 
 set_target_properties(termui
     PROPERTIES

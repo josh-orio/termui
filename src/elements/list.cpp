@@ -3,7 +3,7 @@
 namespace termui {
 
 List::List(const termui::strings &strs, int w, int h, int ls, int col)
-    : elements(strs), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {}
+    : elements(strs), start_line(0), w(w), h(h), cursor(0), line_spacing(ls), active_color(col) {}
 
 std::string List::render() {
   internal_update();

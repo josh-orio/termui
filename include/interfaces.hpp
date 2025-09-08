@@ -26,11 +26,6 @@ private:
   Console cons;
   termui::state state;
 
-  int text_width;    // width of text accounting for padding
-  int content_lines; // total number of lines of content
-  int visible_lines; // total number of lines in view
-  int overhead;      // number of lines reserved for header & footer
-
   void display();
   void process_input();
   void update_size();
@@ -126,7 +121,6 @@ private:
   int start_line;      // index value of first line which shows in view
   int line_seperation; // number of blank lines between elements
   int voh;             // vertical overhead (3 header + 2 footer)
-  int hoh;             // horizontal overhead (2 left + 2 right)
   bool reprint;        // flag indicates if reprint is required
 
   void display();
@@ -263,7 +257,6 @@ private:
 
   int line_cursor;   // current scroll value
   int text_width;    // width of text accounting for padding
-  int content_lines; // total number of lines of content
   int visible_lines; // total number of lines in view
   int voh;           // vertical overhead
   int hoh;           // horizontal overhead

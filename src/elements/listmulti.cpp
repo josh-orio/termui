@@ -3,7 +3,7 @@
 namespace termui {
 
 SelectList::SelectList(const termui::strings &strs, int w, int h, int ls, int col)
-    : elements(strs), selmap(strs.size(), false), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {}
+    : elements(strs), selmap(strs.size(), false), start_line(0), w(w), h(h), cursor(0), line_spacing(ls), active_color(col) {}
 
 const termui::strings &SelectList::getStrings() const { return elements; }
 termui::strings &SelectList::getStrings() { return elements; }
