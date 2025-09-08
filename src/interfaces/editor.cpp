@@ -8,9 +8,15 @@ Editor::Editor(const termui::string &title, const termui::string &content) : tit
 void Editor::show() {
   cons.show(); // configure terminal
 
+  reprint = true;
+
   do {
-    display();
-  } while (process_input());
+    if (reprint) {
+      display();
+      reprint = false;
+    }
+    process_input();
+  } while (state == state::CONTINUE);
 
   cons.close(); // reset terminal
 }
@@ -62,40 +68,43 @@ void Editor::display() {
   cons.flush();
 }
 
-bool Editor::process_input() {
+void Editor::process_input() {
   std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::ESC) { // left arrow closes info page
-    return false;
+    state = state::EXIT;
 
   } else if (ec == key::DEL) { // remove last char
     if (content.text().size() > 0) {
       content.text() = std::string(content.text().begin(), content.text().end() - 1);
     }
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
-  } else if (ec == key::L_ARROW) {
-    return true;
+  } else if (ec == key::L_ARROW) { // still need to implement cursor action
+    state = state::CONTINUE;
 
   } else if (ec == key::U_ARROW) {
-    return true;
+    state = state::CONTINUE;
 
   } else if (ec == key::D_ARROW) {
-    return true;
+    state = state::CONTINUE;
 
   } else if (ec == key::R_ARROW) {
-    return true;
+    state = state::CONTINUE;
 
   } else if (ec == key::ENTER) { // add line break
     content.text() += '\n';
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
     content.text() += ec;
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else {
-    return true;
+    state = state::CONTINUE;
   }
 }
 

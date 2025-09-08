@@ -17,11 +17,12 @@ bool BinaryMenu::show() {
       display();
       reprint = false;
     }
-  } while (process_input());
+    process_input();
+  } while (state == state::CONTINUE);
 
   cons.close(); // reset terminal
 
-  return (bool)status;
+  return selection;
 }
 
 void BinaryMenu::display() {
@@ -46,11 +47,11 @@ void BinaryMenu::display() {
 
   cons.print(body.render());
 
-  if (status == 1) {
+  if (selection) {
     aff.selected = true;
     neg.selected = false;
 
-  } else /* status == 0 */ {
+  } else /* status == f */ {
     aff.selected = false;
     neg.selected = true;
   }
@@ -64,28 +65,28 @@ void BinaryMenu::display() {
   cons.flush();
 }
 
-bool BinaryMenu::process_input() {
+void BinaryMenu::process_input() {
   std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::ENTER) {
-    return false;
+    state = state::SELECT;
 
   } else if (ec == key::L_ARROW) {
-    if (status != 1) { // avoid reprint if status already == 1
-      status = 1;
+    if (selection != 1) { // avoid reprint if status already == 1
+      selection = true;
       reprint = true;
     }
-    return true;
+    state = state::CONTINUE;
 
   } else if (ec == key::R_ARROW) {
-    if (status != 0) { // avoid reprint if status == 0
-      status = 0;
+    if (selection != 0) { // avoid reprint if status == 0
+      selection = false;
       reprint = true;
     }
-    return true;
+    state = state::CONTINUE;
 
   } else {
-    return true;
+    state = state::CONTINUE;
   }
 }
 

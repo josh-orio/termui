@@ -20,9 +20,15 @@ std::string &InputBox::getResponse() { return response.text(); }
 void InputBox::show() {
   cons.show(); // configure terminal
 
+  reprint = true;
+
   do {
-    display();
-  } while (process_input());
+    if (reprint) {
+      display();
+      reprint = false;
+    }
+    process_input();
+  } while (state == state::CONTINUE);
 
   cons.close(); // reset terminal
 }
@@ -57,24 +63,26 @@ void InputBox::display() {
   cons.flush();
 }
 
-bool InputBox::process_input() {
+void InputBox::process_input() {
   std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::ESC) { // escape to close
-    return false;
+    state = state::EXIT;
 
   } else if (ec == key::DEL) { // remove last char
     if (response.text().size()) {
       response.text() = std::string(response.text().begin(), response.text().end() - 1);
     }
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
     response.text() += ec;
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else {
-    return true;
+    state = state::CONTINUE;
   }
 };
 

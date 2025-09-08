@@ -10,6 +10,8 @@
 
 namespace termui {
 
+enum class state { EXIT, CONTINUE, SELECT };
+
 class InfoBox {
 public:
   termui::string title, content;
@@ -22,17 +24,15 @@ public:
 
 private:
   Console cons;
+  termui::state state;
+
   int text_width;    // width of text accounting for padding
   int content_lines; // total number of lines of content
   int visible_lines; // total number of lines in view
   int overhead;      // number of lines reserved for header & footer
 
   void display();
-  bool process_input(); /* return values:
-   t: continue
-   f: exit
-   */
-
+  void process_input();
   void update_size();
 };
 
@@ -47,19 +47,18 @@ public:
 
 private:
   Console cons;
+  termui::state state;
+
   int line_cursor;   // current scroll value
   int text_width;    // width of text accounting for padding
   int content_lines; // total number of lines of content
   int visible_lines; // total number of lines in view
   int voh;           // vertical overhead (3 header + 2 footer)
   int hoh;           // horizontal overhead (2 left + 2 right)
+  bool reprint;      // flag indicates if reprint is required
 
   void display();
-  bool process_input(); /* return values:
-   t: continue
-   f: exit
-   */
-
+  void process_input();
   void update_size();
 };
 
@@ -85,10 +84,12 @@ public:
 
 private:
   Console cons;
+  termui::state state;
+
+  bool reprint; // flag indicates if reprint is required
 
   void display();
-  bool process_input();
-
+  void process_input();
   void update_size();
 };
 
@@ -113,13 +114,11 @@ public:
   // const std::vector<std::string> &getResponses() const;
   // std::vector<std::string> &getResponses();
 
-  int show(); /* return values:
-  -1: exit
-  >=0: element selected (return value as index)
-  */
+  void show();
 
 private:
   Console cons;
+  termui::state state;
 
   int cursor;          // current scroll value
   bool selected;       // element selection indicator
@@ -128,14 +127,10 @@ private:
   int line_seperation; // number of blank lines between elements
   int voh;             // vertical overhead (3 header + 2 footer)
   int hoh;             // horizontal overhead (2 left + 2 right)
+  bool reprint;        // flag indicates if reprint is required
 
   void display();
-  int process_input(); /* return values:
-  -1: exit
-  0: continue
-  1: element selected
-  */
-
+  void process_input();
   void update_size();
 };
 
@@ -155,19 +150,21 @@ public:
   // const std::vector<std::shared_ptr<item::ListItem>> &getElements() const { return (*list).getElements(); }
   // std::vector<std::shared_ptr<item::ListItem>> &getElements() { return (*list).getElements(); }
 
-  int show();   // returns index of selected option
-  int cursor(); // returns cursor
+  int show();    // -1 = exit, >=0 = element selected at index
+  int cursor();  // returns cursor
+  termui::state status(); // when the interface closes, it will either be EXIT or SELECT
 
 private:
   Console cons;
   List list;
+  termui::state state;
 
-  int lvo; // list vertical overhead
-  int lho; // list horizontal overhead
+  int lvo;      // list vertical overhead
+  int lho;      // list horizontal overhead
+  bool reprint; // flag indicates if reprint is required
 
   void display();
-  bool process_input();
-
+  void process_input();
   void update_size();
 };
 
@@ -183,22 +180,21 @@ public:
 
   bool isSelected(int i);
 
-  int show();   /* return values:
-    -1: exit
-    >=0: element selected (return value as index)
-    */
-  int cursor(); // returns cursor
+  int show();    // -1 = exit, >=0 = element selected at index
+  int cursor();  // returns cursor
+  termui::state status(); // when the interface closes, it will either be EXIT or SELECT
 
 private:
   Console cons;
   SelectList list;
+  termui::state state;
 
-  int lvo; // list vertical overhead
-  int lho; // list horizontal overhead
+  int lvo;      // list vertical overhead
+  int lho;      // list horizontal overhead
+  bool reprint; // flag indicates if reprint is required
 
   void display();
-  bool process_input();
-
+  void process_input();
   void update_size();
 };
 
@@ -212,19 +208,21 @@ public:
   FancyMenu(const std::string &title, const termui::strings &texts, const termui::strings &descs, int ls = 1);
   FancyMenu(const std::string &title, const std::vector<std::string> &texts, const std::vector<std::string> &descs, int ls = 1);
 
-  int show();   // returns index of selected option
-  int cursor(); // returns cursor
+  int show();    // -1 = exit, >=0 = element selected at index
+  int cursor();  // returns cursor
+  termui::state status(); // when the interface closes, it will either be EXIT or SELECT
 
 private:
   Console cons;
   FancyList list;
+  termui::state state;
 
-  int lvo; // list vertical overhead
-  int lho; // list horizontal overhead
+  int lvo;      // list vertical overhead
+  int lho;      // list horizontal overhead
+  bool reprint; // flag indicates if reprint is required
 
   void display();
-  bool process_input();
-
+  void process_input();
   void update_size();
 };
 
@@ -236,19 +234,17 @@ public:
   BinaryMenu(const termui::string &title, const termui::string &text, const termui::string &affirmative, const termui::string &negative);
   BinaryMenu(const std::string &title, const std::string &text, const std::string &affirmative, const std::string &negative);
 
-  bool show(); /* return values:
-  t: affirmative
-  f: negative
-  */
+  bool show(); // t = affirmative, f = negative
 
 private:
   Console cons;
-  int status;   // indicates which button is highlighted
-  bool reprint; // flag to indicate if a reprint is required (reduce flickering + wasted cycles)
+  termui::state state;
+
+  bool selection; // t = affirmative selected, f = negative selected
+  bool reprint;   // flag indicates if reprint is required
 
   void display();
-  bool process_input();
-
+  void process_input();
   void update_size();
 };
 
@@ -263,19 +259,18 @@ public:
 
 private:
   Console cons;
+  termui::state state;
+
   int line_cursor;   // current scroll value
   int text_width;    // width of text accounting for padding
   int content_lines; // total number of lines of content
   int visible_lines; // total number of lines in view
   int voh;           // vertical overhead
   int hoh;           // horizontal overhead
+  bool reprint;      // flag indicates if reprint is required
 
   void display();
-  bool process_input(); /* return values:
-   t: continue
-   f: exit
-   */
-
+  void process_input();
   void update_size();
 };
 
@@ -292,16 +287,14 @@ public:
 
 private:
   Console cons;
+  termui::state state;
 
-  int voh;
-  int hoh;
+  int voh;      // vertical overhead
+  int hoh;      // horizontal overhead
+  bool reprint; // flag indicates if reprint is required
 
   void display();
-  bool process_input(); /* return values:
-   t: continue
-   f: exit
-   */
-
+  void process_input();
   void update_size();
 };
 

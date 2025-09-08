@@ -19,25 +19,21 @@ InputPage::InputPage(const std::string &title, const std::vector<std::string> &f
 // const std::vector<Input> &InputPage::getResponses() const { return *responses; }
 // std::vector<Input> &InputPage::getResponses() { return *responses; }
 
-
-int InputPage::show() {
+void InputPage::show() {
   cons.show(); // configure terminal
 
   selected = false;
+  reprint = true;
 
-  int sig;
   do {
-    display();
-    sig = process_input();
-  } while (sig != -1); // this gotta be wrong
+    if (reprint) {
+      display();
+      reprint = false;
+    }
+    process_input();
+  } while (state == state::CONTINUE);
 
   cons.close(); // reset terminal
-
-  if (sig == -1) { // return codes:
-    return -1;     // -1 : normal exit
-  } else {         // >= 0 : selection at cursor position
-    return cursor;
-  }
 }
 
 void InputPage::display() {
@@ -75,28 +71,21 @@ void InputPage::display() {
   cons.flush();
 }
 
-int InputPage::process_input() {
-  // return values:
-  // -1: close window
-  // 0: normal/proceed
-  // 1: element selected
-
+void InputPage::process_input() {
   std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::ENTER) { // select/deselect
-    if (selected) {
-      selected = false;
-      return 0;
-    } else {
-      selected = true;
-      return 1;
-    }
+    selected = !selected; // flip
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if (ec == key::ESC) { // escape to close
     if (!selected) {           // dont close if field selected
-      return -1;
+      state = state::EXIT;
+
+    } else {
+      state = state::CONTINUE;
     }
-    return 0;
 
   } else if (ec == key::U_ARROW) {
     if (!selected) {
@@ -104,7 +93,8 @@ int InputPage::process_input() {
       cursor -= (cursor > 0) ? 1 : 0;
       start_line -= (cursor < start_line) ? 1 : 0;
     }
-    return 0;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if (ec == key::D_ARROW) {
     if (!selected) {
@@ -112,7 +102,8 @@ int InputPage::process_input() {
       cursor += (cursor < fields.size() - 1) ? 1 : 0;
       start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
     }
-    return 0;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if (ec == key::DEL) { // remove last char
     if (selected) {
@@ -120,16 +111,18 @@ int InputPage::process_input() {
         responses.getItem(cursor) = std::string(responses.getItem(cursor).begin(), responses.getItem(cursor).end() - 1);
       }
     }
-    return 0;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
     if (selected) {
       responses.getItem(cursor) += ec;
     }
-    return 0;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else {
-    return 0;
+    state = state::CONTINUE;
   }
 };
 

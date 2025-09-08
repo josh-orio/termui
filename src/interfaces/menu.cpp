@@ -11,15 +11,28 @@ Menu::Menu(const std::string &t, const std::vector<std::string> &e, int ls)
 int Menu::show() {
   cons.show(); // configure terminal
 
-  do {
-    display();
-  } while (process_input());
+  reprint = true;
 
-  cons.close();       // reset terminal
-  return list.cursor; // returns selected option
+  do {
+    if (reprint) {
+      display();
+      reprint = false;
+    }
+    process_input();
+  } while (state == state::CONTINUE);
+
+  cons.close(); // reset terminal
+
+  if (state == state::EXIT) {
+    return -1;
+  } else /* state == SELECT */ {
+    return list.cursor; // returns selected option
+  }
 }
 
 int Menu::cursor() { return list.cursor; }
+
+termui::state Menu::status() { return state; }
 
 void Menu::display() {
   update_size();
@@ -29,25 +42,28 @@ void Menu::display() {
   cons.print(cons.height, 2, faint_text("[ESC] close  [↑/↓] scroll [↵] select"));
   cons.flush();
 }
-bool Menu::process_input() {
+
+void Menu::process_input() {
   std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::U_ARROW) { // decrement but dont let (cursor < 0)
     list.cursor_up();
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if (ec == key::D_ARROW) { // increment but dont let (cursor > options.size)
     list.cursor_down();
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if (ec == key::ENTER) { // enter selects the option
-    return false;
+    state = state::SELECT;
 
   } else if (ec == key::ESC) { // esc closes the interface
-    return false;
+    state = state::EXIT;
 
   } else {
-    return true;
+    state = state::CONTINUE;
   }
 };
 

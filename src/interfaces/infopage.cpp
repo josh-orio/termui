@@ -8,9 +8,15 @@ InfoPage::InfoPage(const std::string &t, const std::string &c) : title(t), conte
 void InfoPage::show() {
   cons.show(); // configure terminal
 
+  reprint = true;
+
   do {
-    display();
-  } while (process_input());
+    if (reprint) {
+      display();
+      reprint = false;
+    }
+    process_input();
+  } while (state == state::CONTINUE);
 
   cons.close(); // reset terminal
 }
@@ -57,22 +63,24 @@ void InfoPage::display() {
   cons.flush();
 }
 
-bool InfoPage::process_input() {
+void InfoPage::process_input() {
   std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::U_ARROW) {
     line_cursor -= (line_cursor > 0) ? 1 : 0; // decrement but dont let (cursor < 0)
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if (ec == key::D_ARROW) {
     line_cursor += (line_cursor < content_lines - 1) ? 1 : 0; // increment but dont let (cursor > content_lines)
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if (ec == key::ESC) { // left arrow closes info page
-    return false;
+    state = state::EXIT;
 
   } else {
-    return true;
+    state = state::CONTINUE;
   }
 }
 

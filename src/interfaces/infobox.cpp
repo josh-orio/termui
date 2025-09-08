@@ -1,4 +1,5 @@
 #include "interfaces.hpp"
+#include "util.hpp"
 
 namespace termui {
 
@@ -10,7 +11,8 @@ void InfoBox::show() {
 
   do {
     display();
-  } while (process_input());
+    process_input();
+  } while (state == state::CONTINUE);
 
   cons.close(); // reset terminal
 }
@@ -46,17 +48,17 @@ void InfoBox::display() {
   cons.flush();
 }
 
-bool InfoBox::process_input() {
+void InfoBox::process_input() {
   std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::ESC) { // ESC closes info box
-    return false;
+    state = state::EXIT;
 
-  } else if (ec == key::ENTER) { // enter closes info box
-    return false;
+  } else if (ec == key::ENTER) {
+    state = state::EXIT;
 
   } else {
-    return true;
+    state = state::CONTINUE;
   }
 }
 

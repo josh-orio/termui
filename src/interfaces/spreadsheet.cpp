@@ -16,7 +16,8 @@ void Spreadsheet::show() {
 
   do {
     display();
-  } while (process_input());
+    process_input();
+  } while (state == state::CONTINUE);
 
   cons.close(); // reset terminal
 }
@@ -30,31 +31,35 @@ void Spreadsheet::display() {
   cons.flush();
 }
 
-bool Spreadsheet::process_input() {
+void Spreadsheet::process_input() {
   std::string ec = cons.poll_input(); // read in a control
 
   if (ec == key::ENTER) {
-
     cons.close();
+
     InputPage i(title, table.getCols(), table.getRow(table.cursor));
     i.show();
+
     cons.show();
 
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if (ec == key::U_ARROW) {
     table.cursor_up();
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if (ec == key::D_ARROW) {
     table.cursor_down();
-    return true;
+    reprint = true;
+    state = state::CONTINUE;
 
   } else if (ec == key::ESC) { // ESC closes spreadsheet
-    return false;
+    state = state::EXIT;
 
   } else {
-    return true;
+    state = state::CONTINUE;
   }
 }
 
