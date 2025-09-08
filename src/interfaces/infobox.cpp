@@ -3,8 +3,8 @@
 
 namespace termui {
 
-InfoBox::InfoBox(const termui::string &t, const termui::string &c) : title(t), content(c), cons(), w(15), h(5) {}
-InfoBox::InfoBox(const std::string &t, const std::string &c) : title(t), content(c), cons(), w(15), h(5) {}
+InfoBox::InfoBox(const termui::string &t, const termui::string &c) : title(t), content(c), w(15), h(5), cons() {}
+InfoBox::InfoBox(const std::string &t, const std::string &c) : title(t), content(c), w(15), h(5), cons() {}
 
 void InfoBox::show() {
   cons.show(); // configure terminal

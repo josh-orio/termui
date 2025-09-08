@@ -11,6 +11,12 @@ test:
 	@cd $(BUILD_DIR) && cmake -D CMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && $(MAKE) -j
 	@./build/test_program
 
+recompile:
+	@clear
+	@rm -rf .cache build
+	@mkdir -p $(BUILD_DIR)
+	@cd $(BUILD_DIR) && cmake -D CMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && $(MAKE) -j
+
 install:
 	@mkdir -p $(BUILD_DIR)
 	@cd $(BUILD_DIR) && cmake -D CMAKE_BUILD_TYPE=Release .. && sudo $(MAKE) -j install

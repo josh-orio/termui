@@ -10,6 +10,7 @@ file(GLOB TERMUI_INCLUDE "include/*.hpp")
 
 add_library(termui ${TERMUI_SOURCES})
 target_include_directories(termui PRIVATE include)
+target_compile_options(termui PRIVATE -Wall -Wextra -Wuninitialized)
 
 set_target_properties(termui
     PROPERTIES
@@ -56,3 +57,4 @@ install(FILES
 
 add_executable(test_program test.cpp)
 target_link_libraries(test_program PRIVATE termui)
+target_compile_options(test_program PRIVATE -Wall -Wextra -Wuninitialized)

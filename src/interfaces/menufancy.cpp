@@ -3,11 +3,11 @@
 namespace termui {
 
 FancyMenu::FancyMenu(const termui::string &title, const termui::strings &texts, const termui::strings &descs, int ls)
-    : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
+    : title(title), text(texts), desc(descs), line_seperation(ls), cons(), list(text, desc, 1, 1), lvo(5), lho(4) {}
 FancyMenu::FancyMenu(const std::string &title, const termui::strings &texts, const termui::strings &descs, int ls)
-    : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
+    : title(title), text(texts), desc(descs), line_seperation(ls), cons(), list(text, desc, 1, 1), lvo(5), lho(4) {}
 FancyMenu::FancyMenu(const std::string &title, const std::vector<std::string> &texts, const std::vector<std::string> &descs, int ls)
-    : title(title), text(texts), desc(descs), list(text, desc, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
+    : title(title), text(texts), desc(descs), line_seperation(ls), cons(), list(text, desc, 1, 1), lvo(5), lho(4) {}
 
 int FancyMenu::show() {
   cons.show(); // configure terminal

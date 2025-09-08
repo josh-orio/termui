@@ -3,10 +3,10 @@
 namespace termui {
 
 Menu::Menu(const termui::string &t, const termui::strings &e, int ls)
-    : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
-Menu::Menu(const std::string &t, const termui::strings &e, int ls) : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
+    : title(t), elements(e), line_seperation(ls), cons(), list(elements, 1, 1), lvo(5), lho(4) {}
+Menu::Menu(const std::string &t, const termui::strings &e, int ls) : title(t), elements(e), line_seperation(ls), cons(), list(elements, 1, 1), lvo(5), lho(4) {}
 Menu::Menu(const std::string &t, const std::vector<std::string> &e, int ls)
-    : title(t), elements(e), list(elements, 1, 1), line_seperation(ls), cons(), lvo(5), lho(4) {}
+    : title(t), elements(e), line_seperation(ls), cons(), list(elements, 1, 1), lvo(5), lho(4) {}
 
 int Menu::show() {
   cons.show(); // configure terminal

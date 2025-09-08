@@ -3,11 +3,11 @@
 namespace termui {
 
 InputPage::InputPage(const termui::string &title, const termui::strings &fields, const termui::strings &responses, int ls, int col)
-    : title(title), fields(fields), responses(responses), cons(), line_seperation(ls), col(col), voh(5), cursor(0), start_line(0) {}
+    : title(title), fields(fields), responses(responses), col(col), cons(), cursor(0), start_line(0), line_seperation(ls), voh(5) {}
 InputPage::InputPage(const std::string &title, const termui::strings &fields, const termui::strings &responses, int ls, int col)
-    : title(title), fields(fields), responses(responses), cons(), line_seperation(ls), col(col), voh(5), cursor(0), start_line(0) {}
+    : title(title), fields(fields), responses(responses), col(col), cons(), cursor(0), start_line(0), line_seperation(ls), voh(5) {}
 InputPage::InputPage(const std::string &title, const std::vector<std::string> &fields, const termui::strings &responses, int ls, int col)
-    : title(title), fields(fields), responses(responses), cons(), line_seperation(ls), col(col), voh(5), cursor(0), start_line(0) {}
+    : title(title), fields(fields), responses(responses), col(col), cons(), cursor(0), start_line(0), line_seperation(ls), voh(5) {}
 
 // std::shared_ptr<std::vector<std::string>> InputPage::shareFields() const { return fields; }
 
@@ -99,7 +99,7 @@ void InputPage::process_input() {
   } else if (ec == key::D_ARROW) {
     if (!selected) {
       // increment but dont let (cursor > fields.size)
-      cursor += (cursor < fields.size() - 1) ? 1 : 0;
+      cursor += (cursor < (int) fields.size() - 1) ? 1 : 0;
       start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
     }
     reprint = true;

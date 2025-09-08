@@ -2,8 +2,8 @@
 
 namespace termui {
 
-InfoPage::InfoPage(const termui::string &t, const termui::string &c) : title(t), content(c), cons(), voh(5), hoh(4), line_cursor(0) {}
-InfoPage::InfoPage(const std::string &t, const std::string &c) : title(t), content(c), cons(), voh(5), hoh(4), line_cursor(0) {}
+InfoPage::InfoPage(const termui::string &t, const termui::string &c) : title(t), content(c), cons(), line_cursor(0), voh(5), hoh(4) {}
+InfoPage::InfoPage(const std::string &t, const std::string &c) : title(t), content(c), cons(), line_cursor(0), voh(5), hoh(4) {}
 
 void InfoPage::show() {
   cons.show(); // configure terminal

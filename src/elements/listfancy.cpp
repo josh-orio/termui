@@ -3,7 +3,7 @@
 namespace termui {
 
 FancyList::FancyList(const termui::strings &tstrs, const termui::strings &dstrs, int w, int h, int ls, int col)
-    : text(tstrs), desc(dstrs), w(w), h(h), line_spacing(ls), active_color(col), cursor(0), start_line(0) {}
+    : text(tstrs), desc(dstrs), start_line(0), w(w), h(h), cursor(0), line_spacing(ls), active_color(col) {}
 
 const std::string &FancyList::getText(int i) const { return text.getItem(i); }
 std::string &FancyList::getText(int i) { return text.getItem(i); }
@@ -49,7 +49,7 @@ void FancyList::cursor_up() { // decrement but dont let (cursor < 0)
 
 void FancyList::cursor_down() { // increment but dont let (cursor > elements.size)
   internal_update();
-  cursor += (cursor < text.size() - 1) ? 1 : 0;
+  cursor += (cursor < (int) text.size() - 1) ? 1 : 0;
   start_line += (cursor >= start_line + visible_rows) ? 1 : 0;
 }
 
