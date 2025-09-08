@@ -2,7 +2,6 @@
 #define ELEMENTS_HPP
 
 #include "str.hpp"
-#include "unicode.hpp"
 #include "util.hpp"
 #include <memory>
 #include <string>

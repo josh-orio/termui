@@ -60,11 +60,49 @@ namespace key { /* used for comparison operations when reading off input buffers
 inline std::string ENTER{10};
 inline std::string ESC{27};
 inline std::string DEL{127};
+
 inline std::string U_ARROW = "\e[A";
 inline std::string D_ARROW = "\e[B";
 inline std::string R_ARROW = "\e[C";
 inline std::string L_ARROW = "\e[D";
+
+inline std::string SHIFT_U_ARROW{27, 91, 49, 59, 50, 65}; // shift + arrow
+inline std::string SHIFT_D_ARROW{27, 91, 49, 59, 50, 66};
+inline std::string SHIFT_R_ARROW{27, 91, 49, 59, 50, 67};
+inline std::string SHIFT_L_ARROW{27, 91, 49, 59, 50, 68};
 } // namespace key
+
+namespace unicode { /* used to compose interfaces and elements mostly */
+
+inline std::string TICK = "✓";
+inline std::string DOT = "·";
+
+inline std::string VERTICAL = "│";
+inline std::string VERTICAL_WIDE = "┃";
+
+inline std::string TOP_LEFT = "┌";
+inline std::string TOP_RIGHT = "┐";
+inline std::string BOTTOM_LEFT = "└";
+inline std::string BOTTOM_RIGHT = "┘";
+
+inline std::string TOP_LEFT_ROUND = "╭";
+inline std::string TOP_RIGHT_ROUND = "╮";
+inline std::string BOTTOM_LEFT_ROUND = "╰";
+inline std::string BOTTOM_RIGHT_ROUND = "╯";
+
+inline std::string ELLIPSIS = "…";
+inline std::string L_ARROW = "←";
+inline std::string R_ARROW = "→";
+inline std::string U_ARROW = "↑";
+inline std::string D_ARROW = "↓";
+inline std::string HBD = "←/→"; // horizontal bi directional
+inline std::string VBD = "↑/↓"; // vertical bi directional
+inline std::string ENTER = "↵";
+inline std::string TAB = "⇥";
+
+// u2500 to u259f
+
+} // namespace unicode
 
 enum class align { NONE, LEFT, RIGHT, CENTER, TOP, BOTTOM };
 

@@ -3,7 +3,6 @@
 
 #include "console.hpp"
 #include "elements.hpp"
-#include "unicode.hpp"
 #include "util.hpp"
 #include <memory>
 #include <vector>

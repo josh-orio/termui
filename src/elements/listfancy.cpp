@@ -22,9 +22,9 @@ std::string FancyList::render() {
     d = desc.getItem(i);
 
     if (i + start_line == cursor) {
-      outbuff += fg_apply(bold_text(unicode::VERTICAL + " " + t), active_color);
+      outbuff += fg_apply(bold_text(unicode::VERTICAL_WIDE + " " + t), active_color);
       outbuff += curs_left(2 + t.size()) + curs_down(1);
-      outbuff += fg_apply(bold_text(unicode::VERTICAL + " "), active_color) + fg_apply(d, clr::LIGHTGREY);
+      outbuff += fg_apply(bold_text(unicode::VERTICAL_WIDE + " "), active_color) + fg_apply(d, clr::LIGHTGREY);
       outbuff += curs_left(2 + d.size());
 
     } else {
