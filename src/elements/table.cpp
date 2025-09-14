@@ -41,7 +41,7 @@ std::string Table::render() {
 
   outbuff += header;
   outbuff += curs_down(1) + curs_left(table_width - 2);
-  outbuff += fg_apply(div_line(table_width - 2), box_color);
+  outbuff += fg_apply(horizontal_line(table_width - 2), box_color);
   outbuff += curs_down(1) + curs_left(table_width - 2);
 
   std::string row_text; // just a buffer for this row output

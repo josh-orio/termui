@@ -59,7 +59,7 @@ void InfoPage::display() {
     space_used++;
   }
 
-  cons.print(cons.height, 2, faint_text("[ESC] close  [↑/↓] scroll"));
+  cons.print(cons.height, 2, faint_text("[ESC] close  [↑↓] navigate  [shift + ↑↓] fast navigate"));
   cons.flush();
 }
 
@@ -71,8 +71,18 @@ void InfoPage::process_input() {
     reprint = true;
     state = state::CONTINUE;
 
+  } else if (ec == key::SHIFT_U_ARROW) {
+    line_cursor = (line_cursor > 0) ? std::max(0, line_cursor - 5) : 0;
+    reprint = true;
+    state = state::CONTINUE;
+
   } else if (ec == key::D_ARROW) {
     line_cursor += (line_cursor < content_lines - 1) ? 1 : 0; // increment but dont let (cursor > content_lines)
+    reprint = true;
+    state = state::CONTINUE;
+
+  } else if (ec == key::SHIFT_D_ARROW) {
+    line_cursor = (line_cursor < content_lines - 1) ? std::min(content_lines - 1, line_cursor + 5) : content_lines - 1;
     reprint = true;
     state = state::CONTINUE;
 

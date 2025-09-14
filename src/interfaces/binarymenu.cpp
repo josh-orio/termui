@@ -61,7 +61,7 @@ void BinaryMenu::display() {
 
   cons.print(aff.render() + " " + neg.render());
 
-  cons.print(cons.height, 2, faint_text(std::format("[{}] move [{}] select", unicode::HBD, unicode::ENTER)));
+  cons.print(cons.height, 2, faint_text(std::format("[{}{}] move [{}] select", unicode::L_ARROW, unicode::R_ARROW, unicode::ENTER)));
   cons.flush();
 }
 

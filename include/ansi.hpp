@@ -36,6 +36,9 @@ inline std::string HIDE_CURSOR = "\e[?25l";
 inline std::string SHOW_CURSOR = "\e[?25h";
 inline std::string ALT_BUFFER = "\e[?1049h";     // enables the alternative buffer
 inline std::string PRIMARY_BUFFER = "\e[?1049l"; // disables the alternative buffer
+
+inline std::string SAVE_CURSOR = "\e7\e[s"; // uses dec and xterm code for compat
+inline std::string RESTORE_CURSOR = "\e8\e[u";
 } // namespace term
 
 } // namespace termui

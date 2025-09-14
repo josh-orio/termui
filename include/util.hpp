@@ -37,19 +37,21 @@ std::string fg_apply(std::string text, int col);
 std::string bg_apply(std::string text, int col);
 
 std::string whitespace(int len);
-std::string div_line(int len);
+std::string horizontal_line(int len, int col = clr::DEFAULT);
+std::string vertical_line(int len, int col = clr::DEFAULT);
 std::string line_sep(int len);
 std::string bold_text(std::string s);
 std::string reverse_video(std::string s);
 std::string faint_text(std::string s);
 
 // shorthand utilities
-std::string ws(int len);       // whitespace
-std::string dl(int len);       // dividing line
-std::string ls(int len);       // line seperation
-std::string bt(std::string s); // bold text
-std::string rv(std::string s); // reverse video
-std::string ft(std::string s); // faint
+std::string ws(int len);                         // whitespace
+std::string hl(int len, int col = clr::DEFAULT); // horizontal line
+std::string vl(int len, int col = clr::DEFAULT); // vertical line
+std::string ls(int len);                         // line seperation
+std::string bt(std::string s);                   // bold text
+std::string rv(std::string s);                   // reverse video
+std::string ft(std::string s);                   // faint
 
 std::string curs_up(int n);
 std::string curs_down(int n);
@@ -95,10 +97,9 @@ inline std::string L_ARROW = "←";
 inline std::string R_ARROW = "→";
 inline std::string U_ARROW = "↑";
 inline std::string D_ARROW = "↓";
-inline std::string HBD = "←/→"; // horizontal bi directional
-inline std::string VBD = "↑/↓"; // vertical bi directional
 inline std::string ENTER = "↵";
 inline std::string TAB = "⇥";
+inline std::string ESC = "␛";
 
 // u2500 to u259f
 
