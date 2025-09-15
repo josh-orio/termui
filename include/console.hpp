@@ -52,26 +52,20 @@ public:
 
   bool buffered, echos, cursor, altterm;
 
-  Console();
-  Console(bool buffered, bool echos, bool cursor, bool alt);
+  Console(bool buffered = false, bool echos = false, bool cursor = false, bool alt = true);
 
   void show();
   void close();
 
   void update_size();
 
+  void print(int row, int col, std::string s);
+  void print(std::string s); // only use this if output is or doesnt need to be positionally formatted
+
   void clear_outbuff();
   void clear_screen();
   void clear_scrollback();
-
-  void print(int row, int col, std::string s);
-  void print(std::string s); // only use this if output is already positionally formatted
-  void flush();
-
-  void curs_up(int n);
-  void curs_down(int n);
-  void curs_right(int n);
-  void curs_left(int n);
+  void flush(bool s_clr = true, bool sb_clr = true); // flush outbuff (w args to clear screen before and clear scrollback)
 
   std::string poll_input(); // read (upto 8) chars off stdin into inbuff
 };

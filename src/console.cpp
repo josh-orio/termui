@@ -33,19 +33,6 @@ void CursorModeToggle::on() { std::cout << term::SHOW_CURSOR; }
 void AlternateBufferToggle::enable() { std::cout << term::ALT_BUFFER; }
 void AlternateBufferToggle::disable() { std::cout << term::PRIMARY_BUFFER; }
 
-Console::Console() {
-  struct winsize w;
-  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-  width = w.ws_col, height = w.ws_row;
-
-  buffered = false;
-  echos = false;
-  cursor = false;
-  altterm = true;
-
-  outbuff.clear();
-}
-
 Console::Console(bool b, bool e, bool c, bool a) {
   struct winsize w;
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -56,7 +43,7 @@ Console::Console(bool b, bool e, bool c, bool a) {
   cursor = c;
   altterm = a;
 
-  outbuff = "";
+  outbuff.clear();
 }
 
 void Console::show() {
@@ -81,19 +68,20 @@ void Console::clear_screen() { std::cout << term::CLEAR_CONSOLE << term::CLEAR_S
 void Console::clear_scrollback() { std::cout << term::CLEAR_SCROLLBACK; }
 
 void Console::print(int row, int col, std::string s) { outbuff += std::format("\e[{};{}H{}", row, col, s); }
+
 void Console::print(std::string s) { outbuff += s; }
 
-void Console::flush() {
-  clear_scrollback();
-  clear_screen();
+void Console::flush(bool s_clr, bool sb_clr) {
+  if (sb_clr) {
+    clear_scrollback();
+  }
+  if (s_clr) {
+    clear_screen();
+  }
+
   std::cout << outbuff << std::flush; // might not (wont) print without std::flush (due to read() in await_input i think?)
   clear_outbuff();
 }
-
-void Console::curs_up(int n) { outbuff += std::format("\e[{}A", n); }
-void Console::curs_down(int n) { outbuff += std::format("\e[{}B", n); }
-void Console::curs_right(int n) { outbuff += std::format("\e[{}C", n); }
-void Console::curs_left(int n) { outbuff += std::format("\e[{}D", n); }
 
 std::string Console::poll_input() {
   char keys[8]; // allow reading upto 8 chars at once, ansi codes should only be 3-5
