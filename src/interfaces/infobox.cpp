@@ -1,5 +1,4 @@
 #include "interfaces.hpp"
-#include "util.hpp"
 
 namespace termui {
 
@@ -23,26 +22,21 @@ void InfoBox::display() {
   Text t(title, w - 4, 1, clr::PURPLE, clr::DEFAULT);
   Text body(content, w - 4, 4, clr::DEFAULT, clr::DEFAULT);
 
-  Button aff("Close", 8, clr::PASTELPINK, clr::DARKGREY);
-  aff.selected = true;
+  Button close("Close", 8, clr::PASTELPINK, clr::DARKGREY);
+  close.selected = true;
 
   Box b(w, h, clr::DARKGREY);
 
   cons.print((cons.height - h) / 2, (cons.width - w) / 2, b.render());
-
-  cons.curs_up(h - 2);
-  cons.curs_left(w - 2);
+  cons.print(curs_up(h - 2) + curs_left(w - 2));
 
   cons.print(bt(t.render()));
-  cons.curs_down(2);
-  cons.curs_left(t.w);
+  cons.print(curs_down(2) + curs_left(t.w));
 
   cons.print(body.render());
+  cons.print(curs_down(2) + curs_left(close.w));
 
-  cons.curs_down(2);
-  cons.curs_left(aff.w);
-
-  cons.print(aff.render());
+  cons.print(close.render());
 
   cons.print(cons.height, 2, faint_text(std::format("[{}] close [{}] select", "ESC", unicode::ENTER)));
   cons.flush();

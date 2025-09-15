@@ -37,13 +37,10 @@ void BinaryMenu::display() {
   Box b(w, h, clr::DARKGREY);
 
   cons.print((cons.height - h) / 2, (cons.width - w) / 2, b.render());
-
-  cons.curs_up(h - 2);
-  cons.curs_left(w - 2);
+  cons.print(curs_up(h - 2) + curs_left(w - 2));
 
   cons.print(bt(t.render()));
-  cons.curs_down(2);
-  cons.curs_left(t.w);
+  cons.print(curs_down(2) + curs_left(t.w));
 
   cons.print(body.render());
 
@@ -56,8 +53,7 @@ void BinaryMenu::display() {
     neg.selected = true;
   }
 
-  cons.curs_down(2);
-  cons.curs_left(aff.w + 1 + neg.w);
+  cons.print(curs_down(2) + curs_left(aff.w + 1 + neg.w));
 
   cons.print(aff.render() + " " + neg.render());
 

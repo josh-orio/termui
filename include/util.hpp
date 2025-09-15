@@ -101,11 +101,7 @@ inline std::string ENTER = "↵";
 inline std::string TAB = "⇥";
 inline std::string ESC = "␛";
 
-// u2500 to u259f
-
 } // namespace unicode
-
-enum class align { NONE, LEFT, RIGHT, CENTER, TOP, BOTTOM };
 
 } // namespace termui
 

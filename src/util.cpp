@@ -52,13 +52,13 @@ std::string bold_text(std::string s) { return format::BOLD + s + format::BOLD_OF
 std::string reverse_video(std::string s) { return format::REVERSE_VIDEO + s + format::REVERSE_VIDEO_OFF; }
 std::string faint_text(std::string s) { return format::FAINT + s + format::FAINT_OFF; }
 
-std::string ws(int len) /* whitespace */ { return whitespace(len); }
-std::string hl(int len, int col) /* horizontal line */ { return horizontal_line(len, col); }
-std::string vl(int len, int col) /* vertical line */ { return vertical_line(len, col); }
-std::string ls(int len) /* line seperation*/ { return line_sep(len); }
-std::string bt(std::string s) /* bold text*/ { return bold_text(s); }
-std::string rv(std::string s) /*  reverse video*/ { return reverse_video(s); }
-std::string ft(std::string s) /*  faint*/ { return faint_text(s); }
+std::string ws(int len) { return whitespace(len); }                    // whitespace
+std::string hl(int len, int col) { return horizontal_line(len, col); } // horizontal line
+std::string vl(int len, int col) { return vertical_line(len, col); }   // vertical line
+std::string ls(int len) { return line_sep(len); }                      // line seperation
+std::string bt(std::string s) { return bold_text(s); }                 // bold text
+std::string rv(std::string s) { return reverse_video(s); }             // reverse video
+std::string ft(std::string s) { return faint_text(s); }                // faint text
 
 std::string curs_up(int n) { return std::format("\e[{}A", n); }
 std::string curs_down(int n) { return std::format("\e[{}B", n); }
