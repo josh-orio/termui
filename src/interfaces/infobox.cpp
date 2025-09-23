@@ -30,7 +30,7 @@ void InfoBox::display() {
   cons.print((cons.height - h) / 2, (cons.width - w) / 2, b.render());
   cons.print(curs_up(h - 2) + curs_left(w - 2));
 
-  cons.print(bt(t.render()));
+  cons.print(bold_text(t.render()));
   cons.print(curs_down(2) + curs_left(t.w));
 
   cons.print(body.render());

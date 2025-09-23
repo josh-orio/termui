@@ -45,7 +45,7 @@ void InputBox::display() {
   Text f(field, w - 4, 1, clr::MAGENTA, clr::DEFAULT);
   Input r(response, placeholder, w - 4, clr::DEFAULT, clr::DARKGREY);
 
-  cons.print(bt(f.render()));
+  cons.print(bold_text(f.render()));
   cons.print(curs_down(2) + curs_left(f.w));
 
   cons.print(r.render());

@@ -44,15 +44,6 @@ std::string bold_text(std::string s);
 std::string reverse_video(std::string s);
 std::string faint_text(std::string s);
 
-// shorthand utilities
-std::string ws(int len);                         // whitespace
-std::string hl(int len, int col = clr::DEFAULT); // horizontal line
-std::string vl(int len, int col = clr::DEFAULT); // vertical line
-std::string ls(int len);                         // line seperation
-std::string bt(std::string s);                   // bold text
-std::string rv(std::string s);                   // reverse video
-std::string ft(std::string s);                   // faint
-
 std::string curs_up(int n);
 std::string curs_down(int n);
 std::string curs_right(int n);

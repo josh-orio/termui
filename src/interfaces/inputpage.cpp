@@ -39,7 +39,7 @@ void InputPage::show() {
 void InputPage::display() {
   update_size();
 
-  cons.print(2, 2, bt(title.text()));
+  cons.print(2, 2, bold_text(title.text()));
 
   cons.print(4, 2, ""); // repositioning to start printing input lines
   std::string fld;      //, rsp;
@@ -49,7 +49,7 @@ void InputPage::display() {
     rsp = Input(responses.shareItem(i), cons.width - /*some horizonstal overhead*/ 7 - fld.length());
 
     if (i + start_line == cursor) {
-      cons.print(fg_apply(bt("> " + fld) + ": " + rsp.render(), col));
+      cons.print(fg_apply(bold_text("> " + fld) + ": " + rsp.render(), col));
       cons.print((curs_down(line_seperation + 1) + curs_left(4 + fld.length() + rsp.w)));
     } else {
       cons.print("  " + fld + ": " + rsp.render());
@@ -99,7 +99,7 @@ void InputPage::process_input() {
   } else if (ec == key::D_ARROW) {
     if (!selected) {
       // increment but dont let (cursor > fields.size)
-      cursor += (cursor < (int) fields.size() - 1) ? 1 : 0;
+      cursor += (cursor < (int)fields.size() - 1) ? 1 : 0;
       start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
     }
     reprint = true;

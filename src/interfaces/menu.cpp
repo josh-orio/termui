@@ -37,7 +37,7 @@ termui::state Menu::status() { return state; }
 void Menu::display() {
   update_size();
 
-  cons.print(2, 2, bt(title.text()));
+  cons.print(2, 2, bold_text(title.text()));
   cons.print(4, 2, list.render());
   cons.print(cons.height, 2, faint_text("[ESC] close  [↑/↓] scroll [↵] select"));
   cons.flush();

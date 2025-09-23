@@ -51,7 +51,7 @@ void InfoPage::display() {
 
   content_lines = formatted.size();
 
-  cons.print(2, 2, bt(title.text())); //*title));
+  cons.print(2, 2, bold_text(title.text())); //*title));
 
   int space_used = 0;
   for (int i = line_cursor; i < std::min(line_cursor + visible_lines, (int)formatted.size()); i++) {

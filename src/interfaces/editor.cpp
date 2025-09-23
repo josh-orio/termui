@@ -24,7 +24,7 @@ void Editor::show() {
 void Editor::display() {
   update_size();
 
-  cons.print(2, 2, bt(title.text()));
+  cons.print(2, 2, bold_text(title.text()));
   cons.print(cons.height, 2, faint_text("[ESC] close  [↑/↓/←/→] reposition"));
 
   // draw line counters
