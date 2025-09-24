@@ -61,4 +61,32 @@ std::string curs_down(int n) { return std::format("\e[{}B", n); }
 std::string curs_right(int n) { return std::format("\e[{}C", n); }
 std::string curs_left(int n) { return std::format("\e[{}D", n); }
 
+size_t visible_length(const std::string &s) {
+  size_t count = 0;
+  for (unsigned char c : s) {
+    //  UTF-8 bytes that start with binary 10xxxxxx are continuation bytes, not the start of a new character.
+    if ((c & 0xC0) != 0x80) {
+      ++count;
+    }
+  }
+  return count;
+}
+
+size_t max_visible_length(const std::string &s, int n) {
+  size_t count = 0; // num of printed symbols
+  size_t pos = 0;   // num of bytes passed
+
+  for (unsigned char c : s) {
+    if ((c & 0xC0) != 0x80) {
+      ++count;
+      if (count > static_cast<size_t>(n)) {
+        return pos; // return  num of bytes before this symbol was counted
+      }
+    }
+    ++pos;
+  }
+
+  return s.size(); // return len if less that n symbols can be made
+}
+
 } // namespace termui

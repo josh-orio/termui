@@ -16,14 +16,15 @@ std::string Text::render() {
   for (int i = 0; i < h; i++) {
     int next = 0;
     if (copy.find('\n') == std::string::npos) {
-      next = std::min({(int)copy.size(), w});
+      next = std::min({copy.size(), max_visible_length(copy, w)});
     } else {
-      next = std::min({(int)copy.size(), w, (int)copy.find('\n')});
+      next = std::min({copy.size(), max_visible_length(copy, w), copy.find('\n')});
     }
 
-    formatted.push_back(std::string(copy.begin(), copy.begin() + next) + std::string(w - next, ' '));
+    formatted.push_back(std::string(copy.begin(), copy.begin() + next));        // make substring of <=w printed symbols
+    formatted.back() += std::string(w - visible_length(formatted.back()), ' '); // add spacing to fill w
 
-    if (copy.begin() + next + 1 < copy.end()) {
+    if (copy.begin() + next < copy.end()) {
       if (copy[next] == '\n') {
         copy = std::string(copy.begin() + next + 1, copy.end());
       } else {
@@ -35,7 +36,7 @@ std::string Text::render() {
   }
 
   if (copy.size() > 0) { // data remaining, didnt fit in text box, print ellipsis
-    formatted[h - 1] = formatted[h - 1].substr(0, w - 1) + unicode::ELLIPSIS;
+    formatted.back() = std::string(formatted.back().begin(), formatted.back().end() - 1) + unicode::ELLIPSIS; // holy method.method
   }
 
   for (int i = 0; i < h; i++) {

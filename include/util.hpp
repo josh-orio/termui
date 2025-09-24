@@ -49,6 +49,9 @@ std::string curs_down(int n);
 std::string curs_right(int n);
 std::string curs_left(int n);
 
+size_t visible_length(const std::string &s);            // calculates length of printed string (not bytes)
+size_t max_visible_length(const std::string &s, int n); // calculates num of bytes that make n chars when printed
+
 namespace key { /* used for comparison operations when reading off input buffers */
 inline std::string ENTER{10};
 inline std::string ESC{27};
