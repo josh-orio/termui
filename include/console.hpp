@@ -2,6 +2,7 @@
 #define CONSOLE_HPP
 
 #include "ansi.hpp"
+#include <format>
 #include <iostream>
 #include <string>
 #include <sys/ioctl.h>
