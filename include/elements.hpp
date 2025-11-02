@@ -3,6 +3,7 @@
 
 #include "str.hpp"
 #include "util.hpp"
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <vector>

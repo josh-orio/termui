@@ -4,6 +4,7 @@
 #include "console.hpp"
 #include "elements.hpp"
 #include "util.hpp"
+#include <algorithm>
 #include <memory>
 #include <vector>
 
@@ -143,8 +144,8 @@ public:
   // const std::vector<std::shared_ptr<item::ListItem>> &getElements() const { return (*list).getElements(); }
   // std::vector<std::shared_ptr<item::ListItem>> &getElements() { return (*list).getElements(); }
 
-  int show();    // -1 = exit, >=0 = element selected at index
-  int cursor();  // returns cursor
+  int show();             // -1 = exit, >=0 = element selected at index
+  int cursor();           // returns cursor
   termui::state status(); // when the interface closes, it will either be EXIT or SELECT
 
 private:
@@ -173,8 +174,8 @@ public:
 
   bool isSelected(int i);
 
-  int show();    // -1 = exit, >=0 = element selected at index
-  int cursor();  // returns cursor
+  int show();             // -1 = exit, >=0 = element selected at index
+  int cursor();           // returns cursor
   termui::state status(); // when the interface closes, it will either be EXIT or SELECT
 
 private:
@@ -201,8 +202,8 @@ public:
   FancyMenu(const std::string &title, const termui::strings &texts, const termui::strings &descs, int ls = 1);
   FancyMenu(const std::string &title, const std::vector<std::string> &texts, const std::vector<std::string> &descs, int ls = 1);
 
-  int show();    // -1 = exit, >=0 = element selected at index
-  int cursor();  // returns cursor
+  int show();             // -1 = exit, >=0 = element selected at index
+  int cursor();           // returns cursor
   termui::state status(); // when the interface closes, it will either be EXIT or SELECT
 
 private:

@@ -9,7 +9,11 @@ file(GLOB TERMUI_INCLUDE "include/*.hpp")
 # message("termui includes: ${TERMUI_INCLUDE}")
 
 add_library(termui ${TERMUI_SOURCES})
-target_include_directories(termui PRIVATE include)
+target_include_directories(termui
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+)
 target_compile_options(termui PRIVATE -Wall -Wextra -Wuninitialized -Wno-sign-compare)
 
 set_target_properties(termui
@@ -58,3 +62,8 @@ install(FILES
 add_executable(test_program test.cpp)
 target_link_libraries(test_program PRIVATE termui)
 target_compile_options(test_program PRIVATE -Wall -Wextra -Wuninitialized)
+
+option(BUILD_EXAMPLES "Build demo executables" OFF) # cmake -DBUILD_EXAMPLES=ON/OFF ..
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()

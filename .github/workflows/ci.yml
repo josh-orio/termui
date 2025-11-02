@@ -1,9 +1,9 @@
-name: Test CI
+name: Test/Build CI
 on: [push]
 
 jobs:
   test:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -12,5 +12,5 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -D CMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. 
+          cmake -D CMAKE_BUILD_TYPE=Release .. 
           make -j

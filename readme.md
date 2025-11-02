@@ -19,6 +19,8 @@ Then you can access all the interfaces by:
 
 For examples of how to use the library, see ```test.cpp```.
 
+Before installing, you may just want to try out the library. You can run ```make demos``` to build the example programs stored in ```examples/```. Compiled demos are stored in ```build/examples/```.
+
 ## Data Management
 
 Interfaces in this library are not responsible for owning and managing program data, and this extends to elements and structs. Instead, all library objects should store references to external program data. This seperation prevents data duplication, unintended side effects and mainly wasteful copy operations. Library objects can obviously own data when it is intrinsic to the object's state, this is mostly integers that represent dimensions or colors.
