@@ -222,9 +222,6 @@ private:
 
 class BinaryMenu {
 public:
-  termui::string title, text, affirmative, negative;
-  int w, h;
-
   BinaryMenu(const termui::string &title, const termui::string &text, const termui::string &affirmative, const termui::string &negative);
   BinaryMenu(const std::string &title, const std::string &text, const std::string &affirmative, const std::string &negative);
 
@@ -240,6 +237,11 @@ private:
   void display();
   void process_input();
   void update_size();
+
+  termui::string title, text, affirmative, negative;
+  size_t w, h;
+  size_t aff_x1, aff_x2, aff_y; // these values hold bounds for the buttons
+  size_t neg_x1, neg_x2, neg_y; // which is used to detect if 'pressed'
 };
 
 class Editor {

@@ -17,7 +17,7 @@ inline std::string REVERSE_VIDEO = "\e[7m";
 inline std::string CONCEAL = "\e[8m";
 inline std::string CROSSED_OUT = "\e[9m";
 inline std::string BOLD_OFF = "\e[22m";
-inline std::string FAINT_OFF = "\e[22m"; // two codes do the same thing?
+inline std::string FAINT_OFF = "\e[22m";
 inline std::string ITALIC_OFF = "\e[23m";
 inline std::string UNDERLINE_OFF = "\e[24m";
 inline std::string BLINK_OFF = "\e[25m";
@@ -39,6 +39,10 @@ inline std::string PRIMARY_BUFFER = "\e[?1049l"; // disables the alternative buf
 
 inline std::string SAVE_CURSOR = "\e7\e[s"; // uses dec and xterm code for compat
 inline std::string RESTORE_CURSOR = "\e8\e[u";
+
+inline std::string ENABLE_MOUSE_REPORTING = "\e[?1003h\e[?1006h"; // using SGR, X10 is limited
+inline std::string DISABLE_MOUSE_REPORTING = "\e[?1003l\e[?1006l";
+
 } // namespace term
 
 } // namespace termui
