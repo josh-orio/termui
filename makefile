@@ -35,3 +35,8 @@ debug:
 	@mkdir -p $(BUILD_DIR)
 	@cd $(BUILD_DIR) && cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_EXAMPLES=OFF .. && $(MAKE) -j
 	@lldb  ./build/test_program
+
+check:
+	@/opt/homebrew/opt/llvm/bin/clang-tidy \
+	$$(find src include -name '*.cpp' -o -name '*.hpp') \
+	-checks='clang-analyzer-core.uninitialized.*,cppcoreguidelines-pro-type-member-init' -- -std=c++20 -Iinclude
