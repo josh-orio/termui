@@ -1,40 +1,39 @@
 BUILD_DIR := build
-EXECUTABLE := $(BUILD_DIR)/termui
+EXECUTABLE := $(BUILD_DIR)/termui_test
 
 .PHONY: all install
 
 all: test
 
-test:
-	@clear
+EXECUTABLE:
 	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cmake -D CMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_EXAMPLES=OFF .. && $(MAKE) -j
-	@./build/test_program
+	@cd $(BUILD_DIR) && \
+	cmake -DCMAKE_BUILD_TYPE=Debug \
+	-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+	-DBUILD_EXAMPLES=OFF .. && \
+	$(MAKE) -j
 
-recompile:
-	@clear
-	@rm -rf .cache build
-	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cmake -D CMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_EXAMPLES=OFF .. && $(MAKE) -j
+test: EXECUTABLE
+	@./$(EXECUTABLE)
+
+debug: EXECUTABLE
+	@lldb ./$(EXECUTABLE)
 
 install:
 	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cmake -D CMAKE_BUILD_TYPE=Release .. && sudo $(MAKE) -j install
+	@cd $(BUILD_DIR) && \
+	cmake -DCMAKE_BUILD_TYPE=Release .. && \
+	sudo $(MAKE) -j install
 
 demos:
 	@clear
 	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_EXAMPLES=ON .. && $(MAKE) -j
+	@cd $(BUILD_DIR) && \
+	cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_EXAMPLES=ON .. && \
+	$(MAKE) -j
 
 clean:
-	@rm -rf $(BUILD_DIR) 
-
-debug:
-	@clear
-	@rm -rf .cache build
-	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_EXAMPLES=OFF .. && $(MAKE) -j
-	@lldb  ./build/test_program
+	@rm -rf $(BUILD_DIR) .cache
 
 check:
 	@/opt/homebrew/opt/llvm/bin/clang-tidy \

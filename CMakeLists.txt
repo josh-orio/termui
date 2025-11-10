@@ -5,9 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 file(GLOB_RECURSE TERMUI_SOURCES "src/*.cpp")
 file(GLOB TERMUI_INCLUDE "include/*.hpp")
 
-# message("termui sources: ${TERMUI_SOURCES}")
-# message("termui includes: ${TERMUI_INCLUDE}")
-
 add_library(termui ${TERMUI_SOURCES})
 target_include_directories(termui
     PUBLIC
@@ -59,9 +56,9 @@ install(FILES
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/termui
 )
 
-add_executable(test_program test.cpp)
-target_link_libraries(test_program PRIVATE termui)
-target_compile_options(test_program PRIVATE -Wall -Wextra -Wuninitialized)
+add_executable(termui_test test.cpp)
+target_link_libraries(termui_test PRIVATE termui)
+target_compile_options(termui_test PRIVATE -Wall -Wextra -Wuninitialized)
 
 option(BUILD_EXAMPLES "Build demo executables" OFF) # cmake -DBUILD_EXAMPLES=ON/OFF ..
 if(BUILD_EXAMPLES)
