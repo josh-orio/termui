@@ -87,23 +87,13 @@ void BinaryMenu::process_input() {
       reprint = true;
     }
 
-  } else if (ec.starts_with('\e')) {
-    MouseInteraction mi(ec);
+  } else if (MouseInteraction(ec).match(MouseEventType::LEFT_CLICK, aff_x1, aff_x2, aff_y, aff_y)) {
+    selection = true; // ensure pressed button is selected
+    state = state::SELECT;
 
-    if (mi.valid) {
-      if (mi.match(MouseEventType::LEFT_CLICK, aff_x1, aff_x2, aff_y, aff_y)) {
-        selection = true; // ensure pressed button is selected
-        state = state::SELECT;
-      }
-
-      if (mi.match(MouseEventType::LEFT_CLICK, neg_x1, neg_x2, neg_y, neg_y)) {
-        selection = false; // ensure pressed button is selected
-        state = state::SELECT;
-      }
-    }
-
-  } else {
-    state = state::CONTINUE;
+  } else if (MouseInteraction(ec).match(MouseEventType::LEFT_CLICK, neg_x1, neg_x2, neg_y, neg_y)) {
+    selection = false; // ensure pressed button is selected
+    state = state::SELECT;
   }
 }
 

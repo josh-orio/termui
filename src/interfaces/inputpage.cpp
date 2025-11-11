@@ -22,6 +22,7 @@ InputPage::InputPage(const std::string &title, const std::vector<std::string> &f
 void InputPage::show() {
   cons.show(); // configure terminal
 
+  state = state::CONTINUE;
   selected = false;
   reprint = true;
 
@@ -41,19 +42,16 @@ void InputPage::display() {
 
   cons.print(2, 2, bold_text(title.text()));
 
-  cons.print(4, 2, ""); // repositioning to start printing input lines
-  std::string fld;      //, rsp;
-  Input rsp;
+  std::string fld;
+  Input rsp(nullptr, 0);
   for (int i = start_line; i < std::min((int)fields.size(), start_line + visible_lines); i++) {
     fld = fields.getItem(i);
     rsp = Input(responses.shareItem(i), cons.width - /*some horizonstal overhead*/ 7 - fld.length());
 
-    if (i + start_line == cursor) {
-      cons.print(fg_apply(bold_text("> " + fld) + ": " + rsp.render(), col));
-      cons.print((curs_down(line_seperation + 1) + curs_left(4 + fld.length() + rsp.w)));
+    if (i == cursor) {
+      cons.print(4 + ((i - start_line) * (line_seperation + 1)), 2, fg_apply(bold_text("> " + fld) + ": " + rsp.render(), col));
     } else {
-      cons.print("  " + fld + ": " + rsp.render());
-      cons.print((curs_down(line_seperation + 1) + curs_left(4 + fld.length() + rsp.w)));
+      cons.print(4 + ((i - start_line) * (line_seperation + 1)), 4, fld + ": " + rsp.render());
     }
   }
 
@@ -77,33 +75,39 @@ void InputPage::process_input() {
   if (ec == key::ENTER) { // select/deselect
     selected = !selected; // flip
     reprint = true;
-    state = state::CONTINUE;
 
   } else if (ec == key::ESC) { // escape to close
     if (!selected) {           // dont close if field selected
       state = state::EXIT;
-
-    } else {
-      state = state::CONTINUE;
     }
 
   } else if (ec == key::U_ARROW) {
     if (!selected) {
-      // decrement but dont let (cursor < 0)
-      cursor -= (cursor > 0) ? 1 : 0;
+      cursor -= (cursor > 0) ? 1 : 0; // decrement but dont let (cursor < 0)
       start_line -= (cursor < start_line) ? 1 : 0;
     }
     reprint = true;
-    state = state::CONTINUE;
 
   } else if (ec == key::D_ARROW) {
     if (!selected) {
-      // increment but dont let (cursor > fields.size)
-      cursor += (cursor < (int)fields.size() - 1) ? 1 : 0;
+      cursor += (cursor < (int)fields.size() - 1) ? 1 : 0; // increment but dont let (cursor > fields.size)
       start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
     }
     reprint = true;
-    state = state::CONTINUE;
+
+  } else if (MouseInteraction(ec).match(MouseEventType::SCROLL_UP)) {
+    if (!selected) {
+      cursor -= (cursor > 0) ? 1 : 0; // decrement but dont let (cursor < 0)
+      start_line -= (cursor < start_line) ? 1 : 0;
+    }
+    reprint = true;
+
+  } else if (MouseInteraction(ec).match(MouseEventType::SCROLL_DOWN)) {
+    if (!selected) {
+      cursor += (cursor < (int)fields.size() - 1) ? 1 : 0; // increment but dont let (cursor > fields.size)
+      start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
+    }
+    reprint = true;
 
   } else if (ec == key::DEL) { // remove last char
     if (selected) {
@@ -112,17 +116,12 @@ void InputPage::process_input() {
       }
     }
     reprint = true;
-    state = state::CONTINUE;
 
   } else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
     if (selected) {
       responses.getItem(cursor) += ec;
     }
     reprint = true;
-    state = state::CONTINUE;
-
-  } else {
-    state = state::CONTINUE;
   }
 };
 

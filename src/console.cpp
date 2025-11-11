@@ -72,6 +72,8 @@ MouseInteraction::MouseInteraction(std::string s) : valid(true) {
   }
 }
 
+bool MouseInteraction::match(MouseEventType met) { return (met == event); }
+
 bool MouseInteraction::match(MouseEventType met, size_t x1, size_t x2, size_t y1, size_t y2) {
   bool event_match = (met == event);
   bool within_vertical = (y1 <= row) && (row <= y2);

@@ -66,6 +66,7 @@ struct MouseInteraction {
 
   MouseInteraction(std::string s); // decode from string
 
+  bool match(MouseEventType met);
   bool match(MouseEventType met, size_t x1, size_t x2, size_t y1, size_t y2); // detects if certain mouse event takes place in a region box
   // ^ check implementation to understand how bounds are defined
 };
