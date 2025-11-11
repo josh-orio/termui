@@ -81,7 +81,6 @@ bool MouseInteraction::match(MouseEventType met, size_t x1, size_t x2, size_t y1
 }
 
 Console::Console(bool b, bool e, bool c, bool a, bool m) : outbuff() {
-  struct winsize w;
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   width = w.ws_col, height = w.ws_row;
 
@@ -141,9 +140,8 @@ std::string Console::poll_input() {
 }
 
 void Console::update_size() {
-  struct winsize w;
-  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-  width = w.ws_col, height = w.ws_row;
+  width = w.ws_col;
+  height = w.ws_row;
 }
 
 } // namespace termui

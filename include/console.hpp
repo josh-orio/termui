@@ -13,7 +13,7 @@ namespace termui {
 
 class BufferModeToggle /* switches between terminal buffering modes */ {
 private:
-  struct termios t;
+  termios t;
 
 public:
   void off(); // disables buffered input
@@ -22,7 +22,7 @@ public:
 
 class EchoModeToggle /* switches between input echo modes */ {
 private:
-  struct termios t;
+  termios t;
 
 public:
   void off(); // disables input echoing
@@ -72,7 +72,7 @@ struct MouseInteraction {
 
 class Console {
 public:
-  int width, height;
+  size_t width, height;
   std::string outbuff;
 
   BufferModeToggle bt;
@@ -99,6 +99,9 @@ public:
   void flush(bool s_clr = true, bool sb_clr = true); // flush outbuff (w args to clear screen before and clear scrollback)
 
   std::string poll_input(); // read (upto 16) chars off stdin into inbuff
+
+private:
+  winsize w;
 };
 
 } // namespace termui
