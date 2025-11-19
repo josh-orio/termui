@@ -64,3 +64,8 @@ option(BUILD_EXAMPLES "Build demo executables" OFF) # cmake -DBUILD_EXAMPLES=ON/
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
+
+option(PYBIND "Build with pybind" OFF) # cmake -DPYBIND=ON/OFF ..
+if(PYBIND)
+    add_subdirectory(bindings)
+endif()
