@@ -1,11 +1,11 @@
 #ifndef ELEMENTS_HPP
 #define ELEMENTS_HPP
 
-#include "str.hpp"
-#include "util.hpp"
 #include <algorithm>
 #include <memory>
 #include <string>
+#include <termui/str.hpp>
+#include <termui/util.hpp>
 #include <vector>
 
 namespace termui {

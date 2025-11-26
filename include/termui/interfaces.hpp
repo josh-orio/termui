@@ -1,11 +1,11 @@
 #ifndef INTERFACES_HPP
 #define INTERFACES_HPP
 
-#include "console.hpp"
-#include "elements.hpp"
-#include "util.hpp"
 #include <algorithm>
 #include <memory>
+#include <termui/console.hpp>
+#include <termui/elements.hpp>
+#include <termui/util.hpp>
 #include <vector>
 
 namespace termui {

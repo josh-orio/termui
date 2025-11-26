@@ -1,6 +1,4 @@
-#include "interfaces.hpp"
-#include <string>
-#include <vector>
+#include <termui/interfaces.hpp>
 
 namespace termui {
 
