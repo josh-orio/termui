@@ -1,9 +1,9 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
-#include "ansi.hpp"
 #include <format>
 #include <string>
+#include <termui/ansi.hpp>
 
 namespace termui {
 

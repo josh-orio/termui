@@ -3,7 +3,7 @@ project(termui LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 file(GLOB_RECURSE TERMUI_SOURCES "src/*.cpp")
-file(GLOB TERMUI_INCLUDE "include/*.hpp")
+file(GLOB_RECURSE TERMUI_INCLUDE "include/*.hpp")
 
 add_library(termui ${TERMUI_SOURCES})
 target_include_directories(termui
@@ -36,7 +36,9 @@ install(TARGETS termui
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-install(FILES ${TERMUI_INCLUDE} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/termui)
+install(FILES ${TERMUI_INCLUDE} 
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/termui
+)
 
 install(EXPORT termuiTargets
     FILE termuiTargets.cmake

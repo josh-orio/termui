@@ -1,4 +1,4 @@
-#include "console.hpp"
+#include <termui/console.hpp>
 
 namespace termui {
 

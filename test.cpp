@@ -1,8 +1,4 @@
-#include "include/elements.hpp"
-#include "include/interfaces.hpp"
-#include "include/str.hpp"
-#include "include/termui.hpp"
-#include "include/util.hpp"
+#include <termui/termui.hpp>
 #include <ostream>
 #include <string>
 #include <vector>

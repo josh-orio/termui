@@ -1,4 +1,4 @@
-#include "interfaces.hpp"
+#include <termui/interfaces.hpp>
 
 namespace termui {
 

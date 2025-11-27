@@ -1,4 +1,4 @@
-#include "str.hpp"
+#include <termui/str.hpp>
 
 // custom shared ptr strings for termUI
 

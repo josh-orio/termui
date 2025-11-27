@@ -1,12 +1,12 @@
 #ifndef CONSOLE_HPP
 #define CONSOLE_HPP
 
-#include "ansi.hpp"
 #include <format>
 #include <iostream>
 #include <string>
 #include <sys/ioctl.h>
 #include <termios.h>
+#include <termui/ansi.hpp>
 #include <unistd.h>
 
 namespace termui {
