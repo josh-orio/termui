@@ -1,4 +1,4 @@
-#include <termui.hpp>
+#include <termui/termui.hpp>
 
 int main() {
   termui::strings shows({"Family Guy", "The Simpsons"}), descs({"9.5/10", "6/10"});

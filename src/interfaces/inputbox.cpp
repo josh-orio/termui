@@ -43,7 +43,7 @@ void InputBox::display() {
   cons.print(curs_up(h - 2) + curs_left(w - 2));
 
   Text f(field, w - 4, 1, clr::MAGENTA, clr::DEFAULT);
-  Input r(response, placeholder, w - 4, clr::DEFAULT, clr::DARKGREY);
+  Input r(response, placeholder, w - 4, 1, clr::DEFAULT, clr::DARKGREY);
 
   cons.print(bold_text(f.render()));
   cons.print(curs_down(2) + curs_left(f.w));
@@ -52,7 +52,8 @@ void InputBox::display() {
   if (response.text().empty()) {
     cons.print(curs_left(r.w));
   } else {
-    cons.print(curs_left(r.w - response.text().length()));
+    auto left_adjust = (response.text().length() < r.w) ? r.w - response.text().length() : 0;
+    cons.print(curs_left(left_adjust));
   }
   cons.ct.on(); // enable blinking cursor at start of plh or end of val
 

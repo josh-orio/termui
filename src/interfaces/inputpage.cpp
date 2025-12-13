@@ -43,10 +43,10 @@ void InputPage::display() {
   cons.print(2, 2, bold_text(title.text()));
 
   std::string fld;
-  Input rsp(nullptr, 0);
+  Input rsp;
   for (int i = start_line; i < std::min((int)fields.size(), start_line + visible_lines); i++) {
     fld = fields.getItem(i);
-    rsp = Input(responses.shareItem(i), cons.width - /*some horizonstal overhead*/ 7 - fld.length());
+    rsp = Input(responses.share()->at(i), cons.width - /*some horizonstal overhead*/ 7 - fld.length(), 1);
 
     if (i == cursor) {
       cons.print(4 + ((i - start_line) * (line_seperation + 1)), 2, fg_apply(bold_text("> " + fld) + ": " + rsp.render(), col));
@@ -59,8 +59,11 @@ void InputPage::display() {
 
   // move the cursor into position and adjust cursor toggle as needed
   if (selected) {
-    cons.print(4 + ((cursor - start_line) * (line_seperation + 1)), 6 + fields.getItem(cursor).length() + responses.getItem(cursor).length(),
-               ""); // this looks terrible :/
+    cons.print( // top overhead + (indicated row * line seperation)
+        4 + ((cursor - start_line) * (line_seperation + 1)),
+        // tracks end column of response without allowing overflow
+        std::min(cons.width - 2, 6 + fields.getItem(cursor).length() + responses.getItem(cursor).length()), "");
+
     cons.ct.on();
   } else {
     cons.ct.off();

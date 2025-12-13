@@ -107,7 +107,8 @@ void Console::close() {
   (echos == false) ? et.on() : et.off();
   (cursor == false) ? ct.on() : ct.off();
   (altterm == false) ? at.enable() : at.disable();
-  (mouserep == false) ? mt.enable() : mt.disable();
+  // (mouserep == false) ? mt.enable() : mt.disable();
+  mt.disable(); // whats the point in turning on mouse reporting when the ui closes?
 }
 
 void Console::clear_outbuff() { outbuff.clear(); }

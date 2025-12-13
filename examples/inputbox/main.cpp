@@ -1,4 +1,4 @@
-#include <termui.hpp>
+#include <termui/termui.hpp>
 
 int main() {
   termui::string title("Some input field"), response, placeholder("Start typing...");

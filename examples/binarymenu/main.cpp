@@ -1,4 +1,4 @@
-#include <termui.hpp>
+#include <termui/termui.hpp>
 
 int main() {
   termui::BinaryMenu bm("Make your choice", "Would you like?", "Yes!", "No.");

@@ -1,4 +1,4 @@
-#include <termui.hpp>
+#include <termui/termui.hpp>
 
 int main() {
   termui::string title("Info Page Demo"), text("this\nis\na\nbunch\nof\ninfo\nthat\nneeds\nto\nbe\ndisplayed.");
