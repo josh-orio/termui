@@ -36,16 +36,18 @@ private:
   termui::string val, plh; // value, placeholder
 
 public:
-  int w;
+  int w, h;
   int valCol, plhCol; // color codes for value and placeholder text
 
   Input();
-  Input(const termui::string &val, const termui::string &plh, int w, int valCol = clr::DEFAULT, int plhCol = clr::LIGHTGREY); // with placeholder
-  Input(const termui::string &val, const std::string &plh, int w, int valCol = clr::DEFAULT, int plhCol = clr::LIGHTGREY);    // with std str placeholder
-  Input(const termui::string &val, int w, int valCol = clr::DEFAULT);                                                         // without placeholder
-  Input(std::shared_ptr<std::string> val, std::shared_ptr<std::string> plh, int w, int valCol = clr::DEFAULT, int plhCol = clr::LIGHTGREY); // with placeholder
-  Input(std::shared_ptr<std::string> val, const std::string &plh, int w, int valCol = clr::DEFAULT, int plhCol = clr::LIGHTGREY); // with std str placeholder
-  Input(std::shared_ptr<std::string> val, int w, int valCol = clr::DEFAULT);                                                      // without placeholder
+  Input(const termui::string &val, const termui::string &plh, int w, int h, int val_color = clr::DEFAULT, int placeholder_color = clr::LIGHTGREY);
+  Input(const termui::string &val, const std::string &plh, int w, int h, int val_color = clr::DEFAULT, int placeholder_color = clr::LIGHTGREY);
+  Input(const termui::string &val, int w, int h, int val_color = clr::DEFAULT);
+
+  // ctors:
+  // with placeholder
+  // std str placeholder
+  // no placeholder
 
   std::shared_ptr<std::string> shareVal() const;
   std::shared_ptr<std::string> sharePlh() const;
