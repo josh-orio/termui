@@ -66,3 +66,6 @@ option(BUILD_EXAMPLES "Build demo executables" OFF) # cmake -DBUILD_EXAMPLES=ON/
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
+
+enable_testing() # enabling ctest - 'make test'
+add_subdirectory(tests) # include test dir

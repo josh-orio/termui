@@ -39,3 +39,14 @@ check:
 	@/opt/homebrew/opt/llvm/bin/clang-tidy \
 	$$(find src include -name '*.cpp' -o -name '*.hpp') \
 	-checks='clang-analyzer-core.uninitialized.*,cppcoreguidelines-pro-type-member-init' -- -std=c++20 -Iinclude
+
+gtest:
+	mkdir -p $(BUILD_DIR)
+
+	cmake -B $(BUILD_DIR) \
+	-DCMAKE_BUILD_TYPE=Debug \
+	-DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
+
+	make -C $(BUILD_DIR) -j
+
+	ctest --test-dir $(BUILD_DIR) --output-on-failure
