@@ -1,4 +1,4 @@
-#include <termui.hpp>
+#include <termui/termui.hpp>
 
 int main() {
   termui::strings optional_extras({"Onboard WIFI", "Blanket", "Seat Pillow", "Slippers", "Hand Towels"});
