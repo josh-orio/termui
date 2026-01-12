@@ -6,7 +6,7 @@
 #include <string>
 #include <sys/ioctl.h>
 #include <termios.h>
-#include <termui/ansi.hpp>
+#include <termui/util.hpp>
 #include <unistd.h>
 
 namespace termui {
@@ -64,7 +64,7 @@ struct MouseInteraction {
   size_t col, row; // on (all ?) terminals, origin (1,1) is top right
   MouseEventType event;
 
-  MouseInteraction(std::string s); // decode from string
+  MouseInteraction(std::string s); // constructor decodes the string
 
   bool match(MouseEventType met);
   bool match(MouseEventType met, size_t x1, size_t x2, size_t y1, size_t y2); // detects if certain mouse event takes place in a region box
@@ -72,7 +72,8 @@ struct MouseInteraction {
 };
 
 class Console {
-public:
+private:
+  winsize w; // some os struct that delivers w and h
   size_t width, height;
   std::string outbuff;
 
@@ -84,6 +85,7 @@ public:
 
   bool buffered, echos, cursor, altterm, mouserep;
 
+public:
   Console(bool buffered = false, bool echos = false, bool cursor = false, bool alt = true, bool mouse = true);
 
   void show();
@@ -100,9 +102,6 @@ public:
   void flush(bool s_clr = true, bool sb_clr = true); // flush outbuff (w args to clear screen before and clear scrollback)
 
   std::string poll_input(); // read (upto 16) chars off stdin into inbuff
-
-private:
-  winsize w;
 };
 
 } // namespace termui
