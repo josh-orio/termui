@@ -11,10 +11,11 @@ std::string Text::render() {
   std::string outbuff;
 
   std::vector<std::string> formatted;
+
   std::string copy = text.text();
+  std::size_t next;
 
   for (int i = 0; i < h; i++) {
-    int next = 0;
     if (copy.find('\n') == std::string::npos) {
       next = std::min({copy.size(), max_visible_length(copy, w)});
     } else {
@@ -24,14 +25,10 @@ std::string Text::render() {
     formatted.push_back(std::string(copy.begin(), copy.begin() + next));        // make substring of <=w printed symbols
     formatted.back() += std::string(w - visible_length(formatted.back()), ' '); // add spacing to fill w
 
-    if (copy.begin() + next < copy.end()) {
-      if (copy[next] == '\n') {
-        copy = std::string(copy.begin() + next + 1, copy.end());
-      } else {
-        copy = std::string(copy.begin() + next, copy.end());
-      }
+    if (copy[next] == '\n') {
+      copy = std::string(std::min(copy.end(), copy.begin() + next + 1), copy.end()); // min() prevents access past end of string
     } else {
-      copy = "";
+      copy = std::string(std::min(copy.end(), copy.begin() + next), copy.end());
     }
   }
 

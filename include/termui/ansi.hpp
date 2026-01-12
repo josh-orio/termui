@@ -37,8 +37,8 @@ inline std::string SHOW_CURSOR = "\e[?25h";
 inline std::string ALT_BUFFER = "\e[?1049h";     // enables the alternative buffer
 inline std::string PRIMARY_BUFFER = "\e[?1049l"; // disables the alternative buffer
 
-inline std::string SAVE_CURSOR = "\e7\e[s"; // uses dec and xterm code for compat
-inline std::string RESTORE_CURSOR = "\e8\e[u";
+inline std::string SAVE_CURSOR = "\e[s";
+inline std::string RESTORE_CURSOR = "\e[u";
 
 inline std::string ENABLE_MOUSE_REPORTING = "\e[?1003h\e[?1006h"; // using SGR, X10 is limited
 inline std::string DISABLE_MOUSE_REPORTING = "\e[?1003l\e[?1006l";
