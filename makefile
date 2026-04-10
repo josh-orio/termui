@@ -1,36 +1,22 @@
 BUILD_DIR := build
-EXECUTABLE := $(BUILD_DIR)/termui_test
 
-.PHONY: all install
+.PHONY: all
 
 all: test
 
-EXECUTABLE:
-	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && \
-	cmake -DCMAKE_BUILD_TYPE=Debug \
-	-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-	-DBUILD_EXAMPLES=OFF .. && \
+test:
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && \
+	cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_EXAMPLES=ON .. && \
 	$(MAKE) -j
 
-test: EXECUTABLE
-	@./$(EXECUTABLE)
-
-debug: EXECUTABLE
-	@lldb ./$(EXECUTABLE)
+	for f in b*/e*/*.test; do ./"$$f"; done
 
 install:
 	@mkdir -p $(BUILD_DIR)
 	@cd $(BUILD_DIR) && \
 	cmake -DCMAKE_BUILD_TYPE=Release .. && \
 	sudo $(MAKE) -j install
-
-demos:
-	@clear
-	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR) && \
-	cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_EXAMPLES=ON .. && \
-	$(MAKE) -j
 
 clean:
 	@rm -rf $(BUILD_DIR) .cache
@@ -45,8 +31,20 @@ gtest:
 
 	cmake -B $(BUILD_DIR) \
 	-DCMAKE_BUILD_TYPE=Debug \
-	-DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
+	-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+	-DBUILD_TESTS=ON .
 
 	make -C $(BUILD_DIR) -j
 
 	ctest --test-dir $(BUILD_DIR) --output-on-failure
+
+tree:
+	tree include src
+
+FORMAT_FILES := $(shell find src include examples -type f \( -name '*.c' -o -name '*.h' -o -name '*.cpp' -o -name '*.hpp' \))
+
+format:
+	clang-format -i $(FORMAT_FILES)
+
+format-check:
+	clang-format --dry-run --Werror $(FORMAT_FILES)

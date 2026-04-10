@@ -14,8 +14,8 @@ foreach(example_dir ${EXAMPLE_DIRS})
         file(GLOB EXAMPLE_SOURCES "${example_path}/*.cpp") # collect all .cpp files in the example folder (usually just 1)
 
         if(EXAMPLE_SOURCES)
-            add_executable(${example_dir} ${EXAMPLE_SOURCES}) # create an executable target named after the folder
-            target_link_libraries(${example_dir} PRIVATE termui)
+            add_executable("${example_dir}.test" ${EXAMPLE_SOURCES}) # create an executable target named after the folder
+            target_link_libraries("${example_dir}.test" PRIVATE termui)
             message(STATUS "Added example target: ${example_dir}")
         endif()
 

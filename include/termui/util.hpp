@@ -3,55 +3,24 @@
 
 #include <format>
 #include <string>
-#include <termui/ansi.hpp>
 
 namespace termui {
-
-namespace clr {          /* common colors and their 8 bit codes*/
-                         // NOTE: colors likely vary between terminals, names might not accurately reflect real appearance
-inline int DEFAULT = -1; // not a color, just tricks an if
-inline int RED = 1;
-inline int GREEN = 2;
-inline int BLUE = 4;
-inline int YELLOW = 3;
-inline int ORANGE = 208;
-inline int PINK = 219;
-inline int MAGENTA = 201;
-inline int PURPLE = 56;
-inline int LIME = 76;
-inline int TEAL = 75;
-inline int BLACK = 232;
-inline int WHITE = 255;
-inline int BLUEPURPLE = 56;
-inline int NEONY_PURPLE = 21;
-inline int MIDBLUE = 33;
-inline int DARKGREY = 238;
-inline int LIGHTGREY = 242;
-inline int PASTELPINK = 219;
-inline int LIGHTBLUE = 39;
-inline int LIGHTPURPLE = 93;
-} // namespace clr
-
-// apply 8 bit colors
-std::string fg_apply(std::string text, int col);
-std::string bg_apply(std::string text, int col);
-
-std::string whitespace(int len);
-std::string horizontal_line(int len, int col = clr::DEFAULT);
-std::string vertical_line(int len, int col = clr::DEFAULT);
-std::string line_sep(int len);
-std::string bold_text(std::string s);
-std::string reverse_video(std::string s);
-std::string faint_text(std::string s);
 
 std::string curs_up(int n);
 std::string curs_down(int n);
 std::string curs_right(int n);
 std::string curs_left(int n);
 
+std::string repeat(const std::string &s, int n);
+
 size_t visible_length(const std::string &s);                       // calculates length of printed string (not bytes)
 size_t max_visible_length(const std::string &s, size_t n);         // calculates num of bytes that make (up to) n chars when printed
 size_t reverse_max_visible_length(const std::string &s, size_t n); // same as ^, but counts from the back of the string
+
+std::string color_swatch(uint swatches_per_line); // print tiles of 8 bit colors on your terminal
+std::string test_sgr_features();                  // generates tiles which apply a different sgr text attribute - used to test your terminal
+
+std::string inpmap(std::string i); // print string in bytes
 
 namespace key { /* used for comparison operations when reading off input buffers */
 inline std::string ENTER{10};
@@ -77,16 +46,6 @@ inline std::string DOT = "·";
 inline std::string VERTICAL = "│";
 inline std::string VERTICAL_WIDE = "┃";
 
-inline std::string TOP_LEFT = "┌";
-inline std::string TOP_RIGHT = "┐";
-inline std::string BOTTOM_LEFT = "└";
-inline std::string BOTTOM_RIGHT = "┘";
-
-inline std::string TOP_LEFT_ROUND = "╭";
-inline std::string TOP_RIGHT_ROUND = "╮";
-inline std::string BOTTOM_LEFT_ROUND = "╰";
-inline std::string BOTTOM_RIGHT_ROUND = "╯";
-
 inline std::string ELLIPSIS = "…";
 inline std::string L_ARROW = "←";
 inline std::string R_ARROW = "→";
@@ -96,7 +55,37 @@ inline std::string ENTER = "↵";
 inline std::string TAB = "⇥";
 inline std::string ESC = "␛";
 
+inline std::string FULL_BLOCK = "█";
+
+inline std::string p("█");
+inline std::string pp("░");
+
+inline std::string LIGHT_SHADE = "░";
+inline std::string MEDIUM_SHADE = "▒";
+inline std::string DARK_SHADE = "▓";
+
+// Block chars
+// U+258x 	▀ 	▁ 	▂ 	▃ 	▄ 	▅ 	▆ 	▇ 	█ 	▉ 	▊ 	▋ 	▌ 	▍ 	▎ 	▏
+// U+259x 	▐ 	░ 	▒ 	▓ 	▔ 	▕ 	▖ 	▗ 	▘ 	▙ 	▚ 	▛ 	▜ 	▝ 	▞ 	▟
+
 } // namespace unicode
+
+namespace term { /* random terminal manipulation codes */
+inline std::string CLEAR_CONSOLE = "\e[2J";
+inline std::string CLEAR_SCROLLBACK = "\e[3J";
+inline std::string CURSOR_HOME = "\e[H";
+inline std::string HIDE_CURSOR = "\e[?25l";
+inline std::string SHOW_CURSOR = "\e[?25h";
+inline std::string ALT_BUFFER = "\e[?1049h";     // enables the alternative buffer
+inline std::string PRIMARY_BUFFER = "\e[?1049l"; // disables the alternative buffer
+
+inline std::string SAVE_CURSOR = "\e7\e[s"; // uses dec and xterm code for compat
+inline std::string RESTORE_CURSOR = "\e8\e[u";
+
+inline std::string ENABLE_MOUSE_REPORTING = "\e[?1003h\e[?1006h"; // using SGR, X10 is limited
+inline std::string DISABLE_MOUSE_REPORTING = "\e[?1003l\e[?1006l";
+
+} // namespace term
 
 } // namespace termui
 

@@ -58,14 +58,13 @@ install(FILES
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/termui
 )
 
-add_executable(termui_test test.cpp)
-target_link_libraries(termui_test PRIVATE termui)
-target_compile_options(termui_test PRIVATE -Wall -Wextra -Wuninitialized)
-
-option(BUILD_EXAMPLES "Build demo executables" OFF) # cmake -DBUILD_EXAMPLES=ON/OFF ..
+option(BUILD_EXAMPLES "Build demo executables" OFF) # cmake -DBUILD_EXAMPLES=ON/OFF
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-enable_testing() # enabling ctest - 'make test'
-add_subdirectory(tests) # include test dir
+option(BUILD_TESTS "Build test suite" OFF) # cmake -DBUILD_TEST=ON/OFF
+if(BUILD_TESTS)
+    enable_testing() # enabling ctest - 'make test'
+    add_subdirectory(tests) # include test dir
+endif()

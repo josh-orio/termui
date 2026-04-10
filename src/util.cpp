@@ -2,64 +2,48 @@
 
 namespace termui {
 
-std::string fg_apply(std::string text, int col) {
-  if (col != clr::DEFAULT) {
-    return std::format("\e[38;5;{}m", col) + text + format::FG_DEFAULT;
+namespace ansi {
+std::string fg(uint8_t v) { return std::format("\e[38;5;{}m", v); };
+std::string fg(uint8_t r, uint8_t g, uint8_t b) { return std::format("\e[38;2;{};{};{}m", r, g, b); };
+std::string bg(uint8_t v) { return std::format("\e[48;5;{}m", v); };
+std::string bg(uint8_t r, uint8_t g, uint8_t b) { return std::format("\e[48;2;{};{};{}m", r, g, b); };
+} // namespace ansi
 
-  } else {
-    return text;
+std::string repeat(const std::string &s, int n) {
+  std::string buff;
+  for (int i = 0; i < n; i++) {
+    buff += s;
   }
+  return buff;
 }
 
-std::string bg_apply(std::string text, int col) {
-  if (col != clr::DEFAULT) {
-    return std::format("\e[48;5;{}m", col) + text + format::BG_DEFAULT;
+std::string curs_up(int n) {
+  if (n == 0)
+    return "";
 
-  } else {
-    return text;
-  }
+  return std::format("\e[{}A", n);
 }
 
-std::string whitespace(int len) { return std::string(len, ' '); }
+std::string curs_down(int n) {
+  if (n == 0)
+    return "";
 
-std::string horizontal_line(int len, int col) {
-  std::string str;
-  for (int i = 0; i < len; ++i) {
-    str += "─";
-  }
-
-  if (col != clr::DEFAULT) {
-    str = fg_apply(str, col);
-  }
-
-  return str;
+  return std::format("\e[{}B", n);
 }
 
-std::string vertical_line(int len, int col) {
-  std::string str;
-  for (int i = 0; i < len; ++i) {
-    str += unicode::VERTICAL + curs_down(1) + curs_left(1);
-  }
+std::string curs_right(int n) {
+  if (n == 0)
+    return "";
 
-  if (col != clr::DEFAULT) {
-    str = fg_apply(str, col);
-  }
-
-  return str;
+  return std::format("\e[{}C", n);
 }
 
-std::string line_sep(int len) { return std::string(len, '\n'); }
+std::string curs_left(int n) {
+  if (n == 0)
+    return "";
 
-std::string bold_text(std::string s) { return format::BOLD + s + format::BOLD_OFF; }
-
-std::string reverse_video(std::string s) { return format::REVERSE_VIDEO + s + format::REVERSE_VIDEO_OFF; }
-
-std::string faint_text(std::string s) { return format::FAINT + s + format::FAINT_OFF; }
-
-std::string curs_up(int n) { return std::format("\e[{}A", n); }
-std::string curs_down(int n) { return std::format("\e[{}B", n); }
-std::string curs_right(int n) { return std::format("\e[{}C", n); }
-std::string curs_left(int n) { return std::format("\e[{}D", n); }
+  return std::format("\e[{}D", n);
+}
 
 size_t visible_length(const std::string &s) {
   size_t visible_chars = 0;
@@ -154,7 +138,7 @@ size_t reverse_max_visible_length(const std::string &s, size_t n) {
 
   std::vector<bool> map(s.size(), false);
 
-  bool in_csi = false;
+  bool   in_csi = false;
   size_t csi_start;
   size_t index = 0;
 
@@ -213,6 +197,40 @@ size_t reverse_max_visible_length(const std::string &s, size_t n) {
   }
 
   return s.size(); // reached the beginning
+}
+
+std::string color_swatch(uint swatches_per_line) {
+  std::string outbuff;
+
+  for (int i = 0; i < 256; i++) {
+    // outbuff += termui::bg_apply(std::format("{:4d}", i), i);
+    outbuff += std::format("\x1b[48;5;{}m", i) + std::format("{:4d}", i) + "\x1b[0m";
+    if (i % swatches_per_line == swatches_per_line - 1) {
+      outbuff += '\n';
+    }
+  }
+
+  return outbuff;
+}
+
+std::string test_sgr_features() {
+  std::string outbuff;
+
+  for (int i = 0; i < 10; i++) {
+    outbuff += std::format("\e[{}mHello\e[0m\n", i);
+  }
+
+  return outbuff;
+}
+
+std::string inpmap(std::string i) {
+  std::string outbuff;
+
+  for (auto c : i) {
+    outbuff += std::to_string(static_cast<int>(c)) + " ";
+  }
+
+  return outbuff;
 }
 
 } // namespace termui

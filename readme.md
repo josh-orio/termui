@@ -2,59 +2,32 @@
 
 Terminal interfaces library for C++.
 
+[![CI](https://github.com/josh-orio/termui/actions/workflows/build.yml/badge.svg)](https://github.com/josh-orio/termui/actions/workflows/build.yml)
+
+## Documentation
+
+Almost all of the [docs/](docs/) are written using Ollama in Copilot Chat. I proofread them, but inaccuracies may persist.
+
 ## Get Started
 
-To build and install the library, run ```make install```.
+**Requirements:** C++20, CMake
 
-Link the library with your project using:
+**Build & run demos:** ```make test```
+
+
+**Install system-wide:** ``` make install```
+
+**Using in your project with CMake (preferred):**
 ```cmake
-find_package(termui REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE termui::termui)
+include(FetchContent)
+FetchContent_Declare(
+  termui
+  GIT_REPOSITORY https://github.com/josh-orio/termui.git
+  GIT_TAG main
+)
+FetchContent_MakeAvailable(termui)
+
+target_link_libraries(your_target PRIVATE termui)
 ```
 
-Then you can access all the interfaces by:
-```c++
-#include <termui/termui.hpp>
-```
-
-For examples of how to use the library, see ```test.cpp```.
-
-Before installing, you may just want to try out the library. You can run ```make demos``` to build the example programs stored in ```examples/```. Compiled demos are stored in ```build/examples/```.
-
-## Data Management
-
-Interfaces in this library are not responsible for owning and managing program data, and this extends to elements and structs. Instead, all library objects should store references to external program data. This seperation prevents data duplication, unintended side effects and mainly wasteful copy operations. Library objects can obviously own data when it is intrinsic to the object's state, this is mostly integers that represent dimensions or colors.
-
-## Interfaces
-
-Interfaces are the core of the library and designed to be plug and play wrappers around existing data. Interfaces are defined in ```include/interfaces.hpp``` and source is stored in ```src/interfaces```.
-
-The following interfaces are implemented:
-
-- BinaryMenu: yes/no dialog box
-- Editor: simple text editor
-- InfoBox: info popup
-- InfoPage: scrollable text
-- InputBox: input popup
-- InputPage: multiple scrollable input fields
-- Menu: one shot selection menu
-- FancyMenu: looks nicer
-- MultiMenu: multi shot selection menu
-- Spreadsheet: like excel but terrible + no functions
-
-## Elements
-
-Interfaces often use elements, reusable UI components. Elements are defined in ```include/elements.hpp``` and source is stored in ```src/elements/```.
-
-The following elements are available:
-
-- Box
-- Button
-- DashedArea
-- Input
-- List
-- FancyList (looks nicer ig)
-- SelectList (multi shot selection)
-- ProgressBar
-- Table
-- Text
+Alternatively, if you want to use this library in a Python project, see [josh-orio/pytermui/](github.com/josh-orio/pytermui).
