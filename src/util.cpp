@@ -3,10 +3,10 @@
 namespace termui {
 
 namespace ansi {
-std::string fg(uint8_t v) { return std::format("\e[38;5;{}m", v); };
-std::string fg(uint8_t r, uint8_t g, uint8_t b) { return std::format("\e[38;2;{};{};{}m", r, g, b); };
-std::string bg(uint8_t v) { return std::format("\e[48;5;{}m", v); };
-std::string bg(uint8_t r, uint8_t g, uint8_t b) { return std::format("\e[48;2;{};{};{}m", r, g, b); };
+std::string fg(uint8_t v) { return std::format("\x1b[38;5;{}m", v); };
+std::string fg(uint8_t r, uint8_t g, uint8_t b) { return std::format("\x1b[38;2;{};{};{}m", r, g, b); };
+std::string bg(uint8_t v) { return std::format("\x1b[48;5;{}m", v); };
+std::string bg(uint8_t r, uint8_t g, uint8_t b) { return std::format("\x1b[48;2;{};{};{}m", r, g, b); };
 } // namespace ansi
 
 std::string repeat(const std::string &s, int n) {
@@ -21,28 +21,28 @@ std::string curs_up(int n) {
   if (n == 0)
     return "";
 
-  return std::format("\e[{}A", n);
+  return std::format("\x1b[{}A", n);
 }
 
 std::string curs_down(int n) {
   if (n == 0)
     return "";
 
-  return std::format("\e[{}B", n);
+  return std::format("\x1b[{}B", n);
 }
 
 std::string curs_right(int n) {
   if (n == 0)
     return "";
 
-  return std::format("\e[{}C", n);
+  return std::format("\x1b[{}C", n);
 }
 
 std::string curs_left(int n) {
   if (n == 0)
     return "";
 
-  return std::format("\e[{}D", n);
+  return std::format("\x1b[{}D", n);
 }
 
 size_t visible_length(const std::string &s) {
@@ -53,7 +53,7 @@ size_t visible_length(const std::string &s) {
     unsigned char byte = static_cast<unsigned char>(s[index]);
 
     // CSI sequence: ESC [
-    if (byte == '\e' && index + 1 < s.size() && s[index + 1] == '[') {
+    if (byte == '\x1b' && index + 1 < s.size() && s[index + 1] == '[') {
 
       index += 2; // consume ESC [
 
@@ -96,7 +96,7 @@ size_t max_visible_length(const std::string &s, size_t n) {
     unsigned char byte = static_cast<unsigned char>(s[index]);
 
     // CSI sequence: ESC [
-    if (byte == '\e' && index + 1 < s.size() && s[index + 1] == '[') {
+    if (byte == '\x1b' && index + 1 < s.size() && s[index + 1] == '[') {
 
       index += 2; // consume ESC [
 
@@ -147,7 +147,7 @@ size_t reverse_max_visible_length(const std::string &s, size_t n) {
     unsigned char c = static_cast<unsigned char>(s[index]);
     ++index;
 
-    if (!in_csi && c == '\e' && index < s.size() && s[index] == '[') {
+    if (!in_csi && c == '\x1b' && index < s.size() && s[index] == '[') {
       in_csi = true;
       csi_start = index - 1;
 
@@ -217,7 +217,7 @@ std::string test_sgr_features() {
   std::string outbuff;
 
   for (int i = 0; i < 10; i++) {
-    outbuff += std::format("\e[{}mHello\e[0m\n", i);
+    outbuff += std::format("\x1b[{}mHello\x1b[0m\n", i);
   }
 
   return outbuff;

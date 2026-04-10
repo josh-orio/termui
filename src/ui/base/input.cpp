@@ -1,9 +1,12 @@
 #include <termui/ui/ui.hpp>
 
+#include <algorithm>
+#include <deque>
+
 namespace termui {
 
 Input::Input(const termui::string &value, const termui::string &placeholder, const Style &valStyle, const Style &plhStyle)
-  : _value(value), _placeholder(placeholder), _valStyle(valStyle), _plhStyle(plhStyle) {};
+  : _value(value), _placeholder(placeholder), _valStyle(valStyle), _plhStyle(plhStyle){};
 
 Input &Input::value(const termui::string &v) {
   _value = v;

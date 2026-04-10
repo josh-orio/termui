@@ -1,5 +1,7 @@
 #include <termui/ui/ui.hpp>
 
+#include <algorithm>
+
 namespace termui {
 
 Text::Text(const termui::string &str, const Style &style, uint width, uint height) : _text(str), _style(style), _w(width), _h(height) {}
@@ -29,18 +31,6 @@ Text &Text::size(uint w, uint h) {
   _h = h;
   return *this;
 }
-
-// Text &Text::cursor_up(uint count) {
-//   _cursor = (_cursor > 0) ? std::max(0, int(_cursor - count)) : 0; // decrement but dont let (cursor < 0)
-//   return *this;
-// }
-
-// Text &Text::cursor_down(uint count) {
-//   _cursor += count; // no checking is done here - the value is clamped in render() so that the bottom piece of text is always visible
-//   return *this;
-// }
-
-// uint Text::get_cursor() { return _cursor; }
 
 std::string Text::render() {
   if (_w == 0 || _h == 0) {

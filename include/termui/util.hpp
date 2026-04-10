@@ -1,11 +1,13 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
+#include <cstdint>
 #include <format>
+#include <map>
 #include <string>
+#include <vector>
 
 namespace termui {
-
 std::string curs_up(int n);
 std::string curs_down(int n);
 std::string curs_right(int n);
@@ -27,10 +29,10 @@ inline std::string ENTER{10};
 inline std::string ESC{27};
 inline std::string DEL{127};
 
-inline std::string U_ARROW = "\e[A";
-inline std::string D_ARROW = "\e[B";
-inline std::string R_ARROW = "\e[C";
-inline std::string L_ARROW = "\e[D";
+inline std::string U_ARROW = "\x1b[A";
+inline std::string D_ARROW = "\x1b[B";
+inline std::string R_ARROW = "\x1b[C";
+inline std::string L_ARROW = "\x1b[D";
 
 inline std::string SHIFT_U_ARROW{27, 91, 49, 59, 50, 65}; // shift + arrow
 inline std::string SHIFT_D_ARROW{27, 91, 49, 59, 50, 66};
@@ -71,19 +73,19 @@ inline std::string DARK_SHADE = "▓";
 } // namespace unicode
 
 namespace term { /* random terminal manipulation codes */
-inline std::string CLEAR_CONSOLE = "\e[2J";
-inline std::string CLEAR_SCROLLBACK = "\e[3J";
-inline std::string CURSOR_HOME = "\e[H";
-inline std::string HIDE_CURSOR = "\e[?25l";
-inline std::string SHOW_CURSOR = "\e[?25h";
-inline std::string ALT_BUFFER = "\e[?1049h";     // enables the alternative buffer
-inline std::string PRIMARY_BUFFER = "\e[?1049l"; // disables the alternative buffer
+inline std::string CLEAR_CONSOLE = "\x1b[2J";
+inline std::string CLEAR_SCROLLBACK = "\x1b[3J";
+inline std::string CURSOR_HOME = "\x1b[H";
+inline std::string HIDE_CURSOR = "\x1b[?25l";
+inline std::string SHOW_CURSOR = "\x1b[?25h";
+inline std::string ALT_BUFFER = "\x1b[?1049h";     // enables the alternative buffer
+inline std::string PRIMARY_BUFFER = "\x1b[?1049l"; // disables the alternative buffer
 
-inline std::string SAVE_CURSOR = "\e7\e[s"; // uses dec and xterm code for compat
-inline std::string RESTORE_CURSOR = "\e8\e[u";
+inline std::string SAVE_CURSOR = "\0337\x1b[s"; // uses dec and xterm code for compat
+inline std::string RESTORE_CURSOR = "\0338\x1b[u";
 
-inline std::string ENABLE_MOUSE_REPORTING = "\e[?1003h\e[?1006h"; // using SGR, X10 is limited
-inline std::string DISABLE_MOUSE_REPORTING = "\e[?1003l\e[?1006l";
+inline std::string ENABLE_MOUSE_REPORTING = "\x1b[?1003h\x1b[?1006h"; // using SGR, X10 is limited
+inline std::string DISABLE_MOUSE_REPORTING = "\x1b[?1003l\x1b[?1006l";
 
 } // namespace term
 

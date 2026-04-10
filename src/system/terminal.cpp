@@ -80,32 +80,32 @@ uint Terminal::height() const {
 //   void SetOutputMode(OutputMode om);
 
 // --- Positioning ---
-void Terminal::MoveCursor(uint row, uint column) const { outbuff += std::format("\e[{};{}H", row, column); }
+void Terminal::MoveCursor(uint row, uint column) const { outbuff += std::format("\x1b[{};{}H", row, column); }
 //   void SaveCursorPosition();
 //   void RestoreCursorPosition();
 void Terminal::CursorUp(uint n) const {
   if (n == 0)
     return;
 
-  outbuff += std::format("\e[{}A", n);
+  outbuff += std::format("\x1b[{}A", n);
 }
 void Terminal::CursorDown(uint n) const {
   if (n == 0)
     return;
 
-  outbuff += std::format("\e[{}B", n);
+  outbuff += std::format("\x1b[{}B", n);
 }
 void Terminal::CursorForward(uint n) const {
   if (n == 0)
     return;
 
-  outbuff += std::format("\e[{}C", n);
+  outbuff += std::format("\x1b[{}C", n);
 }
 void Terminal::CursorBack(uint n) const {
   if (n == 0)
     return;
 
-  outbuff += std::format("\e[{}D", n);
+  outbuff += std::format("\x1b[{}D", n);
 }
 //   void CursorNextLine(uint n);
 //   void CursorPrevLine(uint n);
@@ -210,9 +210,9 @@ void TermSetup::configure() {
   (input_echoing == true) ? echo_on() : echo_off();
 
   // clang-format off
-  std::cout << ((show_cursor == true) ? "\e[?25h" : "\e[?25l") 
-            << ((alternate_output_buffer == true) ? "\e[?1049h" : "\e[?1049l")
-            << ((enable_mouse_reporting == true) ? "\e[?1003h\e[?1006h" : "\e[?1003l\e[?1006l") 
+  std::cout << ((show_cursor == true) ? "\x1b[?25h" : "\x1b[?25l") 
+            << ((alternate_output_buffer == true) ? "\x1b[?1049h" : "\x1b[?1049l")
+            << ((enable_mouse_reporting == true) ? "\x1b[?1003h\x1b[?1006h" : "\x1b[?1003l\x1b[?1006l") 
             << std::flush;
   // clang-format on
 }
@@ -235,9 +235,9 @@ void TermSetup::reset() { // sets terminal defaults, not blindly inversing confi
   io_buff_on();
   echo_on();
 
-  std::cout << "\e[?25h"            // show cursor
-            << "\e[?1049l"          // primary output buffer
-            << "\e[?1003l\e[?1006l" // mouse reporting off
+  std::cout << "\x1b[?25h"            // show cursor
+            << "\x1b[?1049l"          // primary output buffer
+            << "\x1b[?1003l\x1b[?1006l" // mouse reporting off
             << std::flush;
 }
 
