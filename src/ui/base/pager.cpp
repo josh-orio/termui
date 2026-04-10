@@ -1,5 +1,7 @@
 #include <termui/ui/ui.hpp>
 
+#include <algorithm>
+
 namespace termui {
 
 Pager::Pager(const termui::string &str, const Style &style, uint width, uint height) : Text(str, style, width, height), _cursor(0) {}

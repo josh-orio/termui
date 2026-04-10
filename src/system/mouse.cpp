@@ -6,7 +6,7 @@ MouseInteraction::MouseInteraction(std::string s) : valid(true) {
   int  code, x, y;
   char mstate;
 
-  if (sscanf(s.data(), "\e[<%d;%d;%d%c", &code, &x, &y, &mstate) != 4) {
+  if (sscanf(s.data(), "\x1b[<%d;%d;%d%c", &code, &x, &y, &mstate) != 4) {
     valid = false;
     return;
   }

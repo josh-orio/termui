@@ -3,7 +3,9 @@
 
 #include <map>
 #include <optional>
+#include <string>
 #include <termui/core/color.hpp>
+#include <vector>
 
 namespace termui {
 
