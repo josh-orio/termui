@@ -4,6 +4,8 @@ Terminal interfaces library for C++.
 
 [![CI](https://github.com/josh-orio/termui/actions/workflows/build.yml/badge.svg)](https://github.com/josh-orio/termui/actions/workflows/build.yml)
 
+![Watch the demo](examples/welcome-demo.gif)
+
 ## Documentation
 
 Almost all of the [docs/](docs/) are written using Ollama in Copilot Chat. I proofread them, but inaccuracies may persist.

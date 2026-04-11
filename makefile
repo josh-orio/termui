@@ -4,12 +4,13 @@ BUILD_DIR := build
 
 all: test
 
-test:
+demos:
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) && \
 	cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_EXAMPLES=ON .. && \
 	$(MAKE) -j
 
+test: demos
 	for f in b*/e*/*.test; do ./"$$f"; done
 
 install:
