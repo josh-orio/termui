@@ -5,12 +5,20 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        compiler:
+          - { cc: gcc, cxx: g++ }
+          - { cc: clang, cxx: clang++ }
+
     steps:
       - uses: actions/checkout@v4
-      
       - name: Build library
+        env:
+          CC: ${{ matrix.compiler.cc }}
+          CXX: ${{ matrix.compiler.cxx }}
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=Release .. 
+          cmake -DCMAKE_BUILD_TYPE=Release ..
           make -j
