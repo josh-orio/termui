@@ -37,30 +37,57 @@ std::string Text::render() {
     return "";
   }
 
-  std::string outbuff;
-
   std::vector<std::string> formatted;
-  std::string              copy = _text; //.text();
+  std::string              copy = _text;
+  size_t                   next = 0;
 
   for (int i = 0; i < _h; i++) {
-    int next = 0;
-    if (copy.find('\n') == std::string::npos) {
-      next = std::min({copy.size(), max_visible_length(copy, _w)});
+    // clang-format off
+    next = std::min({
+      copy.size(),
+      
+      max_visible_length(copy, _w),
+      
+      copy.find('\n'),
+      
+      (copy.rfind(' ', max_visible_length(copy, _w)) == std::string::npos || visible_length(copy) <= _w)
+        ? copy.size()
+        : copy.rfind(' ', max_visible_length(copy, _w))
+    });
+    // clang-format on
+
+    formatted.push_back(std::string(copy.begin(), copy.begin() + next)); // make substring of <=w printed symbols
+
+    if (copy.begin() + next >= copy.end()) {
+      copy = "";
+
     } else {
-      next = std::min({copy.size(), max_visible_length(copy, _w), copy.find('\n')});
-    }
-
-    formatted.push_back(std::string(copy.begin(), copy.begin() + next));         // make substring of <=w printed symbols
-    formatted.back() += std::string(_w - visible_length(formatted.back()), ' '); // add spacing to fill w
-
-    if (copy.begin() + next < copy.end()) {
-      if (copy[next] == '\n') {
+      if (copy[next] == '\n' || copy[next] == ' ') { // special handling for these two chars as they will cause infinite loops otherwise
         copy = std::string(copy.begin() + next + 1, copy.end());
       } else {
         copy = std::string(copy.begin() + next, copy.end());
       }
-    } else {
-      copy = "";
+    }
+  }
+
+  while (formatted.size() < +_h) { // add 'overrun' strings
+    formatted.push_back(std::string(_w, ' '));
+  }
+
+  // align text
+  for (int i = 0; i < formatted.size(); i++) {
+    if (formatted.at(i).size() < _w) {
+
+      if (_align == Alignment::Left) {
+        formatted.at(i) += std::string(_w - visible_length(formatted.at(i)), ' ');
+
+      } else if (_align == Alignment::Center) {
+        formatted.at(i) = std::string((_w - visible_length(formatted.at(i))) / 2, ' ') + formatted.at(i);
+        formatted.at(i) += std::string(_w - visible_length(formatted.at(i)), ' ');
+
+      } else /* _align == Right */ {
+        formatted.at(i) = std::string(_w - visible_length(formatted.at(i)), ' ') + formatted.at(i);
+      }
     }
   }
 
@@ -68,12 +95,13 @@ std::string Text::render() {
     formatted.back() = std::string(formatted.back().begin(), formatted.back().end() - 1) + unicode::ELLIPSIS;
   }
 
+  std::string outbuff;
+
   for (int i = 0; i < _h; i++) {
-    outbuff += formatted[i];
-    if (i == _h - 1) {
-      continue; // continue to avoid interfering with other ui elements
-    } else {
-      outbuff += curs_down(1) + curs_left(_w);
+    outbuff += formatted.at(i);
+
+    if (i + 1 < _h) {
+      outbuff += curs_left(_w) + curs_down(1);
     }
   }
 
