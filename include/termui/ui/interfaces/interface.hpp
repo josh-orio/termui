@@ -6,8 +6,10 @@
 namespace termui {
 
 class Interface {
-protected:
+public:
   enum class State { EXIT, CONTINUE, SELECT };
+
+protected:
   State state;
 
   TermSetup term_setup;
