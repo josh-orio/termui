@@ -57,14 +57,10 @@ inline std::string ENTER = "↵";
 inline std::string TAB = "⇥";
 inline std::string ESC = "␛";
 
-inline std::string FULL_BLOCK = "█";
-
-inline std::string p("█");
-inline std::string pp("░");
-
-inline std::string LIGHT_SHADE = "░";
-inline std::string MEDIUM_SHADE = "▒";
+inline std::string FULL_SHADE = "█";
 inline std::string DARK_SHADE = "▓";
+inline std::string MEDIUM_SHADE = "▒";
+inline std::string LIGHT_SHADE = "░";
 
 // Block chars
 // U+258x 	▀ 	▁ 	▂ 	▃ 	▄ 	▅ 	▆ 	▇ 	█ 	▉ 	▊ 	▋ 	▌ 	▍ 	▎ 	▏

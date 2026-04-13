@@ -9,7 +9,7 @@ std::string ProgressBar::render() {
 
   int comp_w = decimal * w;
 
-  outbuff += renderer.render(repeat(unicode::FULL_BLOCK, comp_w), Style(fg, std::nullopt));
+  outbuff += renderer.render(repeat(unicode::FULL_SHADE, comp_w), Style(fg, std::nullopt));
   outbuff += renderer.render(repeat(unicode::LIGHT_SHADE, w - comp_w), Style(bg, std::nullopt));
 
   return outbuff;
