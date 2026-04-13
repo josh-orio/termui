@@ -18,7 +18,7 @@ public:
   Input &height(uint h);
   Input &size(uint w, uint h); // convenience: set both at once
 
-  const termui::string &value() const;
+  const termui::string &get_value() const;
 
   std::string render();
 

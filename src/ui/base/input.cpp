@@ -44,7 +44,7 @@ Input &Input::size(uint width, uint height) {
   return *this;
 }
 
-const termui::string &Input::value() const { return _value; }
+const termui::string &Input::get_value() const { return _value; }
 
 std::string Input::render() {
   if (_w == 0 || _h == 0) {
