@@ -29,6 +29,9 @@ public:
   uint width() const;
   uint height() const;
 
+  uint halfWidth() const;
+  uint halfHeight() const;
+
   Color     ForegroundColor();
   Color     BackgroundColor();
   bool      HasDarkBackground();
