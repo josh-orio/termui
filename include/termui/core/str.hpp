@@ -43,22 +43,6 @@ public:
   }
 };
 
-// class string {
-// private:
-//   std::shared_ptr<std::string> ptr;
-
-// public:
-//   string();
-//   string(const termui::string &t);
-//   string(const std::string &str);
-//   string(const char *str);
-
-//   std::string &text() noexcept;
-//   const std::string &text() const noexcept;
-
-//   std::shared_ptr<std::string> share() const noexcept;
-// };
-
 class strings {
 private:
   std::shared_ptr<std::vector<termui::string>> items;
@@ -79,5 +63,10 @@ public:
 };
 
 } // namespace termui
+
+namespace tui {
+using str = termui::string;
+using strs = termui::strings;
+} // namespace tui
 
 #endif
