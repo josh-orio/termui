@@ -14,6 +14,13 @@ inline Border square{"─", "─", "│", "│", "┌", "┐", "└", "┘", "�
 inline Border rounded{"─", "─", "│", "│", "╭", "╮", "╰", "╯", "├", "┤", "┼", "┬", "┴"};
 } // namespace Borders
 
+} // namespace termui
+
+namespace tui {
+using brd = termui::Border;
+namespace brds = termui::Borders;
+} // namespace tui
+
 // U+250x 	─ 	━ 	│ 	┃ 	┄ 	┅ 	┆ 	┇ 	┈ 	┉ 	┊ 	┋ 	┌ 	┍ 	┎ 	┏
 // U+251x 	┐ 	┑ 	┒ 	┓ 	└ 	┕ 	┖ 	┗ 	┘ 	┙ 	┚ 	┛ 	├ 	┝ 	┞ 	┟
 // U+252x 	┠ 	┡ 	┢ 	┣ 	┤ 	┥ 	┦ 	┧ 	┨ 	┩ 	┪ 	┫ 	┬ 	┭ 	┮ 	┯
@@ -44,7 +51,5 @@ inline Border rounded{"─", "─", "│", "│", "╭", "╮", "╰", "╯", "�
 //  ⠉⠒⠤⣀
 
 // ▯▮
-
-} // namespace termui
 
 #endif

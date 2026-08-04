@@ -38,4 +38,9 @@ inline Color         Rose(212);
 
 } // namespace termui
 
+namespace tui {
+using clr = termui::Color;
+namespace clrs = termui::Colors;
+} // namespace tui
+
 #endif

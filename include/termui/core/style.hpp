@@ -65,4 +65,10 @@ inline termui::Style faint(std::nullopt, std::nullopt, {SGR::Faint});
 
 } // namespace termui
 
+namespace tui {
+using stl = termui::Style;
+namespace stls = termui::Styles;
+using sgr = termui::SGR;
+} // namespace tui
+
 #endif

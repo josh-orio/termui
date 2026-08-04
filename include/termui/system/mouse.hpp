@@ -54,4 +54,8 @@ struct MouseInteraction {
 
 } // namespace termui
 
+namespace tui {
+using mi = termui::MouseInteraction;
+}
+
 #endif
