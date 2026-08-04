@@ -11,8 +11,10 @@ extern const Renderer &renderer;
 } // namespace termui
 
 namespace tui {
-inline const termui::Terminal &term = termui::terminal;
-inline const termui::Renderer &rndr = termui::renderer;
+    
+extern const termui::Terminal &term;
+extern const termui::Renderer &rndr;
+
 } // namespace tui
 
 #endif

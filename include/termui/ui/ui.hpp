@@ -12,7 +12,7 @@
 // --- Display ---
 #include <termui/ui/display/area.hpp>
 #include <termui/ui/display/box.hpp>
-#include <termui/ui/display/lines.hpp>
+#include <termui/ui/display/line.hpp>
 #include <termui/ui/display/progress-bar.hpp>
 
 // --- Widgets ---
