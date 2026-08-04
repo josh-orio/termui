@@ -2,7 +2,7 @@
 
 namespace termui {
 
-Renderer::Renderer(ColorMode color_capability) : color_capability(color_capability) {}
+Renderer::Renderer(Color::Mode color_capability) : color_capability(color_capability) {}
 
 std::string Renderer::render(const std::string &str, const Style &style) const {
   if (style == Styles::none) {
@@ -18,7 +18,7 @@ std::string Renderer::render(const std::string &str, const Style &style) const {
 
   std::vector<int> modifier_codes;
 
-  if (color_capability != ColorMode::ASCII && !style.Attributes().empty()) {
+  if (color_capability != Color::Mode::ASCII && !style.Attributes().empty()) {
     for (auto attr : style.Attributes()) {
       modifier_codes.push_back(static_cast<int>(attr));
     }
@@ -41,26 +41,26 @@ std::string Renderer::render(const std::string &str, const Style &style) const {
   // trucol code:  ESC[38;2;{r};{g};{b}m
 
   if (style.Foreground().has_value()) {
-    if (color_capability == ColorMode::ANSI256) {
-      if (style.Foreground()->mode == ColorMode::ANSI256) {
+    if (color_capability == Color::Mode::ANSI256) {
+      if (style.Foreground()->mode == Color::Mode::ANSI256) {
         modifier_codes.push_back(38);
         modifier_codes.push_back(5);
         modifier_codes.push_back(style.Foreground()->value);
 
-      } else if (style.Foreground()->mode == ColorMode::TRUECOLOR) {
+      } else if (style.Foreground()->mode == Color::Mode::TRUECOLOR) {
         modifier_codes.push_back(38);
         modifier_codes.push_back(5);
         modifier_codes.push_back(truecolor_to_ansi256(style.Foreground()->rgb.r, style.Foreground()->rgb.g, style.Foreground()->rgb.b));
       }
     }
 
-    else if (color_capability == ColorMode::TRUECOLOR) {
-      if (style.Foreground()->mode == ColorMode::ANSI256) {
+    else if (color_capability == Color::Mode::TRUECOLOR) {
+      if (style.Foreground()->mode == Color::Mode::ANSI256) {
         modifier_codes.push_back(38);
         modifier_codes.push_back(5);
         modifier_codes.push_back(style.Foreground()->value);
 
-      } else if (style.Foreground()->mode == ColorMode::TRUECOLOR) {
+      } else if (style.Foreground()->mode == Color::Mode::TRUECOLOR) {
         modifier_codes.push_back(38);
         modifier_codes.push_back(2);
         modifier_codes.push_back(style.Foreground()->rgb.r);
@@ -71,26 +71,26 @@ std::string Renderer::render(const std::string &str, const Style &style) const {
   }
 
   if (style.Background().has_value()) {
-    if (color_capability == ColorMode::ANSI256) {
-      if (style.Background()->mode == ColorMode::ANSI256) {
+    if (color_capability == Color::Mode::ANSI256) {
+      if (style.Background()->mode == Color::Mode::ANSI256) {
         modifier_codes.push_back(48);
         modifier_codes.push_back(5);
         modifier_codes.push_back(style.Background()->value);
 
-      } else if (style.Background()->mode == ColorMode::TRUECOLOR) {
+      } else if (style.Background()->mode == Color::Mode::TRUECOLOR) {
         modifier_codes.push_back(48);
         modifier_codes.push_back(5);
         modifier_codes.push_back(truecolor_to_ansi256(style.Background()->rgb.r, style.Background()->rgb.g, style.Background()->rgb.b));
       }
     }
 
-    else if (color_capability == ColorMode::TRUECOLOR) {
-      if (style.Background()->mode == ColorMode::ANSI256) {
+    else if (color_capability == Color::Mode::TRUECOLOR) {
+      if (style.Background()->mode == Color::Mode::ANSI256) {
         modifier_codes.push_back(48);
         modifier_codes.push_back(5);
         modifier_codes.push_back(style.Background()->value);
 
-      } else if (style.Background()->mode == ColorMode::TRUECOLOR) {
+      } else if (style.Background()->mode == Color::Mode::TRUECOLOR) {
         modifier_codes.push_back(48);
         modifier_codes.push_back(2);
         modifier_codes.push_back(style.Background()->rgb.r);

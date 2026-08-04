@@ -35,7 +35,7 @@ public:
   Color     ForegroundColor();
   Color     BackgroundColor();
   bool      HasDarkBackground();
-  ColorMode ColorCapability();
+  Color::Mode ColorCapability();
 
   // void SetOutputMode(OutputMode om);
 
@@ -89,7 +89,7 @@ public:
 private:
   Terminal();
 
-  ColorMode color_capability;
+  Color::Mode color_capability;
   // OutputMode output_mode;
 
   Renderer renderer;

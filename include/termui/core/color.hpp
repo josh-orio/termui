@@ -5,9 +5,8 @@
 
 namespace termui {
 
-enum class ColorMode { ASCII, ANSI256, TRUECOLOR };
-
 struct Color {
+  enum class Mode { ASCII, ANSI256, TRUECOLOR };
   union {
     uint8_t value;
     struct {
@@ -15,7 +14,7 @@ struct Color {
     } rgb;
   };
 
-  ColorMode mode;
+  Mode mode;
 
   Color(uint8_t v);
   Color(uint8_t r, uint8_t g, uint8_t b);
