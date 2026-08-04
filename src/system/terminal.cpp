@@ -72,6 +72,10 @@ uint Terminal::height() const {
   return w.ws_row;
 }
 
+uint Terminal::halfWidth() const { return width() / 2; }
+
+uint Terminal::halfHeight() const { return height() / 2; }
+
 //   Color ForegroundColor(){}
 //   Color BackgroundColor(){}
 //   bool HasDarkBackground(){}

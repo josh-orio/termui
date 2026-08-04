@@ -146,7 +146,7 @@ std::string Input::render() {
     }
   }
 
-  if (formatted.back().size() == _w && _h > 1) { // moves cursor over to the next line, doesnt affect underlying data, just a visual effect.
+  if (formatted.size() > 0 && formatted.back().size() == _w && _h > 1) { // moves cursor over to the next line, doesnt affect underlying data, just a visual effect.
     formatted.push_back("");
   }
 
