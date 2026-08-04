@@ -146,14 +146,14 @@ void Terminal::HideCursor() const { outbuff += "\x1b[?25l"; }
 //   void EnableMouseTracking();
 //   void DisableMouseTracking();
 
-Terminal::Terminal() : renderer(ColorMode::ASCII) {
+Terminal::Terminal() : renderer(Color::Mode::ASCII) {
   // do color capability detection here
 
   const char *colorterm = std::getenv("COLORTERM");
   if (colorterm) {
     std::string val(colorterm);
     if (val == "truecolor" || val == "24bit") {
-      color_capability = ColorMode::TRUECOLOR;
+      color_capability = Color::Mode::TRUECOLOR;
       renderer = Renderer(color_capability);
     }
   }
@@ -161,8 +161,8 @@ Terminal::Terminal() : renderer(ColorMode::ASCII) {
   const char *term = std::getenv("TERM");
   if (term) {
     std::string val(term);
-    if (val == "xterm-256color" && color_capability != ColorMode::TRUECOLOR) {
-      color_capability = ColorMode::ANSI256;
+    if (val == "xterm-256color" && color_capability != Color::Mode::TRUECOLOR) {
+      color_capability = Color::Mode::ANSI256;
       renderer = Renderer(color_capability);
     }
   }

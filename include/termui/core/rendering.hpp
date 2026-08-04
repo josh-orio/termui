@@ -17,12 +17,12 @@ public:
   // Renderer(const Renderer &) = delete;
   // Renderer &operator=(const Renderer &) = delete;
 
-  Renderer(ColorMode color_capability);
+  Renderer(Color::Mode color_capability);
 
   std::string render(const std::string &str, const Style &style) const;
 
 private:
-  ColorMode color_capability;
+  Color::Mode color_capability;
 };
 
 } // namespace termui
