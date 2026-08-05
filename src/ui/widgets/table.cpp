@@ -95,7 +95,7 @@ std::string Table::render() {
 
   outbuff += header;
   outbuff += curs_down(1) + curs_left(_table_width - 2);
-  outbuff += renderer.render(HorizontalLine(_table_width - 2, _border).render(), Styles::faint);
+  outbuff += renderer.render(Line(Line::Direction::Horizontal, _table_width - 2).render(), Styles::faint);
   outbuff += curs_down(1) + curs_left(_table_width - 2);
 
   std::string row_text; // just a buffer for this row output
