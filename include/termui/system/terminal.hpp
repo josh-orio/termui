@@ -2,6 +2,7 @@
 #define TERMINAL_HPP
 
 #include <iostream>
+#include <stack>
 #include <string>
 #include <sys/ioctl.h>
 #include <termios.h>
