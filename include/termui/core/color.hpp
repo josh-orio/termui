@@ -2,6 +2,7 @@
 #define COLOR_HPP
 
 #include <cstdint>
+#include <string>
 
 namespace termui {
 
@@ -19,6 +20,7 @@ struct Color {
   Color(); // default-constructing a color means "dont touch existing style" (inherit)
   Color(uint8_t v);
   Color(uint8_t r, uint8_t g, uint8_t b);
+  Color(std::string hex); // for hex codes like #abcdef
 
   static Color Reset();
 
