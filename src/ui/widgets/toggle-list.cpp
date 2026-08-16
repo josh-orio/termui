@@ -49,14 +49,14 @@ void ToggleList::toggle() { _selmap[_cursor] = !_selmap[_cursor]; }
 
 bool ToggleList::getSelection(int i) { return _selmap.at(i); }
 
-std::string ToggleList::render() {
+void ToggleList::render() {
   internal_update();
 
   std::string outbuff;
   std::string icon;
 
   for (int i = _start_line; i < std::min(_elements.size(), static_cast<size_t>(_start_line + _visible_lines)); i++) {
-    Text element(_elements.at(i), Styles::none, _w - 2, 1);
+    Text element = Text(_elements.at(i)).width(_w - 2).height(1);
 
     if (getSelection(i)) {
       icon = unicode::TICK;
@@ -65,16 +65,20 @@ std::string ToggleList::render() {
     }
 
     if (i + _start_line == _cursor) {
-      outbuff += renderer.render(icon + " " + element.render(), _focus_style);
+      terminal.StyleStack(_focus_style);
+      terminal.write(icon + " ");
+      element.render();
+      terminal.StylePop();
+
     } else {
-      outbuff += renderer.render(icon + " " + element.render(), _blur_style);
+      terminal.StyleStack(_blur_style);
+      terminal.write(icon + " ");
+      element.render();
+      terminal.StylePop();
     }
 
-    outbuff += curs_left(_w); // Text is guaranteed to be w-2 width
-    outbuff += curs_down(_line_spacing + 1);
+    terminal.CursorLeft(_w).CursorDown(_line_spacing + 1); // Text is guaranteed to be w-2 width
   }
-
-  return outbuff;
 }
 
 void ToggleList::internal_update() {

@@ -6,7 +6,9 @@
 namespace termui {
 
 struct Color {
-  enum class Mode { ASCII, ANSI256, TRUECOLOR };
+  enum class Mode { INHERIT, RESET, ANSI256, TRUECOLOR };
+  Mode mode;
+
   union {
     uint8_t value;
     struct {
@@ -14,12 +16,18 @@ struct Color {
     } rgb;
   };
 
-  Mode mode;
-
+  Color(); // default-constructing a color means "dont touch existing style" (inherit)
   Color(uint8_t v);
   Color(uint8_t r, uint8_t g, uint8_t b);
 
+  static Color Reset();
+
+  static Color Inherit();
+
   bool operator==(const Color &other) const;
+
+  bool IsInherit() const;
+  bool IsReset() const;
 };
 
 namespace Colors {

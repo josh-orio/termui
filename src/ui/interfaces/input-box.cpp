@@ -4,7 +4,7 @@ namespace termui {
 
 // clang-format off
 StyleMap InputBox::styles({
-    {"header", Style(201, std::nullopt, {SGR::Bold})},
+    {"header", Style(201, Color::Inherit(), {SGR::Bold})},
     {"box", Styles::faint},
 });
 // clang-format on
@@ -44,13 +44,20 @@ void InputBox::display() {
   terminal.ClearScreen();
   terminal.ClearScrollback();
 
-  terminal.write(terminal.height(), 2, control_strip.render()); // print ctl strip first to avoid interfering
+  terminal.MoveCursor(terminal.height(), 2);
+  control_strip.render(); // print ctl strip first to avoid interfering
 
   uint origin_row = (terminal.height() - static_cast<uint>(h)) / 2, origin_col = (terminal.width() - static_cast<uint>(w)) / 2;
 
-  terminal.write(origin_row, origin_col, box.render());
-  terminal.write(origin_row + 1, origin_col + 2, header.render());
-  terminal.write(origin_row + 3, origin_col + 2, input_field.render());
+  terminal.MoveCursor(origin_row, origin_col);
+  box.render();
+
+  terminal.MoveCursor(origin_row + 1, origin_col + 2);
+  header.render();
+
+  terminal.MoveCursor(origin_row + 3, origin_col + 2);
+  input_field.render();
+
   terminal.flush();
 }
 

@@ -29,7 +29,7 @@ public:
     Style  cursor_style;
     Border border;
 
-    TableStyle(uint table_height = 0, uint cell_height = 1, uint line_seperation = 0, Style cursor_style = Style(std::nullopt, 57),
+    TableStyle(uint table_height = 0, uint cell_height = 1, uint line_seperation = 0, Style cursor_style = Style(Color::Inherit(), 57),
                Border border = Borders::rounded)
       : table_height(table_height), cell_height(cell_height), line_seperation(line_seperation), cursor_style(cursor_style), border(border) {}
   };
@@ -47,7 +47,7 @@ public:
   uint get_cursor();
   uint colCount();
 
-  std::string render();
+  void render();
 
 private:
   std::vector<Column> _columns;

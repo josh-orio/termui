@@ -20,7 +20,7 @@ public:
   void cursor_down(uint count = 1);
   uint get_cursor();
 
-  std::string render();
+  void render();
 
 private:
   termui::strings _elements;

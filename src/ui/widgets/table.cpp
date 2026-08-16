@@ -2,9 +2,9 @@
 
 namespace termui {
 
-Table::Column::Column(termui::string str, uint w) : title(str), width(w) {};
+Table::Column::Column(termui::string str, uint w) : title(str), width(w){};
 
-Table::Row::Row(termui::strings c) : cells(c) {};
+Table::Row::Row(termui::strings c) : cells(c){};
 
 Table::Table(const std::vector<Column> &columns, const std::vector<Row> &rows, const TableStyle &ts)
   : _columns(columns),
@@ -75,59 +75,47 @@ uint Table::get_cursor() { return _cursor; }
 
 uint Table::colCount() { return _columns.size(); }
 
-std::string Table::render() {
+void Table::render() {
   internal_update();
 
-  std::string outbuff;
+  terminal.CursorDown(_table_height).CursorUp(_table_height);
+  Box(_table_width, _table_height, _border, Styles::faint).render();
+  terminal.CursorUp(_table_height - 2).CursorLeft(_table_width - 1);
 
-  outbuff += curs_down(_table_height) + curs_up(_table_height);
-  outbuff += Box(_table_width, _table_height, _border, Styles::faint).render();
-  outbuff += curs_up(_table_height - 2) + curs_left(_table_width - 1);
-
-  std::string header;
   for (int i = 0; i < _columns.size(); i++) {
-    header += Text(_columns.at(i).title, Styles::none, _columns.at(i).width, 1).render();
+    Text(_columns.at(i).title, Styles::none, _columns.at(i).width, 1).render();
 
     if (i != _columns.size() - 1) {
-      header += " ";
+      terminal.CursorRight(1);
     }
   }
 
-  outbuff += header;
-  outbuff += curs_down(1) + curs_left(_table_width - 2);
-  outbuff += renderer.render(Line(Line::Direction::Horizontal, _table_width - 2).render(), Styles::faint);
-  outbuff += curs_down(1) + curs_left(_table_width - 2);
-
-  std::string row_text; // just a buffer for this row output
-  std::string cell_text;
+  terminal.CursorDown(1).CursorLeft(_table_width - 2);
+  terminal.StyleStack(Styles::faint);
+  Line(Line::Direction::Horizontal, _table_width - 2).render();
+  terminal.StylePop();
+  terminal.CursorDown(1).CursorLeft(_table_width - 2);
 
   for (int i = _start_line; i < std::min((uint)_rows.size(), _start_line + _visible_rows); i++) {
-    row_text = "";
-
     if (i == _cursor) {
-      row_text += Text(" ", _cursor_style, _table_width - 2, _cell_height).render();
-      row_text += curs_left(_table_width - 2) + curs_up(_cell_height - 1);
+      Text(" ", _cursor_style, _table_width - 2, _cell_height).render();
+      terminal.CursorLeft(_table_width - 2).CursorUp(_cell_height - 1);
     }
 
     for (int ii = 0; ii < _columns.size(); ii++) {
       if (i == _cursor) {
-        cell_text = Text(_rows.at(i).cells.at(ii), _cursor_style, _columns.at(ii).width, _cell_height).render();
+        Text(_rows.at(i).cells.at(ii), _cursor_style, _columns.at(ii).width, _cell_height).render();
       } else {
-        cell_text = Text(_rows.at(i).cells.at(ii), Styles::none, _columns.at(ii).width, _cell_height).render();
+        Text(_rows.at(i).cells.at(ii), Styles::none, _columns.at(ii).width, _cell_height).render();
       }
 
-      row_text += cell_text;
-      if (ii != _columns.size() - 1) { // if not last column
-        row_text += curs_up(_cell_height - 1);
-        row_text += curs_right(1); // go up if cell is multiline, right to next col
+      if (ii != _columns.size() - 1) {                      // if not last column
+        terminal.CursorUp(_cell_height - 1).CursorRight(1); // go up if cell is multiline, right to next col
       }
     }
 
-    outbuff += row_text;
-    outbuff += curs_down(_line_seperation + 1) + curs_left(_table_width - 2); // go down (line sep), got to col 0 of table
+    terminal.CursorDown(_line_seperation + 1).CursorLeft(_table_width - 2); // go down (line sep), got to col 0 of table
   }
-
-  return outbuff;
 }
 
 void Table::internal_update() {

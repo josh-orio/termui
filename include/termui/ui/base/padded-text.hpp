@@ -14,7 +14,7 @@ public:
   uint hPadding();
   uint vPadding();
 
-  std::string render() override;
+  void render() override;
 
 private:
   Padding _padding;

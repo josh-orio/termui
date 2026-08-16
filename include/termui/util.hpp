@@ -8,11 +8,6 @@
 #include <vector>
 
 namespace termui {
-std::string curs_up(int n);
-std::string curs_down(int n);
-std::string curs_right(int n);
-std::string curs_left(int n);
-
 std::string repeat(const std::string &s, int n);
 
 size_t visible_length(const std::string &s);                       // calculates length of printed string (not bytes)

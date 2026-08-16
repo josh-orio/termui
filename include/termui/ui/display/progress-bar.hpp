@@ -13,8 +13,8 @@ class ProgressBar {
 public:
   ProgressBar(uint width, float decimal, Color foreground, Color background);
 
-  std::string render();
-  uint        width();
+  void render();
+  uint width();
 
 private:
   uint  w;

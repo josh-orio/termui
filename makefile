@@ -11,7 +11,7 @@ demos:
 	$(MAKE) -j
 
 test: demos
-	for f in b*/e*/*.test; do ./"$$f"; done
+	for f in build/examples/*.test; do ./"$$f"; done
 
 install:
 	@mkdir -p $(BUILD_DIR)

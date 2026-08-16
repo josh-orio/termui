@@ -20,7 +20,7 @@ public:
 
   const termui::string &get_value() const;
 
-  std::string render();
+  void render();
 
 private:
   termui::string _value;

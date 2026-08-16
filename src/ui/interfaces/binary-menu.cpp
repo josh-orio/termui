@@ -6,9 +6,9 @@ namespace termui {
 
 // clang-format off
 StyleMap BinaryMenu::styles({
-  {"title", Style(57, std::nullopt, {SGR::Bold})},
-  {"focus", Style(std::nullopt, 219, {SGR::Bold})},
-  {"blur", Style(std::nullopt, 238)},
+  {"title", Style(57, Color::Inherit(), {SGR::Bold})},
+  {"focus", Style(Color::Inherit(), 219, {SGR::Bold})},
+  {"blur", Style(Color::Inherit(), 238)},
   {"box", Styles::faint}
 });
 // clang-format on
@@ -55,12 +55,24 @@ void BinaryMenu::display() {
 
   uint origin_row = (terminal.height() - static_cast<uint>(h)) / 2, origin_col = (terminal.width() - static_cast<uint>(w)) / 2;
 
-  terminal.write(origin_row, origin_col, box.render());
-  terminal.write(origin_row + 1, origin_col + 2, title_label.render());
-  terminal.write(origin_row + 3, origin_col + 2, body.render());
-  terminal.write(aff_y, aff_x1, aff.render());
-  terminal.write(neg_y, neg_x1, neg.render());
-  terminal.write(terminal.height(), 2, control_strip.render());
+  terminal.MoveCursor(origin_row, origin_col);
+  box.render();
+
+  terminal.MoveCursor(origin_row + 1, origin_col + 2);
+  title_label.render();
+
+  terminal.MoveCursor(origin_row + 3, origin_col + 2);
+  body.render();
+
+  terminal.MoveCursor(aff_y, aff_x1);
+  aff.render();
+
+  terminal.MoveCursor(neg_y, neg_x1);
+  neg.render();
+
+  terminal.MoveCursor(terminal.height(), 2);
+  control_strip.render();
+
   terminal.flush();
 }
 

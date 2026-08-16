@@ -4,17 +4,20 @@ namespace termui {
 
 Box::Box(uint w, uint h, Border border, Style style) : w(w), h(h), border(border), style(style) {}
 
-std::string Box::render() {
-  std::string outbuff;
+void Box::render() {
+  terminal.StyleStack(style);
 
-  outbuff += border.TopLeft + repeat(border.Top, w - 2) + border.TopRight;
-  outbuff += curs_left(w) + curs_down(1);
+  terminal.write(border.TopLeft + repeat(border.Top, w - 2) + border.TopRight);
+  terminal.CursorLeft(w).CursorDown(1);
 
-  outbuff += repeat(border.Left + repeat(" ", w - 2) + border.Right + curs_left(w) + curs_down(1), h - 2);
+  for (int i = 0; i < h - 2; i++) {
+    terminal.write(border.Left + repeat(" ", w - 2) + border.Right);
+    terminal.CursorLeft(w).CursorDown(1);
+  }
 
-  outbuff += border.BottomLeft + repeat(border.Bottom, w - 2) + border.BottomRight;
+  terminal.write(border.BottomLeft + repeat(border.Top, w - 2) + border.BottomRight);
 
-  return renderer.render(outbuff, style);
+  terminal.StylePop();
 }
 
 void Box::resize(uint width, uint height) {

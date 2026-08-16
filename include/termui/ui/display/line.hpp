@@ -15,7 +15,7 @@ public:
 
   Line(Direction d, size_t len, std::string symbol = "");
 
-  std::string render();
+  void render();
 
 private:
   Direction   direction;

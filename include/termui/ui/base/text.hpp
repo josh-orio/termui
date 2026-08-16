@@ -10,7 +10,7 @@ class Text {
 public:
   enum class Alignment { Left, Center, Right };
 
-  Text(const termui::string &str, const Style &style = {}, uint width = 0, uint height = 0);
+  Text(const termui::string &str, const Style &style = {}, uint width = 0, uint height = 1);
 
   Text &style(const Style &s);
   Text &align(const Alignment &a);
@@ -18,7 +18,7 @@ public:
   Text &height(uint h);
   Text &size(uint w, uint h);
 
-  virtual std::string render();
+  virtual void render();
 
 protected:
   termui::string _text;

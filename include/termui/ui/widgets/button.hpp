@@ -16,7 +16,7 @@ public:
 
   void focus(), blur();
 
-  std::string render();
+  void render();
 
 private:
   termui::string _text;

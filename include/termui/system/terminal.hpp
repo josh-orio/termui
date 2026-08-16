@@ -2,10 +2,12 @@
 #define TERMINAL_HPP
 
 #include <iostream>
+#include <stack>
 #include <string>
 #include <sys/ioctl.h>
 #include <termios.h>
-#include <termui/core/rendering.hpp>
+#include <termui/core/color.hpp>
+#include <termui/core/style.hpp>
 #include <termui/system/mouse.hpp>
 #include <termui/util.hpp>
 #include <unistd.h>
@@ -15,10 +17,9 @@ namespace termui {
 class Terminal {
 public:
   // enum class OutputMode { Direct, Buffered };
+  enum class Mode { ASCII, ANSI256, TRUECOLOR };
 
   static Terminal &instance();
-
-  const Renderer &GetRenderer() const;
 
   void write(const std::string &str) const; // writes to outbuff, not cout directly
   void write(uint row, uint column, const std::string &str) const;
@@ -32,21 +33,28 @@ public:
   uint halfWidth() const;
   uint halfHeight() const;
 
-  Color     ForegroundColor();
-  Color     BackgroundColor();
-  bool      HasDarkBackground();
+  Color       ForegroundColor();
+  Color       BackgroundColor();
+  bool        HasDarkBackground();
   Color::Mode ColorCapability();
 
   // void SetOutputMode(OutputMode om);
+
+  // ---- Styling ----
+  void Style(termui::Style s) const;
+  void StyleStack(termui::Style s) const;
+  void StylePop() const;
 
   // --- Positioning ---
   void MoveCursor(uint row, uint column) const;
   void SaveCursorPosition();
   void RestoreCursorPosition();
-  void CursorUp(uint n) const;
-  void CursorDown(uint n) const;
-  void CursorForward(uint n) const;
-  void CursorBack(uint n) const;
+
+  const Terminal &CursorUp(uint n) const;
+  const Terminal &CursorDown(uint n) const;
+  const Terminal &CursorRight(uint n) const;
+  const Terminal &CursorLeft(uint n) const;
+
   void CursorNextLine(uint n);
   void CursorPrevLine(uint n);
 
@@ -89,12 +97,12 @@ public:
 private:
   Terminal();
 
-  Color::Mode color_capability;
+  Mode _color_capability;
   // OutputMode output_mode;
 
-  Renderer renderer;
+  mutable std::stack<termui::Style> _style_stack;
 
-  mutable std::string outbuff;
+  mutable std::string _outbuff;
 };
 
 class TermSetup {

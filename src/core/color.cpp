@@ -2,25 +2,37 @@
 
 namespace termui {
 
-Color::Color(uint8_t v) : value(v), mode(Color::Mode::ANSI256) {}
-Color::Color(uint8_t r, uint8_t g, uint8_t b) : rgb(r, g, b), mode(Color::Mode::TRUECOLOR) {}
+Color::Color() : mode(Mode::INHERIT), value(0) {}
+Color::Color(uint8_t v) : mode(Mode::ANSI256), value(v) {}
+Color::Color(uint8_t r, uint8_t g, uint8_t b) : mode(Mode::TRUECOLOR), rgb{r, g, b} {}
+
+Color Color::Reset() {
+  Color c;
+  c.mode = Mode::RESET;
+  return c;
+}
+
+Color Color::Inherit() {
+  return Color{}; // same as default
+}
 
 bool Color::operator==(const Color &other) const {
   if (mode != other.mode)
     return false;
 
-  if (mode == Color::Mode::TRUECOLOR) {
+  switch (mode) {
+  case Mode::TRUECOLOR:
     return rgb.r == other.rgb.r && rgb.g == other.rgb.g && rgb.b == other.rgb.b;
-
-  } else if (mode == Color::Mode::ANSI256) {
+  case Mode::ANSI256:
     return value == other.value;
-
-  } else if (mode == Color::Mode::ASCII) {
-    return true;
-
-  } else {
-    return false; // not possible really
+  case Mode::INHERIT:
+  case Mode::RESET:
+    return mode == other.mode;
   }
+  return false; // unreachable
 }
+
+bool Color::IsInherit() const { return mode == Mode::INHERIT; }
+bool Color::IsReset() const { return mode == Mode::RESET; }
 
 } // namespace termui

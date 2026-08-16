@@ -4,8 +4,8 @@ namespace termui {
 
 // clang-format off
 StyleMap InfoBox::styles({
-  {"title", Style(57, std::nullopt, {SGR::Bold})},
-  {"button", Style(std::nullopt, 212)},
+  {"title", Style(57, Color::Inherit(), {SGR::Bold})},
+  {"button", Style(Color::Inherit(), 212)},
   {"box", Styles::faint}
 });
 // clang-format on
@@ -47,29 +47,21 @@ void InfoBox::display() {
 
   uint origin_row = (termui::terminal.height() - h) / 2, origin_col = (termui::terminal.width() - w) / 2;
 
-  terminal.write(origin_row, origin_col, box.render());
-  terminal.write(origin_row + 1, origin_col + 2, header.render());
-  terminal.write(origin_row + 3, origin_col + 2, body.render());
-  terminal.write(origin_row + 8, origin_col + (w - 2 - 8), close.render());
+  terminal.MoveCursor(origin_row, origin_col);
+  box.render();
 
-  // auto term_h = terminal.height(), term_w = terminal.width();
+  terminal.MoveCursor(origin_row + 1, origin_col + 2);
+  header.render();
 
-  // terminal.write((term_h - h) / 2, (term_w - w) / 2, box.render());
-  // terminal.CursorUp(h - 2);
-  // terminal.CursorBack(w - 2);
+  terminal.MoveCursor(origin_row + 3, origin_col + 2);
+  body.render();
 
-  // terminal.write(header.render());
-  // terminal.CursorDown(2);
-  // // terminal.CursorBack(header.width());
-  // terminal.
+  terminal.MoveCursor(origin_row + 8, origin_col + (w - 2 - 8));
+  close.render();
 
-  // terminal.write(body.render());
-  // terminal.CursorDown(2);
-  // terminal.CursorBack(close.width());
+  terminal.MoveCursor(terminal.height(), 2);
+  control_banner.render();
 
-  // terminal.write(close.render());
-
-  terminal.write(terminal.height(), 2, control_banner.render());
   terminal.flush();
 }
 

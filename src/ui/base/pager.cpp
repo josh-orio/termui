@@ -17,9 +17,9 @@ Pager &Pager::cursor_down(uint count) {
 
 uint Pager::get_cursor() { return _cursor; }
 
-std::string Pager::render() {
+void Pager::render() {
   if (_w == 0 || _h == 0) {
-    return "";
+    return;
   }
 
   std::vector<std::string> formatted;
@@ -79,17 +79,17 @@ std::string Pager::render() {
     }
   }
 
-  std::string outbuff;
+  terminal.StyleStack(_style);
 
   for (int i = _cursor; i < _cursor + _h; i++) {
-    outbuff += formatted.at(i);
+    terminal.write(formatted.at(i));
 
     if (i + 1 < _h) {
-      outbuff += curs_left(_w) + curs_down(1);
+      terminal.CursorLeft(_w).CursorDown(1);
     }
   }
 
-  return renderer.render(outbuff, _style);
+  terminal.StylePop();
 }
 
 } // namespace termui

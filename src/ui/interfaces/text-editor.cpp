@@ -7,7 +7,7 @@ namespace termui {
 
 // clang-format off
 StyleMap TextEditor::styles({
-  {"title", Style(std::nullopt, Colors::Lavender, {SGR::Bold})}
+  {"title", Style(Color::Inherit(), Colors::Lavender, {SGR::Bold})}
 });
 // clang-format on
 
@@ -40,17 +40,27 @@ void TextEditor::display() {
   terminal.ClearScreen();
   terminal.ClearScrollback();
 
-  terminal.write(2, 2, title_banner.render());
-  terminal.write(4, 5, pager.render());
+  terminal.MoveCursor(2, 2);
+  title_banner.render();
+
+  terminal.MoveCursor(4, 5);
+  pager.render();
 
   // draw line counters - must be after pager render otherwise cursor may be inaccurate
   auto first_line = pager.get_cursor(); // 0-based index of first visible line
   for (int i = 0; i < terminal.height() - voh; i++) {
     int line_number = first_line + i + 1; // +1 for 1-based display
-    terminal.write(i + 4, 0, renderer.render(std::format("{:>3}{}", line_number, unicode::VERTICAL), Styles::faint));
+    terminal.MoveCursor(i + 4, 0);
+
+    terminal.StyleStack(Styles::faint);
+
+    terminal.write(std::format("{:>3}{}", line_number, unicode::VERTICAL));
+
+    terminal.StylePop();
   }
 
-  terminal.write(terminal.height(), 2, control_strip.render());
+  terminal.MoveCursor(terminal.height(), 2);
+  control_strip.render();
 
   terminal.flush();
 }

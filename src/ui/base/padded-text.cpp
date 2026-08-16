@@ -7,24 +7,22 @@ PaddedText::PaddedText(const termui::string &str, Style style, Padding padding) 
 uint PaddedText::hPadding() { return static_cast<int>(_padding.left) + static_cast<int>(_padding.right); }
 uint PaddedText::vPadding() { return static_cast<int>(_padding.top) + static_cast<int>(_padding.bottom); }
 
-std::string PaddedText::render() {
+void PaddedText::render() {
   if (_w == 0 || _h == 0) {
-    return "";
+    return;
   }
 
-  std::string outbuff;
+  terminal.StyleStack(_style);
 
   // drawing background (padding)
   for (int i = _h; i > 0; --i) {
-    outbuff += std::string(_w, ' ');
+    terminal.write(std::string(_w, ' '));
 
     if (i > 1) {
-      outbuff += curs_left(_w);
-      outbuff += curs_down(1);
+      terminal.CursorLeft(_w).CursorDown(1);
 
     } else {
-      outbuff += curs_left(_w - _padding.left); // on final iteration, move cursor to where text will start
-      outbuff += curs_up(_h - _padding.top - 1);
+      terminal.CursorLeft(_w - _padding.left).CursorUp(_h - _padding.top - 1); // on final iteration, move cursor to where text will start
     }
   }
 
@@ -32,14 +30,14 @@ std::string PaddedText::render() {
 
   _w = std::max(0, static_cast<int>(_w) - static_cast<int>(_padding.left) - static_cast<int>(_padding.right));
   _h = std::max(0, static_cast<int>(_h) - static_cast<int>(_padding.top) - static_cast<int>(_padding.bottom));
-  outbuff += Text::render(); // call the method from base class
+  Text::render(); // call the method from the base class
   _w = w_copy;
   _h = h_copy;
 
   // move cursor to end of padding
-  outbuff += curs_down(_padding.bottom) + curs_right(_padding.right);
+  terminal.CursorDown(_padding.bottom).CursorRight(_padding.right);
 
-  return renderer.render(outbuff, _style);
+  terminal.StylePop();
 }
 
 } // namespace termui

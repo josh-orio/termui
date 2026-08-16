@@ -37,9 +37,14 @@ void InfoPage::display() {
   terminal.ClearScreen();
   terminal.ClearScrollback();
 
-  terminal.write(2, 2, title_banner.render());
-  terminal.write(4, 3, info.render());
-  terminal.write(terminal.height(), 2, control_strip.render());
+  terminal.MoveCursor(2, 2);
+  title_banner.render();
+
+  terminal.MoveCursor(4, 3);
+  info.render();
+
+  terminal.MoveCursor(terminal.height(), 2);
+  control_strip.render();
 
   terminal.flush();
 }

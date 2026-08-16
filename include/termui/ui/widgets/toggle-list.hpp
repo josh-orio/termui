@@ -22,7 +22,7 @@ public:
   void toggle(); // toggles selection on current element
   bool getSelection(int i);
 
-  std::string render();
+  void render();
 
 private:
   termui::strings   _elements;

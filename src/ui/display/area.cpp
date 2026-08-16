@@ -4,18 +4,17 @@ namespace termui {
 
 Area::Area(uint w, uint h, Style style, std::string symbol) : w(w), h(h), style(style), symbol(symbol) {}
 
-std::string Area::render() {
-  std::string outbuff;
-  std::string curs_return = curs_down(1) + curs_left(w);
+void Area::render() {
+  terminal.StyleStack(style);
 
   for (int i = 0; i < h; i++) {
     for (int ii = 0; ii < w; ii++) {
-      outbuff += symbol;
+      terminal.write(symbol);
     }
-    outbuff += curs_return;
+    terminal.CursorDown(1).CursorLeft(w);
   }
 
-  return renderer.render(outbuff, style);
+  terminal.StylePop();
 }
 
 } // namespace termui

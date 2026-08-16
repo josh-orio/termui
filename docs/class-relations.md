@@ -50,12 +50,11 @@ Interfaces define the contract for user interaction. Widgets implement these int
 ### Display Layer
 Differentiated from Base, the Display layer conveys information graphically rather than through plain text. It contains more decorative TUI elements and visual enhancements.
 
-## Terminal and Renderer Design
+## Terminal Design
 
-The Terminal and Renderer architecture is intentionally designed to separate concerns:
+The `Terminal` is intentionally designed to separate concerns:
 
-- **Terminal**: Aware of its capabilities regarding color and styling support
-- **Renderer**: Created alongside the Terminal, it contains the terminal's color capability information
-- **Decoupled Design**: Higher-level classes (`Base`, `Widget`, `Interface`) should not contain logic to deal with color and styling details
+- **Terminal**: Aware of its capabilities regarding color and styling support, and responsible for converting `Style` information into the ANSI escape codes the terminal understands.
+- **Decoupled Design**: Higher-level classes (`Base`, `Widget`, `Interface`) should not contain logic to deal with color and styling details.
 
-This separation of concerns allows all classes to pass text and styling information to the Renderer, offloading the complexity of terminal capabilities from the UI layer.
+This separation of concerns allows all classes to pass text and styling information to the `Terminal`, offloading the complexity of terminal capabilities and ANSI code generation from the UI layer.
