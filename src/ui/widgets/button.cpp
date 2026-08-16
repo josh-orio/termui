@@ -23,30 +23,31 @@ void Button::focus() { _selected = true; }
 
 void Button::blur() { _selected = false; }
 
-std::string Button::render() {
-  std::string outbuff;
+void Button::render() {
+  std::string txt = _text;
 
-  std::string txt = _text; //.text();
+  if (_selected) {
+    terminal.StyleStack(_focus_style);
+
+  } else {
+    terminal.StyleStack(_blur_style);
+  }
 
   if (txt.length() > _w) {
-    outbuff += txt.substr(0, _w - 1) + unicode::ELLIPSIS;
+    terminal.write(txt.substr(0, _w - 1) + unicode::ELLIPSIS);
 
   } else if (txt.length() < _w) { // center the text
     int diff = _w - txt.length();
     int l = diff / 2;
     int r = diff - l;
-    outbuff += std::string(l, ' ') + txt + std::string(r, ' ');
+
+    terminal.write(std::string(l, ' ') + txt + std::string(r, ' '));
 
   } else {
-    outbuff += txt;
+    terminal.write(txt);
   }
 
-  if (_selected) {
-    return renderer.render(outbuff, _focus_style);
-
-  } else {
-    return renderer.render(outbuff, _blur_style);
-  }
+  terminal.StylePop();
 }
 
 } // namespace termui

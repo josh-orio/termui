@@ -45,31 +45,41 @@ void FancyList::cursor_down(uint count) {
 
 uint FancyList::get_cursor() { return _cursor; }
 
-std::string FancyList::render() {
+void FancyList::render() {
   internal_update();
 
-  std::string outbuff;
-
   for (int i = _start_line; i < std::min(_rows.size(), static_cast<size_t>(_start_line + _visible_rows)); i++) {
-    Text element_top(_rows.at(i).title, Styles::none, _w - 2, 1);
+    Text element_top(_rows.at(i).title, Styles::inherit, _w - 2, 1);
     Text element_bottom(_rows.at(i).description, Styles::faint, _w - 2, 1);
 
     if (i + _start_line == _cursor) {
-      outbuff += renderer.render(unicode::VERTICAL_WIDE + " " + element_top.render(), _focus_style);
-      outbuff += curs_down(1) + curs_left(_w);
-      outbuff += renderer.render(unicode::VERTICAL_WIDE, _focus_style) + " " + element_bottom.render();
+      terminal.StyleStack(_focus_style);
+
+      terminal.write(unicode::VERTICAL_WIDE + " ");
+      element_top.render();
+      terminal.CursorDown(1).CursorLeft(_w);
+
+      terminal.write(unicode::VERTICAL_WIDE + " ");
+      terminal.StylePop();
+
+      element_bottom.render();
 
     } else {
-      outbuff += "  " + renderer.render(element_top.render(), _blur_style);
-      outbuff += curs_down(1) + curs_left(_w);
-      outbuff += "  " + element_bottom.render();
+      terminal.StyleStack(_blur_style);
+
+      terminal.write("  ");
+      element_top.render();
+
+      terminal.StylePop();
+
+      terminal.CursorDown(1).CursorLeft(_w);
+
+      terminal.write("  ");
+      element_bottom.render();
     }
 
-    outbuff += curs_left(_w); // Text is guaranteed to be w-2 width
-    outbuff += curs_down(_line_spacing + 1);
+    terminal.CursorLeft(_w).CursorDown(_line_spacing + 1);
   }
-
-  return outbuff;
 }
 
 void FancyList::internal_update() {

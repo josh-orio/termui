@@ -4,8 +4,8 @@ namespace termui {
 
 // clang-format off
 StyleMap InputPage::styles({
-  {"header", Style(212, std::nullopt, {SGR::Bold})},
-  {"focus", Style(212, std::nullopt, {SGR::Bold})}
+  {"header", Style(212, Color::Inherit(), {SGR::Bold})},
+  {"focus", Style(212, Color::Inherit(), {SGR::Bold})}
 });
 // clang-format on
 
@@ -46,7 +46,8 @@ void InputPage::display() {
   terminal.ClearScreen();
   terminal.ClearScrollback();
 
-  terminal.write(2, 2, header.render());
+  terminal.MoveCursor(2, 2);
+  header.render();
 
   for (int i = start_line; i < std::min(fields.size(), static_cast<size_t>(start_line + visible_lines)); i++) {
     std::string &f = fields.at(i);
@@ -54,21 +55,32 @@ void InputPage::display() {
     Input iput = Input(responses.at(i), "Start typing...").width(terminal.width() - f.length() - 7 /* some horizonstal overhead */).height(1);
 
     if (i == cursor) {
-      terminal.write(4 + ((i - start_line) * (line_seperation + 1)), 2, renderer.render("> " + f, styles.at("focus")) + ": " + iput.render());
+      terminal.MoveCursor(4 + ((i - start_line) * (line_seperation + 1)), 2);
+
+      terminal.StyleStack(styles.at("focus"));
+      terminal.write("> " + f);
+      terminal.StylePop();
+
+      terminal.write(": ");
+      iput.render();
+
     } else {
-      terminal.write(4 + ((i - start_line) * (line_seperation + 1)), 4, f + ": " + iput.render());
+      terminal.MoveCursor(4 + ((i - start_line) * (line_seperation + 1)), 4);
+      terminal.write(f + ": ");
+      iput.render();
     }
   }
 
-  terminal.write(terminal.height(), 2, control_strip.render());
+  terminal.MoveCursor(terminal.height(), 2);
+  control_strip.render();
 
   // move the cursor into position and adjust cursor toggle as needed
   if (selected) {
     std::string &f = fields.at(cursor), &r = responses.at(cursor);
 
-    terminal.write(4 + ((cursor - start_line) * (line_seperation + 1)),                              // top overhead + (indicated row * line seperation)
-                   std::min(static_cast<size_t>(terminal.width() - 2), 6 + f.length() + r.length()), // tracks end column of response without allowing overflow
-                   "");
+    terminal.MoveCursor(
+        4 + ((cursor - start_line) * (line_seperation + 1)),                               // top overhead + (indicated row * line seperation)
+        std::min(static_cast<size_t>(terminal.width() - 2), 6 + f.length() + r.length())); // tracks end column of response without allowing overflow
 
     terminal.ShowCursor();
   } else {

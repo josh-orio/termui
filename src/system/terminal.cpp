@@ -7,18 +7,16 @@ Terminal &Terminal::instance() {
   return term;
 }
 
-const Renderer &Terminal::GetRenderer() const { return renderer; }
-
-void Terminal::write(const std::string &str) const { outbuff += str; } // writes to outbuff, not cout directly
+void Terminal::write(const std::string &str) const { _outbuff += str; } // writes to outbuff, not cout directly
 
 void Terminal::write(uint row, uint column, const std::string &str) const {
   MoveCursor(row, column);
-  outbuff += str;
+  _outbuff += str;
 }
 
 void Terminal::flush() const {
-  std::cout << outbuff << std::flush;
-  outbuff.clear();
+  std::cout << _outbuff << std::flush;
+  _outbuff.clear();
 }
 
 std::string Terminal::read() const { // claude written
@@ -83,33 +81,173 @@ uint Terminal::halfHeight() const { return height() / 2; }
 
 //   void SetOutputMode(OutputMode om);
 
+// ---- Styling ----
+void Terminal::Style(termui::Style style) const {
+  if (_color_capability == Terminal::Mode::ASCII) {
+    return;
+  }
+
+  std::vector<int> modifier_codes;
+
+  if (style.InheritsSGR()) {
+    // Inherit: no action taken
+
+  } else if (style.ResetsSGR()) {
+    modifier_codes.push_back(0);
+
+  } else {
+    modifier_codes.push_back(0); // reset sgr before applying anew
+
+    for (const auto &attr : style.Attributes()) {
+      modifier_codes.push_back(static_cast<int>(attr));
+    }
+  }
+
+  auto truecolor_to_ansi256 = [](uint8_t r, uint8_t g, uint8_t b) -> int {
+    // map each component to 0..5
+    auto conv = [](uint8_t c) -> int {
+      if (c < 48)
+        return 0;
+      if (c < 115)
+        return 1;
+      return (int)((c - 35) / 40); // maps 0..255 to 0..5 roughly
+    };
+    int rr = conv(r), gg = conv(g), bb = conv(b);
+    return 16 + 36 * rr + 6 * gg + bb;
+  };
+
+  // ansi256 code: ESC[38;5;{ID}m
+  // trucol code:  ESC[38;2;{r};{g};{b}m
+
+  if (style.Foreground().IsReset()) {
+    modifier_codes.push_back(39);
+
+  } else if (!style.Foreground().IsInherit()) {
+    if (_color_capability == Terminal::Mode::ANSI256) {
+      if (style.Foreground().mode == Color::Mode::ANSI256) {
+        modifier_codes.push_back(38);
+        modifier_codes.push_back(5);
+        modifier_codes.push_back(style.Foreground().value);
+
+      } else if (style.Foreground().mode == Color::Mode::TRUECOLOR) {
+        modifier_codes.push_back(38);
+        modifier_codes.push_back(5);
+        modifier_codes.push_back(truecolor_to_ansi256(style.Foreground().rgb.r, style.Foreground().rgb.g, style.Foreground().rgb.b));
+      }
+    }
+
+    else if (_color_capability == Terminal::Mode::TRUECOLOR) {
+      if (style.Foreground().mode == Color::Mode::ANSI256) {
+        modifier_codes.push_back(38);
+        modifier_codes.push_back(5);
+        modifier_codes.push_back(style.Foreground().value);
+
+      } else if (style.Foreground().mode == Color::Mode::TRUECOLOR) {
+        modifier_codes.push_back(38);
+        modifier_codes.push_back(2);
+        modifier_codes.push_back(style.Foreground().rgb.r);
+        modifier_codes.push_back(style.Foreground().rgb.g);
+        modifier_codes.push_back(style.Foreground().rgb.b);
+      }
+    }
+  }
+
+  if (style.Background().IsReset()) {
+    modifier_codes.push_back(49);
+
+  } else if (!style.Background().IsInherit()) {
+    if (_color_capability == Terminal::Mode::ANSI256) {
+      if (style.Background().mode == Color::Mode::ANSI256) {
+        modifier_codes.push_back(48);
+        modifier_codes.push_back(5);
+        modifier_codes.push_back(style.Background().value);
+
+      } else if (style.Background().mode == Color::Mode::TRUECOLOR) {
+        modifier_codes.push_back(48);
+        modifier_codes.push_back(5);
+        modifier_codes.push_back(truecolor_to_ansi256(style.Background().rgb.r, style.Background().rgb.g, style.Background().rgb.b));
+      }
+    }
+
+    else if (_color_capability == Terminal::Mode::TRUECOLOR) {
+      if (style.Background().mode == Color::Mode::ANSI256) {
+        modifier_codes.push_back(48);
+        modifier_codes.push_back(5);
+        modifier_codes.push_back(style.Background().value);
+
+      } else if (style.Background().mode == Color::Mode::TRUECOLOR) {
+        modifier_codes.push_back(48);
+        modifier_codes.push_back(2);
+        modifier_codes.push_back(style.Background().rgb.r);
+        modifier_codes.push_back(style.Background().rgb.g);
+        modifier_codes.push_back(style.Background().rgb.b);
+      }
+    }
+  }
+
+  if (modifier_codes.empty()) {
+    return;
+  }
+
+  std::string attr_buff = "\x1b[";
+
+  for (auto attr : modifier_codes) {
+    attr_buff += std::to_string(static_cast<int>(attr)) + ";";
+  }
+
+  attr_buff = attr_buff.substr(0, attr_buff.size() - 1);
+
+  attr_buff += "m";
+
+  _outbuff += attr_buff;
+}
+
+void Terminal::StyleStack(termui::Style s) const {
+  _style_stack.push(s);
+  Style(_style_stack.top());
+}
+
+void Terminal::StylePop() const {
+  if (_style_stack.size() > 0) {
+    _style_stack.pop();
+  }
+
+  if (_style_stack.empty()) {
+    Style(Styles::none);
+
+  } else {
+    Style(_style_stack.top());
+  }
+}
+
 // --- Positioning ---
-void Terminal::MoveCursor(uint row, uint column) const { outbuff += std::format("\x1b[{};{}H", row, column); }
+void Terminal::MoveCursor(uint row, uint column) const { _outbuff += std::format("\x1b[{};{}H", row, column); }
 //   void SaveCursorPosition();
 //   void RestoreCursorPosition();
-void Terminal::CursorUp(uint n) const {
-  if (n == 0)
-    return;
 
-  outbuff += std::format("\x1b[{}A", n);
+const Terminal &Terminal::CursorUp(uint n) const {
+  if (n > 0)
+    _outbuff += std::format("\x1b[{}A", n);
+
+  return *this;
 }
-void Terminal::CursorDown(uint n) const {
-  if (n == 0)
-    return;
+const Terminal &Terminal::CursorDown(uint n) const {
+  if (n > 0)
+    _outbuff += std::format("\x1b[{}B", n);
 
-  outbuff += std::format("\x1b[{}B", n);
+  return *this;
 }
-void Terminal::CursorForward(uint n) const {
-  if (n == 0)
-    return;
+const Terminal &Terminal::CursorRight(uint n) const {
+  if (n > 0)
+    _outbuff += std::format("\x1b[{}C", n);
 
-  outbuff += std::format("\x1b[{}C", n);
+  return *this;
 }
-void Terminal::CursorBack(uint n) const {
-  if (n == 0)
-    return;
+const Terminal &Terminal::CursorLeft(uint n) const {
+  if (n > 0)
+    _outbuff += std::format("\x1b[{}D", n);
 
-  outbuff += std::format("\x1b[{}D", n);
+  return *this;
 }
 //   void CursorNextLine(uint n);
 //   void CursorPrevLine(uint n);
@@ -120,8 +258,8 @@ void Terminal::CursorBack(uint n) const {
 //   void RestoreScreen();
 //   void AltScreen();
 //   void ExitAltScreen();
-void Terminal::ClearScreen() const { outbuff += "\x1b[2J"; }
-void Terminal::ClearScrollback() const { outbuff += "\x1b[3J"; }
+void Terminal::ClearScreen() const { _outbuff += "\x1b[2J"; }
+void Terminal::ClearScrollback() const { _outbuff += "\x1b[3J"; }
 //   void ClearLine();
 //   void ClearLines();
 //   void InsertLines(uint n);
@@ -137,8 +275,8 @@ void Terminal::ClearScrollback() const { outbuff += "\x1b[3J"; }
 //   void SetForegroundColor(Color);
 //   void SetBackgroundColor(Color);
 //   void SetCursorColor(Color);
-void Terminal::ShowCursor() const { outbuff += "\x1b[?25h"; }
-void Terminal::HideCursor() const { outbuff += "\x1b[?25l"; }
+void Terminal::ShowCursor() const { _outbuff += "\x1b[?25h"; }
+void Terminal::HideCursor() const { _outbuff += "\x1b[?25l"; }
 
 //   // void Copy(msg?);
 //   // void CopyPrimary(msg?);
@@ -150,37 +288,35 @@ void Terminal::HideCursor() const { outbuff += "\x1b[?25l"; }
 //   void EnableMouseTracking();
 //   void DisableMouseTracking();
 
-Terminal::Terminal() : renderer(Color::Mode::ASCII) {
+Terminal::Terminal() : _color_capability(Terminal::Mode::ASCII) {
   // do color capability detection here
 
   const char *colorterm = std::getenv("COLORTERM");
   if (colorterm) {
     std::string val(colorterm);
     if (val == "truecolor" || val == "24bit") {
-      color_capability = Color::Mode::TRUECOLOR;
-      renderer = Renderer(color_capability);
+      _color_capability = Terminal::Mode::TRUECOLOR;
     }
   }
 
   const char *term = std::getenv("TERM");
   if (term) {
     std::string val(term);
-    if (val == "xterm-256color" && color_capability != Color::Mode::TRUECOLOR) {
-      color_capability = Color::Mode::ANSI256;
-      renderer = Renderer(color_capability);
+    if (val == "xterm-256color" && _color_capability != Terminal::Mode::TRUECOLOR) {
+      _color_capability = Terminal::Mode::ANSI256;
     }
   }
 }
 
 TermSetup::TermSetup()
-  : input_buffering(true), input_echoing(true), show_cursor(true), alternate_output_buffer(false), enable_mouse_reporting(false) {}; // terminal defaluts
+  : input_buffering(true), input_echoing(true), show_cursor(true), alternate_output_buffer(false), enable_mouse_reporting(false){}; // terminal defaluts
 
 TermSetup::TermSetup(bool input_buffering, bool input_echoing, bool show_cursor, bool alternate_output_buffer, bool enable_mouse_reporting)
   : input_buffering(input_buffering),
     input_echoing(input_echoing),
     show_cursor(show_cursor),
     alternate_output_buffer(alternate_output_buffer),
-    enable_mouse_reporting(enable_mouse_reporting) {};
+    enable_mouse_reporting(enable_mouse_reporting){};
 
 void TermSetup::configure() {
   // assume terminal may not be in default settings
@@ -239,8 +375,8 @@ void TermSetup::reset() { // sets terminal defaults, not blindly inversing confi
   io_buff_on();
   echo_on();
 
-  std::cout << "\x1b[?25h"            // show cursor
-            << "\x1b[?1049l"          // primary output buffer
+  std::cout << "\x1b[?25h"              // show cursor
+            << "\x1b[?1049l"            // primary output buffer
             << "\x1b[?1003l\x1b[?1006l" // mouse reporting off
             << std::flush;
 }

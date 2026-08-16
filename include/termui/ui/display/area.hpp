@@ -13,8 +13,8 @@ class Area {
 public:
   Area(uint width, uint height, Style style, std::string symbol = "╱");
 
-  std::string render();
-  uint        width(), height();
+  void render();
+  uint width(), height();
 
 private:
   uint  w, h;

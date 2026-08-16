@@ -10,6 +10,7 @@
 namespace termui {
 
 enum class SGR : uint8_t {
+  Inherit = uint8_t(-1), // 255 ig?
   None = 0,
   Bold = 1,
   Faint = 2,
@@ -25,19 +26,27 @@ enum class SGR : uint8_t {
 class Style {
 public:
   Style();
-  Style(std::optional<Color> fg, std::optional<Color> bg);
-  Style(std::optional<Color> fg, std::optional<Color> bg, std::vector<SGR> sgr);
+  Style(Color fg, Color bg);
+  Style(Color fg, Color bg, std::vector<SGR> sgr);
+  Style(std::vector<SGR> sgr);
 
-  const std::optional<Color> &Foreground() const;
-  const std::optional<Color> &Background() const;
-  const std::vector<SGR>     &Attributes() const;
+  const Color            &Foreground() const;
+  const Color            &Background() const;
+  const std::vector<SGR> &Attributes() const;
 
   bool operator==(const Style &other) const;
   bool operator!=(const Style &other) const;
 
+  // bool IsNone() const;
+  // bool NotNone() const;
+
+  bool InheritsSGR() const;
+  bool ResetsSGR() const;
+
 private:
-  std::optional<Color> foreground_color, background_color;
-  std::vector<SGR>     attributes;
+  Color            foreground_color = Color::Inherit();
+  Color            background_color = Color::Inherit();
+  std::vector<SGR> attributes;
 };
 
 class StyleMap {
@@ -58,9 +67,10 @@ private:
 // }; TODO: implement styles based on widget state
 
 namespace Styles {
-inline termui::Style none(std::nullopt, std::nullopt, {});
-inline termui::Style bold(std::nullopt, std::nullopt, {SGR::Bold});
-inline termui::Style faint(std::nullopt, std::nullopt, {SGR::Faint});
+inline termui::Style none(Color::Reset(), Color::Reset(), {SGR::None}); // resets like \x1b[0m
+inline termui::Style inherit(Color::Inherit(), Color::Inherit());
+inline termui::Style bold({SGR::Bold});
+inline termui::Style faint({SGR::Faint});
 }; // namespace Styles
 
 } // namespace termui

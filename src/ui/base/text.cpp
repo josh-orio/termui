@@ -32,9 +32,9 @@ Text &Text::size(uint w, uint h) {
   return *this;
 }
 
-std::string Text::render() {
+void Text::render() {
   if (_w == 0 || _h == 0) {
-    return "";
+    return;
   }
 
   std::vector<std::string> formatted;
@@ -95,17 +95,17 @@ std::string Text::render() {
     formatted.back() = std::string(formatted.back().begin(), formatted.back().end() - 1) + unicode::ELLIPSIS;
   }
 
-  std::string outbuff;
+  terminal.StyleStack(_style);
 
   for (int i = 0; i < _h; i++) {
-    outbuff += formatted.at(i);
+    terminal.write(formatted.at(i));
 
     if (i + 1 < _h) {
-      outbuff += curs_left(_w) + curs_down(1);
+      terminal.CursorLeft(_w).CursorDown(1);
     }
   }
 
-  return renderer.render(outbuff, _style);
+  terminal.StylePop();
 }
 
 } // namespace termui

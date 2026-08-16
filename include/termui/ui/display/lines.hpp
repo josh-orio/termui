@@ -13,8 +13,8 @@ class HorizontalLine {
 public:
   HorizontalLine(uint width, Border border);
 
-  std::string render();
-  uint        width();
+  void render();
+  uint width();
 
 private:
   uint           w;
@@ -25,8 +25,8 @@ class VerticalLine {
 public:
   VerticalLine(uint height, Border border);
 
-  std::string render();
-  uint        height();
+  void render();
+  uint height();
 
 private:
   uint           h;

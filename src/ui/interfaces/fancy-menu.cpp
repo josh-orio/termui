@@ -5,7 +5,7 @@ namespace termui {
 // clang-format off
 StyleMap FancyMenu::styles({
   {"header", Style(Colors::White, 57, {SGR::Bold})}, 
-  {"focus", Style(212, std::nullopt, {SGR::Bold})}, 
+  {"focus", Style(212, Color::Inherit(), {SGR::Bold})}, 
   {"blur", Styles::none}
 });
 // clang-format on
@@ -47,9 +47,15 @@ void FancyMenu::display() {
   terminal.ClearScreen();
   terminal.ClearScrollback();
 
-  terminal.write(2, 2, title_banner.render());
-  terminal.write(4, 2, list.render());
-  terminal.write(terminal.height(), 2, control_banner.render());
+  terminal.MoveCursor(2, 2);
+  title_banner.render();
+
+  terminal.MoveCursor(4, 2);
+  list.render();
+
+  terminal.MoveCursor(terminal.height(), 2);
+  control_banner.render();
+
   terminal.flush();
 }
 

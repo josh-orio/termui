@@ -45,26 +45,27 @@ void List::cursor_down(uint count) {
 
 uint List::get_cursor() { return _cursor; }
 
-std::string List::render() {
+void List::render() {
   internal_update();
 
-  std::string outbuff;
-
   for (int i = _start_line; i < std::min(_elements.size(), static_cast<size_t>(_start_line + _visible_lines)); i++) {
-    Text element(_elements.at(i), Styles::none, _w - 2, 1);
+    Text element(_elements.at(i), Styles::inherit, _w - 2, 1);
 
     if (i == _cursor) {
-      outbuff += renderer.render("> " + element.render(), _focus_style);
+      terminal.StyleStack(_focus_style);
+      terminal.write("> ");
+      element.render();
+      terminal.StylePop();
 
     } else {
-      outbuff += renderer.render("  " + element.render(), _blur_style);
+      terminal.StyleStack(_blur_style);
+      terminal.write("  ");
+      element.render();
+      terminal.StylePop();
     }
 
-    outbuff += curs_left(_w); // Text is guaranteed to be w-2 width
-    outbuff += curs_down(_line_spacing + 1);
+    terminal.CursorLeft(_w).CursorDown(_line_spacing + 1); // Text is guaranteed to be w-2 width
   }
-
-  return outbuff;
 }
 
 void List::internal_update() {

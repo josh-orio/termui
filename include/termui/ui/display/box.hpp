@@ -13,7 +13,7 @@ class Box {
 public:
   Box(uint width, uint height, Border border, Style style = Styles::none);
 
-  std::string render();
+  void render();
 
   void resize(uint w, uint h);
   uint width(), height();

@@ -16,7 +16,7 @@ public:
 
   uint get_cursor();
 
-  std::string render();
+  void render();
 
 private:
   uint _cursor; // treated as the 'start line'

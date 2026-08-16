@@ -46,27 +46,32 @@ Input &Input::size(uint width, uint height) {
 
 const termui::string &Input::get_value() const { return _value; }
 
-std::string Input::render() {
+void Input::render() {
   if (_w == 0 || _h == 0) {
-    return "";
+    return;
   }
-
-  std::string outbuff;
-
-  // -- print 'background' --
-  for (int i = 0; i < _h; i++) {
-    outbuff += std::string(_w, ' ');
-    outbuff += curs_left(_w) + curs_down(1);
-  }
-  outbuff += curs_up(_h);
-
-  std::deque<std::string> formatted;
 
   std::string &v = _value;
   std::string &p = _placeholder;
 
-  bool use_response = !v.empty(); //.text().empty();
+  bool use_response = !v.empty();
   bool use_placeholder = !use_response && !p.empty();
+
+  if (use_response) {
+    terminal.StyleStack(_valStyle);
+
+  } else if (use_placeholder) {
+    terminal.StyleStack(_plhStyle);
+  }
+
+  // -- print 'background' --
+  for (int i = 0; i < _h; i++) {
+    terminal.write(std::string(_w, ' '));
+    terminal.CursorLeft(_w).CursorDown(1);
+  }
+  terminal.CursorUp(_h);
+
+  std::deque<std::string> formatted;
 
   if (use_response) {
     std::string copy = _value; //.text();
@@ -146,7 +151,8 @@ std::string Input::render() {
     }
   }
 
-  if (formatted.size() > 0 && formatted.back().size() == _w && _h > 1) { // moves cursor over to the next line, doesnt affect underlying data, just a visual effect.
+  if (formatted.size() > 0 && formatted.back().size() == _w &&
+      _h > 1) { // moves cursor over to the next line, doesnt affect underlying data, just a visual effect.
     formatted.push_back("");
   }
 
@@ -156,30 +162,22 @@ std::string Input::render() {
 
   for (int i = 0; i < formatted.size(); i++) {
     if (i > 0) {
-      outbuff += curs_down(1) + curs_left(formatted.at(i - 1).size());
+      terminal.CursorDown(1).CursorLeft(formatted.at(i - 1).size());
     }
 
-    outbuff += formatted.at(i);
+    terminal.write(formatted.at(i));
   }
 
   if (use_placeholder) { // cursor should be position at the start of text if placeholder is being displayed
     if (formatted.size() > 1) {
-      outbuff += curs_up(formatted.size() - 1);
+      terminal.CursorUp(formatted.size() - 1);
     }
     if (formatted.back().size() > 0) {
-      outbuff += curs_left(formatted.back().size());
+      terminal.CursorLeft(formatted.back().size());
     }
   }
 
-  if (use_response) {
-    return renderer.render(outbuff, _valStyle);
-
-  } else if (use_placeholder) {
-    return renderer.render(outbuff, _plhStyle);
-
-  } else {
-    return outbuff;
-  }
+  terminal.StylePop();
 }
 
 } // namespace termui

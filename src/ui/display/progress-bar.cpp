@@ -2,17 +2,19 @@
 
 namespace termui {
 
-ProgressBar::ProgressBar(uint width, float decimal, Color foreground, Color background) : w(width), decimal(decimal), fg(foreground), bg(background) {};
+ProgressBar::ProgressBar(uint width, float decimal, Color foreground, Color background) : w(width), decimal(decimal), fg(foreground), bg(background){};
 
-std::string ProgressBar::render() {
-  std::string outbuff;
+void ProgressBar::render() {
+  int shaded_w = decimal * w;
 
-  int comp_w = decimal * w;
+  terminal.StyleStack(Style(fg, Color::Inherit()));
+  terminal.write(repeat(unicode::FULL_SHADE, shaded_w));
 
-  outbuff += renderer.render(repeat(unicode::FULL_SHADE, comp_w), Style(fg, std::nullopt));
-  outbuff += renderer.render(repeat(unicode::LIGHT_SHADE, w - comp_w), Style(bg, std::nullopt));
+  terminal.StyleStack(Style(bg, Color::Inherit()));
+  terminal.write(repeat(unicode::LIGHT_SHADE, w - shaded_w));
 
-  return outbuff;
+  terminal.StylePop();
+  terminal.StylePop();
 }
 
 } // namespace termui

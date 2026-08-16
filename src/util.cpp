@@ -2,13 +2,6 @@
 
 namespace termui {
 
-namespace ansi {
-std::string fg(uint8_t v) { return std::format("\x1b[38;5;{}m", v); };
-std::string fg(uint8_t r, uint8_t g, uint8_t b) { return std::format("\x1b[38;2;{};{};{}m", r, g, b); };
-std::string bg(uint8_t v) { return std::format("\x1b[48;5;{}m", v); };
-std::string bg(uint8_t r, uint8_t g, uint8_t b) { return std::format("\x1b[48;2;{};{};{}m", r, g, b); };
-} // namespace ansi
-
 std::string repeat(const std::string &s, int n) {
   std::string buff;
   for (int i = 0; i < n; i++) {
