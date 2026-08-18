@@ -47,8 +47,8 @@ public:
 
   // --- Positioning ---
   void MoveCursor(uint row, uint column) const;
-  void SaveCursorPosition();
-  void RestoreCursorPosition();
+  void SaveCursorPosition() const;
+  void RestoreCursorPosition() const;
 
   const Terminal &CursorUp(uint n) const;
   const Terminal &CursorDown(uint n) const;

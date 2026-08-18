@@ -222,8 +222,10 @@ void Terminal::StylePop() const {
 
 // --- Positioning ---
 void Terminal::MoveCursor(uint row, uint column) const { _outbuff += std::format("\x1b[{};{}H", row, column); }
-//   void SaveCursorPosition();
-//   void RestoreCursorPosition();
+
+void Terminal::SaveCursorPosition() const { _outbuff += "\033[s"; }
+
+void Terminal::RestoreCursorPosition() const { _outbuff += "\033[u"; }
 
 const Terminal &Terminal::CursorUp(uint n) const {
   if (n > 0)
