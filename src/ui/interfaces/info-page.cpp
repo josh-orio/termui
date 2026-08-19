@@ -16,7 +16,7 @@ InfoPage::InfoPage(const termui::string &t, const termui::string &c)
 void InfoPage::show() {
   term_setup.configure();
 
-  state = State::CONTINUE;
+  state = State::Continue;
   reprint = true;
 
   do {
@@ -26,7 +26,7 @@ void InfoPage::show() {
     }
     process_input();
 
-  } while (state == State::CONTINUE);
+  } while (state == State::Continue);
 
   term_setup.reset();
 }
@@ -77,7 +77,7 @@ void InfoPage::process_input() {
     reprint = true;
 
   } else if (ec == key::ESC) {
-    state = State::EXIT;
+    state = State::Exit;
   }
 }
 

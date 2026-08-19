@@ -24,7 +24,7 @@ InputPage::InputPage(const termui::string &title, const termui::strings &fields,
 void InputPage::show() {
   term_setup.configure();
 
-  state = State::CONTINUE;
+  state = State::Continue;
   selected = false;
   reprint = true;
 
@@ -35,7 +35,7 @@ void InputPage::show() {
     }
     process_input();
 
-  } while (state == State::CONTINUE);
+  } while (state == State::Continue);
 
   term_setup.reset();
 }
@@ -99,7 +99,7 @@ void InputPage::process_input() {
 
   } else if (ec == key::ESC) { // escape to close
     if (!selected) {           // dont close if field selected
-      state = State::EXIT;
+      state = State::Exit;
     }
 
   } else if (ec == key::U_ARROW) {

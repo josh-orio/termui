@@ -16,7 +16,7 @@ Spreadsheet::Spreadsheet(const termui::string &title, const termui::strings &col
 void Spreadsheet::show() {
   term_setup.configure();
 
-  state = Interface::State::CONTINUE;
+  state = Interface::State::Continue;
   reprint = true;
 
   do {
@@ -27,7 +27,7 @@ void Spreadsheet::show() {
 
     process_input();
 
-  } while (state == State::CONTINUE);
+  } while (state == State::Continue);
 
   term_setup.reset();
 }
@@ -62,7 +62,7 @@ void Spreadsheet::process_input() {
     reprint = true;
 
   } else if (ec == key::ESC) { // ESC closes spreadsheet
-    state = State::EXIT;
+    state = State::Exit;
 
   } else {
   }

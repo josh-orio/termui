@@ -31,7 +31,7 @@ BinaryMenu::BinaryMenu(const termui::string &t, const termui::string &tx, const 
 bool BinaryMenu::show() {
   term_setup.configure();
 
-  state = State::CONTINUE;
+  state = State::Continue;
   reprint = true;
 
   do {
@@ -41,7 +41,7 @@ bool BinaryMenu::show() {
     }
     process_input();
 
-  } while (state == State::CONTINUE);
+  } while (state == State::Continue);
 
   term_setup.reset();
   return selection;
@@ -80,7 +80,7 @@ void BinaryMenu::process_input() {
   std::string ec = terminal.read();
 
   if (ec == key::ENTER) {
-    state = State::SELECT;
+    state = State::Select;
 
   } else if (ec == key::L_ARROW) {
     if (!selection) { // avoids reprint if status already == t
@@ -99,7 +99,7 @@ void BinaryMenu::process_input() {
 
     if (MouseInteraction(release).match(aff_x1, aff_x2, aff_y, aff_y, EventType::ButtonRelease, MouseButton::Left)) {
       selection = true; // ensure pressed button is selected
-      state = Interface::State::SELECT;
+      state = Interface::State::Select;
 
       display();                                                   // redraw incase button selection has changed
       std::this_thread::sleep_for(std::chrono::milliseconds(100)); // brief pause for visual feedback
@@ -110,7 +110,7 @@ void BinaryMenu::process_input() {
 
     if (MouseInteraction(release).match(neg_x1, neg_x2, neg_y, neg_y, EventType::ButtonRelease, MouseButton::Left)) {
       selection = false;
-      state = Interface::State::SELECT;
+      state = Interface::State::Select;
 
       display();
       std::this_thread::sleep_for(std::chrono::milliseconds(100));

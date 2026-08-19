@@ -23,7 +23,7 @@ Menu::Menu(const termui::string &t, const termui::strings &e, uint ls)
 int Menu::show() {
   term_setup.configure();
 
-  state = State::CONTINUE;
+  state = State::Continue;
   reprint = true;
 
   do {
@@ -32,11 +32,11 @@ int Menu::show() {
       reprint = false;
     }
     process_input();
-  } while (state == State::CONTINUE);
+  } while (state == State::Continue);
 
   term_setup.reset();
 
-  if (state == Interface::State::SELECT) {
+  if (state == Interface::State::Select) {
     return list.get_cursor();
 
   } else /* EXIT */ {
@@ -86,10 +86,10 @@ void Menu::process_input() {
     reprint = true;
 
   } else if (ec == key::ENTER) { // enter selects the highlighted element
-    state = State::SELECT;
+    state = State::Select;
 
   } else if (ec == key::ESC) { // esc closes the interface
-    state = State::EXIT;
+    state = State::Exit;
 
   } else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
     list.cursor_up();

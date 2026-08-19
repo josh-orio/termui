@@ -25,7 +25,7 @@ bool ToggleMenu::isSelected(int i) { return list.getSelection(i); }
 void ToggleMenu::show() {
   term_setup.configure();
 
-  state = State::CONTINUE;
+  state = State::Continue;
   reprint = true;
 
   do {
@@ -35,7 +35,7 @@ void ToggleMenu::show() {
     }
     process_input();
 
-  } while (state != State::EXIT); // cant break on select, thats the point of the interface
+  } while (state != State::Exit); // cant break on select, thats the point of the interface
 
   term_setup.reset();
 }
@@ -74,10 +74,10 @@ void ToggleMenu::process_input() {
   } else if (ec == key::ENTER) { // enter toggles the option
     list.toggle();
     reprint = true;
-    state = State::SELECT;
+    state = State::Select;
 
   } else if (ec == key::ESC) { // esc closes the interface
-    state = State::EXIT;
+    state = State::Exit;
 
   } else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
     list.cursor_up();

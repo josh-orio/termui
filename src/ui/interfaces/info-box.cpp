@@ -24,7 +24,7 @@ InfoBox::InfoBox(const termui::string &t, const termui::string &c)
 void InfoBox::show() {
   term_setup.configure();
 
-  state = State::CONTINUE;
+  state = State::Continue;
   reprint = true;
 
   do {
@@ -34,7 +34,7 @@ void InfoBox::show() {
     }
     process_input();
 
-  } while (state == State::CONTINUE);
+  } while (state == State::Continue);
 
   term_setup.reset();
 }
@@ -69,13 +69,13 @@ void InfoBox::process_input() {
   std::string ec = terminal.read();
 
   if (ec == key::ESC) { // ESC closes info box
-    state = State::EXIT;
+    state = State::Exit;
 
   } else if (ec == key::ENTER) {
-    state = State::EXIT;
+    state = State::Exit;
 
   } else {
-    state = State::CONTINUE;
+    state = State::Continue;
   }
 }
 

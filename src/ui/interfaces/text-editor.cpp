@@ -19,7 +19,7 @@ TextEditor::TextEditor(const termui::string &t, const termui::string &c)
 void TextEditor::show() {
   term_setup.configure();
 
-  state = State::CONTINUE;
+  state = State::Continue;
   reprint = true;
 
   do {
@@ -29,7 +29,7 @@ void TextEditor::show() {
     }
     process_input();
 
-  } while (state == State::CONTINUE);
+  } while (state == State::Continue);
 
   term_setup.reset();
 }
@@ -108,7 +108,7 @@ void TextEditor::process_input() {
     reprint = true;
 
   } else if (ec == key::ESC) { // left arrow closes info page
-    state = State::EXIT;
+    state = State::Exit;
   }
 }
 

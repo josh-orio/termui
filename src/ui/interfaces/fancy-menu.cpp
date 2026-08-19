@@ -22,7 +22,7 @@ FancyMenu::FancyMenu(const termui::string &title, const std::vector<FancyList::E
 termui::Interface::State FancyMenu::show() {
   term_setup.configure();
 
-  state = Interface::State::CONTINUE;
+  state = Interface::State::Continue;
   reprint = true;
 
   do {
@@ -32,7 +32,7 @@ termui::Interface::State FancyMenu::show() {
     }
     process_input();
 
-  } while (state == State::CONTINUE);
+  } while (state == State::Continue);
 
   term_setup.reset();
 
@@ -71,10 +71,10 @@ void FancyMenu::process_input() {
     reprint = true;
 
   } else if (ec == key::ENTER) { // enter selects the option
-    state = State::SELECT;
+    state = State::Select;
 
   } else if (ec == key::ESC) { // esc closes the interface
-    state = State::EXIT;
+    state = State::Exit;
 
   } else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
     list.cursor_up();
