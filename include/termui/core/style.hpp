@@ -34,6 +34,10 @@ public:
   const Color            &Background() const;
   const std::vector<SGR> &Attributes() const;
 
+  Style &Foreground(Color);
+  Style &Background(Color);
+  Style &Attributes(std::vector<SGR>);
+
   bool operator==(const Style &other) const;
   bool operator!=(const Style &other) const;
 

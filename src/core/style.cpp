@@ -13,6 +13,21 @@ const Color            &Style::Foreground() const { return foreground_color; }
 const Color            &Style::Background() const { return background_color; }
 const std::vector<SGR> &Style::Attributes() const { return attributes; }
 
+Style &Style::Foreground(Color c) {
+  foreground_color = c;
+  return *this;
+}
+
+Style &Style::Background(Color c) {
+  background_color = c;
+  return *this;
+}
+
+Style &Style::Attributes(std::vector<SGR> a) {
+  attributes = a;
+  return *this;
+}
+
 bool Style::operator==(const Style &other) const {
   return foreground_color == other.foreground_color && background_color == other.background_color && attributes == other.attributes;
 }
