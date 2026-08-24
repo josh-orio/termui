@@ -50,6 +50,8 @@ public:
   void SaveCursorPosition() const;
   void RestoreCursorPosition() const;
 
+  std::tuple<int, int> GetCursorPosition() const;
+
   const Terminal &CursorUp(uint n) const;
   const Terminal &CursorDown(uint n) const;
   const Terminal &CursorRight(uint n) const;

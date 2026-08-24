@@ -227,6 +227,37 @@ void Terminal::SaveCursorPosition() const { _outbuff += "\0337\033[s"; }
 
 void Terminal::RestoreCursorPosition() const { _outbuff += "\0338\033[u"; }
 
+std::tuple<int, int> Terminal::GetCursorPosition() const {
+  termios oldt{}, newt{};
+  tcgetattr(STDIN_FILENO, &oldt);
+  newt = oldt;
+  newt.c_lflag &= ~(ICANON | ECHO);
+  tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+  std::cout << "\033[6n" << std::flush; // query code
+
+  std::string response; // response code: \033[{row};{col}R
+  char        ch;
+  while (::read(STDIN_FILENO, &ch, 1) == 1) {
+    response += ch;
+    if (ch == 'R')
+      break;
+  }
+
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+
+  int    row = -1, col = -1;
+  size_t esc = response.find('[');
+  size_t semi = response.find(';');
+  size_t r = response.find('R');
+  if (esc != std::string::npos && semi != std::string::npos && r != std::string::npos) {
+    row = std::stoi(response.substr(esc + 1, semi - esc - 1));
+    col = std::stoi(response.substr(semi + 1, r - semi - 1));
+  }
+
+  return {row, col};
+}
+
 const Terminal &Terminal::CursorUp(uint n) const {
   if (n > 0)
     _outbuff += std::format("\x1b[{}A", n);
