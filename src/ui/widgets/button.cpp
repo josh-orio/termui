@@ -14,7 +14,7 @@ Button &Button::blur_style(Style s) {
   return *this;
 }
 
-Button &Button::width(uint w) {
+Button &Button::width(unsigned int w) {
   _w = w;
   return *this;
 }

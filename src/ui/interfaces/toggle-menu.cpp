@@ -12,7 +12,7 @@ StyleMap ToggleMenu::styles({
 
 Text ToggleMenu::control_banner("[ESC] close  [↑/↓] scroll [↵] toggle", Styles::faint);
 
-ToggleMenu::ToggleMenu(const termui::string &t, const termui::strings &e, uint ls)
+ToggleMenu::ToggleMenu(const termui::string &t, const termui::strings &e, unsigned int ls)
   : Interface(TermSetups::fullscreen),
     title(t),
     elements(e),
@@ -40,7 +40,7 @@ void ToggleMenu::show() {
   term_setup.reset();
 }
 
-uint ToggleMenu::cursor() { return list.get_cursor(); }
+unsigned int ToggleMenu::cursor() { return list.get_cursor(); }
 
 void ToggleMenu::display() {
   update_size();
@@ -88,7 +88,7 @@ void ToggleMenu::process_input() {
 };
 
 void ToggleMenu::update_size() {
-  title_banner.width(std::min(terminal.width() - 2, (uint)visible_length(title) + title_banner.hPadding())).height(1);
+  title_banner.width(std::min(terminal.width() - 2, (unsigned int)visible_length(title) + title_banner.hPadding())).height(1);
   list.width(terminal.width() - lho).height(terminal.height() - lvo).line_seperation(line_seperation);
   control_banner.width(terminal.width() - lho).height(1);
 }

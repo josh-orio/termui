@@ -69,7 +69,7 @@ void Spreadsheet::process_input() {
 }
 
 void Spreadsheet::update_size() {
-  title_banner.width(std::min(terminal.width() - hoh, (uint)visible_length(title) + title_banner.hPadding())).height(1);
+  title_banner.width(std::min(terminal.width() - hoh, (unsigned int)visible_length(title) + title_banner.hPadding())).height(1);
 
   int w = (terminal.width() - hoh - 1 - table.colCount()) / table.colCount();
   for (int i = 0; i < table.colCount(); i++) {

@@ -2,7 +2,7 @@
 
 namespace termui {
 
-Area::Area(uint w, uint h, Style style, std::string symbol) : w(w), h(h), style(style), symbol(symbol) {}
+Area::Area(unsigned int w, unsigned int h, Style style, std::string symbol) : w(w), h(h), style(style), symbol(symbol) {}
 
 void Area::render() {
   terminal.StyleStack(style);

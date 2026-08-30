@@ -14,9 +14,9 @@ public:
   Input &placeholder(const termui::string &p);
   Input &valueStyle(const Style &s);
   Input &placeholderStyle(const Style &s);
-  Input &width(uint w);
-  Input &height(uint h);
-  Input &size(uint w, uint h); // convenience: set both at once
+  Input &width(unsigned int w);
+  Input &height(unsigned int h);
+  Input &size(unsigned int w, unsigned int h); // convenience: set both at once
 
   const termui::string &get_value() const;
 
@@ -27,7 +27,7 @@ private:
   termui::string _placeholder;
   Style          _valStyle;
   Style          _plhStyle;
-  uint           _w, _h;
+  unsigned int           _w, _h;
 };
 
 } // namespace termui

@@ -24,7 +24,7 @@ private:
   static termui::Text     control_banner;
   static termui::StyleMap styles;
 
-  uint w, h;
+  unsigned int w, h;
   bool reprint;
 
   void display();

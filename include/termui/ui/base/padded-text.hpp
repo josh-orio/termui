@@ -11,8 +11,8 @@ public:
   // ensure w/h > padding, otherwise text will not show
   PaddedText(const termui::string &str, Style style = {}, Padding pad_style = {});
 
-  uint hPadding();
-  uint vPadding();
+  unsigned int hPadding();
+  unsigned int vPadding();
 
   void render() override;
 

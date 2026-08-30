@@ -22,16 +22,16 @@ public:
   static Terminal &instance();
 
   void write(const std::string &str) const; // writes to outbuff, not cout directly
-  void write(uint row, uint column, const std::string &str) const;
+  void write(unsigned int row, unsigned int column, const std::string &str) const;
   void flush() const; // flushes outbuff through cout;
 
   std::string read() const; // read off stdin
 
-  uint width() const;
-  uint height() const;
+  unsigned int width() const;
+  unsigned int height() const;
 
-  uint halfWidth() const;
-  uint halfHeight() const;
+  unsigned int halfWidth() const;
+  unsigned int halfHeight() const;
 
   Color       ForegroundColor();
   Color       BackgroundColor();
@@ -46,19 +46,19 @@ public:
   void StylePop() const;
 
   // --- Positioning ---
-  void MoveCursor(uint row, uint column) const;
+  void MoveCursor(unsigned int row, unsigned int column) const;
   void SaveCursorPosition() const;
   void RestoreCursorPosition() const;
 
   std::tuple<int, int> GetCursorPosition() const;
 
-  const Terminal &CursorUp(uint n) const;
-  const Terminal &CursorDown(uint n) const;
-  const Terminal &CursorRight(uint n) const;
-  const Terminal &CursorLeft(uint n) const;
+  const Terminal &CursorUp(unsigned int n) const;
+  const Terminal &CursorDown(unsigned int n) const;
+  const Terminal &CursorRight(unsigned int n) const;
+  const Terminal &CursorLeft(unsigned int n) const;
 
-  void CursorNextLine(uint n);
-  void CursorPrevLine(uint n);
+  void CursorNextLine(unsigned int n);
+  void CursorPrevLine(unsigned int n);
 
   // --- Screen ---
   void Reset() const;
@@ -70,8 +70,8 @@ public:
   void ClearScrollback() const;
   void ClearLine();
   void ClearLines();
-  void InsertLines(uint n);
-  void DeleteLines(uint n);
+  void InsertLines(unsigned int n);
+  void DeleteLines(unsigned int n);
 
   void DisableInputBuffering() const;
   void EnableInputBuffering() const;

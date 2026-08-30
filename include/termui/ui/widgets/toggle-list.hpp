@@ -12,13 +12,13 @@ public:
 
   ToggleList &focus_style(Style s);
   ToggleList &blur_style(Style s);
-  ToggleList &width(uint w);
-  ToggleList &height(uint h);
-  ToggleList &line_seperation(uint ls);
+  ToggleList &width(unsigned int w);
+  ToggleList &height(unsigned int h);
+  ToggleList &line_seperation(unsigned int ls);
 
-  void cursor_up(uint count = 1);
-  void cursor_down(uint count = 1);
-  uint get_cursor();
+  void cursor_up(unsigned int count = 1);
+  void cursor_down(unsigned int count = 1);
+  unsigned int get_cursor();
   void toggle(); // toggles selection on current element
   bool getSelection(int i);
 
@@ -28,11 +28,11 @@ private:
   termui::strings   _elements;
   std::vector<bool> _selmap;
   termui::Style     _focus_style, _blur_style;
-  uint              _w, _h;
-  uint              _visible_lines;
-  uint              _start_line;
-  uint              _cursor;
-  uint              _line_spacing;
+  unsigned int              _w, _h;
+  unsigned int              _visible_lines;
+  unsigned int              _start_line;
+  unsigned int              _cursor;
+  unsigned int              _line_spacing;
 
   void internal_update();
 };

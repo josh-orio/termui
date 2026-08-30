@@ -82,7 +82,7 @@ void InfoPage::process_input() {
 }
 
 void InfoPage::update_size() {
-  title_banner.width(std::min(terminal.width() - 2, (uint)visible_length(title) + title_banner.hPadding())).height(1);
+  title_banner.width(std::min(terminal.width() - 2, (unsigned int)visible_length(title) + title_banner.hPadding())).height(1);
   info.width(terminal.width() - hoh).height(terminal.height() - voh);
   control_strip.width(terminal.width() - 2).height(1);
 }

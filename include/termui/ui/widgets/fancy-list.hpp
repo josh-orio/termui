@@ -18,24 +18,24 @@ public:
 
   FancyList &focus_style(Style s);
   FancyList &blur_style(Style s);
-  FancyList &width(uint w);
-  FancyList &height(uint h);
-  FancyList &line_seperation(uint ls);
+  FancyList &width(unsigned int w);
+  FancyList &height(unsigned int h);
+  FancyList &line_seperation(unsigned int ls);
 
-  void cursor_up(uint count = 1);
-  void cursor_down(uint count = 1);
-  uint get_cursor();
+  void cursor_up(unsigned int count = 1);
+  void cursor_down(unsigned int count = 1);
+  unsigned int get_cursor();
 
   void render();
 
 private:
   std::vector<Element> _rows;
   termui::Style        _focus_style, _blur_style;
-  uint                 _w, _h;
-  uint                 _visible_rows;
-  uint                 _start_line;
-  uint                 _cursor;
-  uint                 _line_spacing;
+  unsigned int                 _w, _h;
+  unsigned int                 _visible_rows;
+  unsigned int                 _start_line;
+  unsigned int                 _cursor;
+  unsigned int                 _line_spacing;
 
   void internal_update();
 };

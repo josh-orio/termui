@@ -14,7 +14,7 @@ size_t visible_length(const std::string &s);                       // calculates
 size_t max_visible_length(const std::string &s, size_t n);         // calculates num of bytes that make (up to) n chars when printed
 size_t reverse_max_visible_length(const std::string &s, size_t n); // same as ^, but counts from the back of the string
 
-std::string color_swatch(uint swatches_per_line); // print tiles of 8 bit colors on your terminal
+std::string color_swatch(unsigned int swatches_per_line); // print tiles of 8 bit colors on your terminal
 std::string test_sgr_features();                  // generates tiles which apply a different sgr text attribute - used to test your terminal
 
 std::string inpmap(std::string i); // print string in bytes

@@ -12,7 +12,7 @@ StyleMap FancyMenu::styles({
 
 Text FancyMenu::control_banner("[ESC] close  [↑/↓] scroll [↵] select", Styles::faint);
 
-FancyMenu::FancyMenu(const termui::string &title, const std::vector<FancyList::Element> &rows, uint line_seperation)
+FancyMenu::FancyMenu(const termui::string &title, const std::vector<FancyList::Element> &rows, unsigned int line_seperation)
   : Interface(TermSetups::fullscreen),
     title(title),
     title_banner(title, styles.at("header"), PaddingStyle::label),
@@ -39,7 +39,7 @@ termui::Interface::State FancyMenu::show() {
   return state;
 }
 
-uint FancyMenu::cursor() { return list.get_cursor(); }
+unsigned int FancyMenu::cursor() { return list.get_cursor(); }
 
 void FancyMenu::display() {
   update_size();
@@ -85,7 +85,7 @@ void FancyMenu::process_input() {
 };
 
 void FancyMenu::update_size() {
-  title_banner.width(std::min(terminal.width() - 2, (uint)visible_length(title) + title_banner.hPadding())).height(1);
+  title_banner.width(std::min(terminal.width() - 2, (unsigned int)visible_length(title) + title_banner.hPadding())).height(1);
   list.width(terminal.width() - lho).height(terminal.height() - lvo).line_seperation(line_seperation);
   control_banner.width(terminal.width() - lho).height(1);
 }

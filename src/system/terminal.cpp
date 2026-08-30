@@ -9,7 +9,7 @@ Terminal &Terminal::instance() {
 
 void Terminal::write(const std::string &str) const { _outbuff += str; } // writes to outbuff, not cout directly
 
-void Terminal::write(uint row, uint column, const std::string &str) const {
+void Terminal::write(unsigned int row, unsigned int column, const std::string &str) const {
   MoveCursor(row, column);
   _outbuff += str;
 }
@@ -58,21 +58,21 @@ std::string Terminal::read() const { // claude written
   return ch;
 }
 
-uint Terminal::width() const {
+unsigned int Terminal::width() const {
   winsize w;
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   return w.ws_col;
 }
 
-uint Terminal::height() const {
+unsigned int Terminal::height() const {
   winsize w;
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   return w.ws_row;
 }
 
-uint Terminal::halfWidth() const { return width() / 2; }
+unsigned int Terminal::halfWidth() const { return width() / 2; }
 
-uint Terminal::halfHeight() const { return height() / 2; }
+unsigned int Terminal::halfHeight() const { return height() / 2; }
 
 //   Color ForegroundColor(){}
 //   Color BackgroundColor(){}
@@ -221,7 +221,7 @@ void Terminal::StylePop() const {
 }
 
 // --- Positioning ---
-void Terminal::MoveCursor(uint row, uint column) const { _outbuff += std::format("\x1b[{};{}H", row, column); }
+void Terminal::MoveCursor(unsigned int row, unsigned int column) const { _outbuff += std::format("\x1b[{};{}H", row, column); }
 
 void Terminal::SaveCursorPosition() const { _outbuff += "\0337\033[s"; }
 
@@ -258,32 +258,32 @@ std::tuple<int, int> Terminal::GetCursorPosition() const {
   return {row, col};
 }
 
-const Terminal &Terminal::CursorUp(uint n) const {
+const Terminal &Terminal::CursorUp(unsigned int n) const {
   if (n > 0)
     _outbuff += std::format("\x1b[{}A", n);
 
   return *this;
 }
-const Terminal &Terminal::CursorDown(uint n) const {
+const Terminal &Terminal::CursorDown(unsigned int n) const {
   if (n > 0)
     _outbuff += std::format("\x1b[{}B", n);
 
   return *this;
 }
-const Terminal &Terminal::CursorRight(uint n) const {
+const Terminal &Terminal::CursorRight(unsigned int n) const {
   if (n > 0)
     _outbuff += std::format("\x1b[{}C", n);
 
   return *this;
 }
-const Terminal &Terminal::CursorLeft(uint n) const {
+const Terminal &Terminal::CursorLeft(unsigned int n) const {
   if (n > 0)
     _outbuff += std::format("\x1b[{}D", n);
 
   return *this;
 }
-//   void CursorNextLine(uint n);
-//   void CursorPrevLine(uint n);
+//   void CursorNextLine(unsigned int n);
+//   void CursorPrevLine(unsigned int n);
 
 //   // --- Screen ---
 //   void Reset();
@@ -295,8 +295,8 @@ void Terminal::ClearScreen() const { _outbuff += "\x1b[2J"; }
 void Terminal::ClearScrollback() const { _outbuff += "\x1b[3J"; }
 //   void ClearLine();
 //   void ClearLines();
-//   void InsertLines(uint n);
-//   void DeleteLines(uint n);
+//   void InsertLines(unsigned int n);
+//   void DeleteLines(unsigned int n);
 
 //   void DisableInputBuffering();
 //   void EnableInputBuffering();

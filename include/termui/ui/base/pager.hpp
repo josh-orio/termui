@@ -9,17 +9,17 @@ namespace termui {
 
 class Pager : public Text {
 public:
-  Pager(const termui::string &str, const Style &style = {}, uint width = 0, uint height = 0);
+  Pager(const termui::string &str, const Style &style = {}, unsigned int width = 0, unsigned int height = 0);
 
-  Pager &cursor_up(uint count = 1);
-  Pager &cursor_down(uint count = 1);
+  Pager &cursor_up(unsigned int count = 1);
+  Pager &cursor_down(unsigned int count = 1);
 
-  uint get_cursor();
+  unsigned int get_cursor();
 
   void render();
 
 private:
-  uint _cursor; // treated as the 'start line'
+  unsigned int _cursor; // treated as the 'start line'
 };
 
 } // namespace termui

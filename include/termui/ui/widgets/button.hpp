@@ -12,7 +12,7 @@ public:
 
   Button &focus_style(Style s);
   Button &blur_style(Style s);
-  Button &width(uint w);
+  Button &width(unsigned int w);
 
   void focus(), blur();
 
@@ -21,7 +21,7 @@ public:
 private:
   termui::string _text;
   termui::Style  _focus_style, _blur_style;
-  uint           _w;
+  unsigned int           _w;
   bool           _selected;
 };
 

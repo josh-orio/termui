@@ -9,10 +9,10 @@ namespace termui {
 
 class Menu : public Interface {
 public:
-  Menu(const termui::string &title, const termui::strings &elements, uint line_seperation = 1);
+  Menu(const termui::string &title, const termui::strings &elements, unsigned int line_seperation = 1);
 
   int   show();   // -1 = exit, >=0 = element selected at index
-  uint  cursor(); // returns cursor
+  unsigned int  cursor(); // returns cursor
   State status(); // when the interface closes, it will either be EXIT or SELECT
 
 private:
@@ -24,9 +24,9 @@ private:
   static Text     control_banner;
   static StyleMap styles;
 
-  uint       line_seperation;
-  const uint lvo = 5; // list vertical overhead
-  const uint lho = 4; // list horizontal overhead
+  unsigned int       line_seperation;
+  const unsigned int lvo = 5; // list vertical overhead
+  const unsigned int lho = 4; // list horizontal overhead
   bool       reprint; // flag indicates if reprint is required
 
   void display();

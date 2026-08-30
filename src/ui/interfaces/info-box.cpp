@@ -45,7 +45,7 @@ void InfoBox::display() {
   terminal.ClearScreen();
   terminal.ClearScrollback();
 
-  uint origin_row = (termui::terminal.height() - h) / 2, origin_col = (termui::terminal.width() - w) / 2;
+  unsigned int origin_row = (termui::terminal.height() - h) / 2, origin_col = (termui::terminal.width() - w) / 2;
 
   terminal.MoveCursor(origin_row, origin_col);
   box.render();

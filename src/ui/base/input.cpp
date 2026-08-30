@@ -28,17 +28,17 @@ Input &Input::placeholderStyle(const Style &s) {
   return *this;
 }
 
-Input &Input::width(uint width) {
+Input &Input::width(unsigned int width) {
   _w = width;
   return *this;
 }
 
-Input &Input::height(uint height) {
+Input &Input::height(unsigned int height) {
   _h = height;
   return *this;
 }
 
-Input &Input::size(uint width, uint height) {
+Input &Input::size(unsigned int width, unsigned int height) {
   _w = width;
   _h = height;
   return *this;

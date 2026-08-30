@@ -8,7 +8,7 @@ namespace termui {
 
 class InputPage : public Interface {
 public:
-  InputPage(const termui::string &title, const termui::strings &fields, const termui::strings &responses, uint ls = 0);
+  InputPage(const termui::string &title, const termui::strings &fields, const termui::strings &responses, unsigned int ls = 0);
 
   void show();
 
@@ -20,13 +20,13 @@ private:
   static Text     control_strip;
   static StyleMap styles;
 
-  uint       cursor;          // index of selected row
+  unsigned int       cursor;          // index of selected row
   bool       selected;        // is row selected/active
-  uint       visible_lines;   // total rows in view
-  uint       start_line;      // index of first visible row
-  uint       line_seperation; // blank rows between elements
-  const uint voh = 5;         // vertical overhead (3 header + 2 footer)
-  const uint hoh = 4;         // horizontal overhead (2 left + 2 right)
+  unsigned int       visible_lines;   // total rows in view
+  unsigned int       start_line;      // index of first visible row
+  unsigned int       line_seperation; // blank rows between elements
+  const unsigned int voh = 5;         // vertical overhead (3 header + 2 footer)
+  const unsigned int hoh = 4;         // horizontal overhead (2 left + 2 right)
   bool       reprint;
 
   void display();

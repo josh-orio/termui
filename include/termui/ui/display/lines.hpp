@@ -11,25 +11,25 @@ namespace termui {
 
 class HorizontalLine {
 public:
-  HorizontalLine(uint width, Border border);
+  HorizontalLine(unsigned int width, Border border);
 
   void render();
-  uint width();
+  unsigned int width();
 
 private:
-  uint           w;
+  unsigned int           w;
   termui::Border border;
 };
 
 class VerticalLine {
 public:
-  VerticalLine(uint height, Border border);
+  VerticalLine(unsigned int height, Border border);
 
   void render();
-  uint height();
+  unsigned int height();
 
 private:
-  uint           h;
+  unsigned int           h;
   termui::Border border;
 };
 

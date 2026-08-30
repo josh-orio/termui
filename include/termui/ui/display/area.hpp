@@ -11,13 +11,13 @@ namespace termui {
 
 class Area {
 public:
-  Area(uint width, uint height, Style style, std::string symbol = "╱");
+  Area(unsigned int width, unsigned int height, Style style, std::string symbol = "╱");
 
   void render();
-  uint width(), height();
+  unsigned int width(), height();
 
 private:
-  uint  w, h;
+  unsigned int  w, h;
   Style style;
 
   std::string symbol;

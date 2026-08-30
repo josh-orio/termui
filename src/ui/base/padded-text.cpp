@@ -4,8 +4,8 @@ namespace termui {
 
 PaddedText::PaddedText(const termui::string &str, Style style, Padding padding) : Text(str, style), _padding(padding) {}
 
-uint PaddedText::hPadding() { return static_cast<int>(_padding.left) + static_cast<int>(_padding.right); }
-uint PaddedText::vPadding() { return static_cast<int>(_padding.top) + static_cast<int>(_padding.bottom); }
+unsigned int PaddedText::hPadding() { return static_cast<int>(_padding.left) + static_cast<int>(_padding.right); }
+unsigned int PaddedText::vPadding() { return static_cast<int>(_padding.top) + static_cast<int>(_padding.bottom); }
 
 void PaddedText::render() {
   if (_w == 0 || _h == 0) {

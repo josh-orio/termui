@@ -15,35 +15,35 @@ List &List::blur_style(Style s) {
   return *this;
 }
 
-List &List::width(uint w) {
+List &List::width(unsigned int w) {
   _w = w;
   return *this;
 }
 
-List &List::height(uint h) {
+List &List::height(unsigned int h) {
   _h = h;
   return *this;
 }
 
-List &List::line_seperation(uint ls) {
+List &List::line_seperation(unsigned int ls) {
   _line_spacing = ls;
   return *this;
 }
 
-void List::cursor_up(uint count) {
+void List::cursor_up(unsigned int count) {
   internal_update();
   _cursor = (_cursor > 0) ? std::max(0, int(_cursor - count)) : 0; // decrement but dont let (cursor < 0)
   _start_line = (_cursor < _start_line) ? _cursor : _start_line;   // don't let cursor go 'above' start line
 }
 
-void List::cursor_down(uint count) {
+void List::cursor_down(unsigned int count) {
   internal_update();
   _cursor = (_cursor < _elements.size() - count) ? std::min(_elements.size() - 1, static_cast<size_t>(_cursor + count))
                                                  : _elements.size() - 1;                                // increment but dont let (cursor > elements.size)
   _start_line = (_cursor >= _start_line + _visible_lines) ? _cursor - _visible_lines + 1 : _start_line; // don't let cursor go 'below' bottom of visible lines
 }
 
-uint List::get_cursor() { return _cursor; }
+unsigned int List::get_cursor() { return _cursor; }
 
 void List::render() {
   internal_update();

@@ -11,15 +11,15 @@ namespace termui {
 
 class Box {
 public:
-  Box(uint width, uint height, Border border, Style style = Styles::none);
+  Box(unsigned int width, unsigned int height, Border border, Style style = Styles::none);
 
   void render();
 
-  void resize(uint w, uint h);
-  uint width(), height();
+  void resize(unsigned int w, unsigned int h);
+  unsigned int width(), height();
 
 private:
-  uint           w, h;
+  unsigned int           w, h;
   termui::Border border;
   Style          style;
 };

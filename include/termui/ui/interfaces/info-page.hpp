@@ -21,16 +21,16 @@ private:
   static Text     control_strip;
   static StyleMap styles;
 
-  const uint voh = 5; // vertical overhead (3 header + 2 footer)
-  const uint hoh = 4; // horizontal overhead (2 left + 2 right)
+  const unsigned int voh = 5; // vertical overhead (3 header + 2 footer)
+  const unsigned int hoh = 4; // horizontal overhead (2 left + 2 right)
   bool       reprint; // flag indicates if reprint is required
 
   void display();
   void process_input();
   void update_size();
 
-  void cursor_up(uint count = 1);
-  void cursor_down(uint count = 1);
+  void cursor_up(unsigned int count = 1);
+  void cursor_down(unsigned int count = 1);
 };
 
 } // namespace termui

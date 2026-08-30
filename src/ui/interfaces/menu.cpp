@@ -12,7 +12,7 @@ StyleMap Menu::styles({
 
 Text Menu::control_banner("[ESC] close  [↑/↓] scroll [↵] select", Styles::faint);
 
-Menu::Menu(const termui::string &t, const termui::strings &e, uint ls)
+Menu::Menu(const termui::string &t, const termui::strings &e, unsigned int ls)
   : Interface(TermSetups::fullscreen),
     title(t),
     elements(e),
@@ -44,7 +44,7 @@ int Menu::show() {
   }
 }
 
-uint Menu::cursor() { return list.get_cursor(); }
+unsigned int Menu::cursor() { return list.get_cursor(); }
 
 termui::Interface::State Menu::status() { return state; }
 
@@ -102,7 +102,7 @@ void Menu::process_input() {
 };
 
 void Menu::update_size() {
-  title_banner.width(std::min(terminal.width() - 2, (uint)visible_length(title) + title_banner.hPadding())).height(1);
+  title_banner.width(std::min(terminal.width() - 2, (unsigned int)visible_length(title) + title_banner.hPadding())).height(1);
   list.width(terminal.width() - lho).height(terminal.height() - lvo).line_seperation(line_seperation);
   control_banner.width(terminal.width() - 2).height(1);
 }

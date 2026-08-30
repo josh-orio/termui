@@ -53,7 +53,7 @@ void BinaryMenu::display() {
   terminal.ClearScreen();
   terminal.ClearScrollback();
 
-  uint origin_row = (terminal.height() - static_cast<uint>(h)) / 2, origin_col = (terminal.width() - static_cast<uint>(w)) / 2;
+  unsigned int origin_row = (terminal.height() - static_cast<unsigned int>(h)) / 2, origin_col = (terminal.width() - static_cast<unsigned int>(w)) / 2;
 
   terminal.MoveCursor(origin_row, origin_col);
   box.render();

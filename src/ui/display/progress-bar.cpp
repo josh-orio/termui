@@ -2,7 +2,7 @@
 
 namespace termui {
 
-ProgressBar::ProgressBar(uint width, float decimal, Color foreground, Color background) : w(width), decimal(decimal), fg(foreground), bg(background){};
+ProgressBar::ProgressBar(unsigned int width, float decimal, Color foreground, Color background) : w(width), decimal(decimal), fg(foreground), bg(background){};
 
 void ProgressBar::render() {
   int shaded_w = decimal * w;

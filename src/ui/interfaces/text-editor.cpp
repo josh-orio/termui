@@ -113,7 +113,7 @@ void TextEditor::process_input() {
 }
 
 void TextEditor::update_size() {
-  title_banner.width(std::min(terminal.width() - toh, (uint)visible_length(title) + title_banner.hPadding())).height(1);
+  title_banner.width(std::min(terminal.width() - toh, (unsigned int)visible_length(title) + title_banner.hPadding())).height(1);
   pager.width(terminal.width() - hoh).height(terminal.height() - voh);
   control_strip.width(terminal.width() - hoh).height(1);
 }

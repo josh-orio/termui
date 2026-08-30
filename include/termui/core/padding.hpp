@@ -6,7 +6,7 @@
 namespace termui {
 
 struct Padding {
-  uint left, right, top, bottom;
+  unsigned int left, right, top, bottom;
 };
 
 namespace PaddingStyle {

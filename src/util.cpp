@@ -192,7 +192,7 @@ size_t reverse_max_visible_length(const std::string &s, size_t n) {
   return s.size(); // reached the beginning
 }
 
-std::string color_swatch(uint swatches_per_line) {
+std::string color_swatch(unsigned int swatches_per_line) {
   std::string outbuff;
 
   for (int i = 0; i < 256; i++) {

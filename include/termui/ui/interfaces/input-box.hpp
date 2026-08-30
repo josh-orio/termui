@@ -22,7 +22,7 @@ private:
   Box             box;
   static StyleMap styles;
 
-  uint w, h;
+  unsigned int w, h;
   bool reprint; // flag indicates if reprint is required
 
   void display();

@@ -2,7 +2,7 @@
 
 namespace termui {
 
-Table::Column::Column(termui::string str, uint w) : title(str), width(w){};
+Table::Column::Column(termui::string str, unsigned int w) : title(str), width(w){};
 
 Table::Row::Row(termui::strings c) : cells(c){};
 
@@ -38,42 +38,42 @@ Table::Table(const termui::strings &c, const std::vector<termui::strings> &r, co
     _cell_height(ts.cell_height),
     _line_seperation(ts.line_seperation) {}
 
-Table &Table::column_width(uint col, uint w) {
+Table &Table::column_width(unsigned int col, unsigned int w) {
   _columns.at(col).width = w;
   return *this;
 }
 
-Table &Table::table_height(uint h) {
+Table &Table::table_height(unsigned int h) {
   _table_height = h;
   return *this;
 }
 
-Table &Table::cell_height(uint h) {
+Table &Table::cell_height(unsigned int h) {
   _cell_height = h;
   return *this;
 }
 
-Table &Table::line_seperation(uint ls) {
+Table &Table::line_seperation(unsigned int ls) {
   _line_seperation = ls;
   return *this;
 }
 
-void Table::cursor_up(uint count) {
+void Table::cursor_up(unsigned int count) {
   internal_update();
   _cursor = (_cursor > 0) ? std::max(0, int(_cursor - count)) : 0; // decrement but dont let (cursor < 0)
   _start_line = (_cursor < _start_line) ? _cursor : _start_line;   // don't let cursor go 'above' start line
 }
 
-void Table::cursor_down(uint count) {
+void Table::cursor_down(unsigned int count) {
   internal_update();
   _cursor = (_cursor < _rows.size() - count) ? std::min(_rows.size() - 1, static_cast<size_t>(_cursor + count))
                                              : _rows.size() - 1;                                      // increment but dont let (cursor > elements.size)
   _start_line = (_cursor >= _start_line + _visible_rows) ? _cursor - _visible_rows + 1 : _start_line; // don't let cursor go 'below' bottom of visible lines
 }
 
-uint Table::get_cursor() { return _cursor; }
+unsigned int Table::get_cursor() { return _cursor; }
 
-uint Table::colCount() { return _columns.size(); }
+unsigned int Table::colCount() { return _columns.size(); }
 
 void Table::render() {
   internal_update();
@@ -96,7 +96,7 @@ void Table::render() {
   terminal.StylePop();
   terminal.CursorDown(1).CursorLeft(_table_width - 2);
 
-  for (int i = _start_line; i < std::min((uint)_rows.size(), _start_line + _visible_rows); i++) {
+  for (int i = _start_line; i < std::min((unsigned int)_rows.size(), _start_line + _visible_rows); i++) {
     if (i == _cursor) {
       Text(" ", _cursor_style, _table_width - 2, _cell_height).render();
       terminal.CursorLeft(_table_width - 2).CursorUp(_cell_height - 1);

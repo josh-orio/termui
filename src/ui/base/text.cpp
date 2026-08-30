@@ -4,7 +4,7 @@
 
 namespace termui {
 
-Text::Text(const termui::string &str, const Style &style, uint width, uint height) : _text(str), _style(style), _w(width), _h(height) {}
+Text::Text(const termui::string &str, const Style &style, unsigned int width, unsigned int height) : _text(str), _style(style), _w(width), _h(height) {}
 
 Text &Text::style(const Style &s) {
   _style = s;
@@ -16,17 +16,17 @@ Text &Text::align(const Alignment &a) {
   return *this;
 }
 
-Text &Text::width(uint w) {
+Text &Text::width(unsigned int w) {
   _w = w;
   return *this;
 }
 
-Text &Text::height(uint h) {
+Text &Text::height(unsigned int h) {
   _h = h;
   return *this;
 }
 
-Text &Text::size(uint w, uint h) {
+Text &Text::size(unsigned int w, unsigned int h) {
   _w = w;
   _h = h;
   return *this;

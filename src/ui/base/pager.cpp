@@ -4,18 +4,18 @@
 
 namespace termui {
 
-Pager::Pager(const termui::string &str, const Style &style, uint width, uint height) : Text(str, style, width, height), _cursor(0) {}
+Pager::Pager(const termui::string &str, const Style &style, unsigned int width, unsigned int height) : Text(str, style, width, height), _cursor(0) {}
 
-Pager &Pager::cursor_up(uint count) {
+Pager &Pager::cursor_up(unsigned int count) {
   _cursor = (_cursor > 0) ? std::max(0, int(_cursor - count)) : 0; // decrement but dont let (cursor < 0)
   return *this;
 }
-Pager &Pager::cursor_down(uint count) {
+Pager &Pager::cursor_down(unsigned int count) {
   _cursor += count; // no checking is done here - the value is clamped in render() so that the bottom piece of text is always visible
   return *this;
 }
 
-uint Pager::get_cursor() { return _cursor; }
+unsigned int Pager::get_cursor() { return _cursor; }
 
 void Pager::render() {
   if (_w == 0 || _h == 0) {

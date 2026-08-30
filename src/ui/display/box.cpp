@@ -2,7 +2,7 @@
 
 namespace termui {
 
-Box::Box(uint w, uint h, Border border, Style style) : w(w), h(h), border(border), style(style) {}
+Box::Box(unsigned int w, unsigned int h, Border border, Style style) : w(w), h(h), border(border), style(style) {}
 
 void Box::render() {
   terminal.StyleStack(style);
@@ -20,13 +20,13 @@ void Box::render() {
   terminal.StylePop();
 }
 
-void Box::resize(uint width, uint height) {
+void Box::resize(unsigned int width, unsigned int height) {
   w = width;
   h = height;
 }
 
-uint Box::width() { return w; }
+unsigned int Box::width() { return w; }
 
-uint Box::height() { return h; }
+unsigned int Box::height() { return h; }
 
 } // namespace termui

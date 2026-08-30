@@ -11,7 +11,7 @@ StyleMap InputPage::styles({
 
 Text InputPage::control_strip("[ESC] close  [↵] close", Styles::faint);
 
-InputPage::InputPage(const termui::string &title, const termui::strings &fields, const termui::strings &responses, uint ls)
+InputPage::InputPage(const termui::string &title, const termui::strings &fields, const termui::strings &responses, unsigned int ls)
   : Interface(TermSetups::fullscreen),
     title(title),
     fields(fields),
