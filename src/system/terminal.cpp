@@ -27,7 +27,7 @@ std::string Terminal::read() const { // claude written
     if (buf.empty())
       return std::string::npos;
     if (buf[0] == '\x1b' && buf.size() > 1)
-      return buf.find_first_of("Mm~ABCDFHPQRS", 2);
+      return buf.find_first_of("Mm~ABCDFHPQRSZ", 2);
     return std::string::npos; // single char, always "complete"
   };
 
@@ -43,7 +43,7 @@ std::string Terminal::read() const { // claude written
 
   // escape sequence
   if (buf[0] == '\x1b' && buf.size() > 1) {
-    auto end = buf.find_first_of("Mm~ABCDFHPQRS", 2);
+    auto end = buf.find_first_of("Mm~ABCDFHPQRSZ", 2);
     if (end != std::string::npos) {
       std::string seq = buf.substr(0, end + 1);
       buf.erase(0, end + 1);

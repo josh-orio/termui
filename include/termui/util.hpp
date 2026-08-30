@@ -24,6 +24,9 @@ inline std::string ENTER{10};
 inline std::string ESC{27};
 inline std::string DEL{127};
 
+inline std::string Tab{9};
+inline std::string ShiftTab{27, 91, 90};
+
 inline std::string U_ARROW = "\x1b[A";
 inline std::string D_ARROW = "\x1b[B";
 inline std::string R_ARROW = "\x1b[C";
