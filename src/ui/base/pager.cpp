@@ -82,11 +82,11 @@ void Pager::render() {
   terminal.StyleStack(_style);
 
   for (int i = _cursor; i < _cursor + _h; i++) {
-    terminal.write(formatted.at(i));
-
-    if (i + 1 < _h) {
+    if (i > _cursor) {
       terminal.CursorLeft(_w).CursorDown(1);
     }
+
+    terminal.write(formatted.at(i));
   }
 
   terminal.StylePop();
