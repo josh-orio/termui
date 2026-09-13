@@ -7,7 +7,7 @@ namespace termui {
 
 class Interface {
 public:
-  enum class State { Exit, Continue, Select, Submit };
+  enum class State { Exit, Continue, Select, Submit, Delete };
 
 protected:
   State state;
