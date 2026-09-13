@@ -21,13 +21,13 @@ private:
   static StyleMap styles;
 
   unsigned int       cursor;          // index of selected row
-  bool       selected;        // is row selected/active
+  bool               selected;        // is row selected/active
   unsigned int       visible_lines;   // total rows in view
   unsigned int       start_line;      // index of first visible row
   unsigned int       line_seperation; // blank rows between elements
   const unsigned int voh = 5;         // vertical overhead (3 header + 2 footer)
   const unsigned int hoh = 4;         // horizontal overhead (2 left + 2 right)
-  bool       reprint;
+  bool               reprint;
 
   void display();
   void process_input();

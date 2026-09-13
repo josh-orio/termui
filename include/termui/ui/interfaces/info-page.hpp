@@ -23,7 +23,7 @@ private:
 
   const unsigned int voh = 5; // vertical overhead (3 header + 2 footer)
   const unsigned int hoh = 4; // horizontal overhead (2 left + 2 right)
-  bool       reprint; // flag indicates if reprint is required
+  bool               reprint; // flag indicates if reprint is required
 
   void display();
   void process_input();

@@ -10,7 +10,7 @@ extern const Terminal &terminal;
 } // namespace termui
 
 namespace tui {
-    
+
 extern const termui::Terminal &term;
 
 } // namespace tui

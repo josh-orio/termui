@@ -2,9 +2,9 @@
 
 namespace termui {
 
-Table::Column::Column(termui::string str, unsigned int w) : title(str), width(w){};
+Table::Column::Column(termui::string str, unsigned int w) : title(str), width(w) {};
 
-Table::Row::Row(termui::strings c) : cells(c){};
+Table::Row::Row(termui::strings c) : cells(c) {};
 
 Table::Table(const std::vector<Column> &columns, const std::vector<Row> &rows, const TableStyle &ts)
   : _columns(columns),
@@ -60,14 +60,14 @@ Table &Table::line_seperation(unsigned int ls) {
 
 void Table::cursor_up(unsigned int count) {
   internal_update();
-  _cursor = (_cursor > 0) ? std::max(0, int(_cursor - count)) : 0; // decrement but dont let (cursor < 0)
-  _start_line = (_cursor < _start_line) ? _cursor : _start_line;   // don't let cursor go 'above' start line
+  _cursor     = (_cursor > 0) ? std::max(0, int(_cursor - count)) : 0; // decrement but dont let (cursor < 0)
+  _start_line = (_cursor < _start_line) ? _cursor : _start_line;       // don't let cursor go 'above' start line
 }
 
 void Table::cursor_down(unsigned int count) {
   internal_update();
-  _cursor = (_cursor < _rows.size() - count) ? std::min(_rows.size() - 1, static_cast<size_t>(_cursor + count))
-                                             : _rows.size() - 1;                                      // increment but dont let (cursor > elements.size)
+  _cursor     = (_cursor < _rows.size() - count) ? std::min(_rows.size() - 1, static_cast<size_t>(_cursor + count))
+                                                 : _rows.size() - 1;                                  // increment but dont let (cursor > elements.size)
   _start_line = (_cursor >= _start_line + _visible_rows) ? _cursor - _visible_rows + 1 : _start_line; // don't let cursor go 'below' bottom of visible lines
 }
 
@@ -105,7 +105,8 @@ void Table::render() {
     for (int ii = 0; ii < _columns.size(); ii++) {
       if (i == _cursor) {
         Text(_rows.at(i).cells.at(ii), _cursor_style, _columns.at(ii).width, _cell_height).render();
-      } else {
+      }
+      else {
         Text(_rows.at(i).cells.at(ii), Styles::none, _columns.at(ii).width, _cell_height).render();
       }
 

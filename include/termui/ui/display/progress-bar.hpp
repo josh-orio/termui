@@ -13,13 +13,13 @@ class ProgressBar {
 public:
   ProgressBar(unsigned int width, float decimal, Color foreground, Color background);
 
-  void render();
+  void         render();
   unsigned int width();
 
 private:
-  unsigned int  w;
-  float decimal;
-  Color fg, bg;
+  unsigned int w;
+  float        decimal;
+  Color        fg, bg;
 };
 
 } // namespace termui

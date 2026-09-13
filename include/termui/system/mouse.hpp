@@ -22,18 +22,18 @@ enum class MouseButton {
 };
 
 struct ModifierKey {
-  bool shift = false;
+  bool shift   = false;
   bool control = false;
-  bool option = false;
+  bool option  = false;
 
   bool operator==(const ModifierKey &) const = default;
 };
 
 namespace Modifiers {
-inline constexpr ModifierKey None = {};
-inline constexpr ModifierKey Shift = {.shift = true};
+inline constexpr ModifierKey None    = {};
+inline constexpr ModifierKey Shift   = {.shift = true};
 inline constexpr ModifierKey Control = {.control = true};
-inline constexpr ModifierKey Option = {.option = true};
+inline constexpr ModifierKey Option  = {.option = true};
 } // namespace Modifiers
 
 struct MouseInteraction {

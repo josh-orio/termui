@@ -16,7 +16,7 @@ Spreadsheet::Spreadsheet(const termui::string &title, const termui::strings &col
 void Spreadsheet::show() {
   term_setup.configure();
 
-  state = Interface::State::Continue;
+  state   = Interface::State::Continue;
   reprint = true;
 
   do {
@@ -56,15 +56,15 @@ void Spreadsheet::process_input() {
   if (ec == key::U_ARROW) {
     table.cursor_up();
     reprint = true;
-
-  } else if (ec == key::D_ARROW) {
+  }
+  else if (ec == key::D_ARROW) {
     table.cursor_down();
     reprint = true;
-
-  } else if (ec == key::ESC) { // ESC closes spreadsheet
+  }
+  else if (ec == key::ESC) { // ESC closes spreadsheet
     state = State::Exit;
-
-  } else {
+  }
+  else {
   }
 }
 

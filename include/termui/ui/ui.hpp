@@ -36,35 +36,35 @@
 
 namespace tui {
 // ui/base/
-using Input = termui::Input;
+using Input      = termui::Input;
 using PaddedText = termui::PaddedText;
-using Pager = termui::Pager;
-using Text = termui::Text;
+using Pager      = termui::Pager;
+using Text       = termui::Text;
 
 // ui/display/
 using Area = termui::Area;
-using Box = termui::Box;
+using Box  = termui::Box;
 // using  Lines=lin ;
 using ProgressBar = termui::ProgressBar;
 
 // ui/interfaces/
-using BinaryMenu = termui::BinaryMenu;
-using FancyMenu = termui::FancyMenu;
-using InfoBox = termui::InfoBox;
-using InfoPage = termui::InfoPage;
-using InputBox = termui::InputBox;
-using InputPage = termui::InputPage;
-using Interface = termui::Interface;
-using Menu = termui::Menu;
+using BinaryMenu  = termui::BinaryMenu;
+using FancyMenu   = termui::FancyMenu;
+using InfoBox     = termui::InfoBox;
+using InfoPage    = termui::InfoPage;
+using InputBox    = termui::InputBox;
+using InputPage   = termui::InputPage;
+using Interface   = termui::Interface;
+using Menu        = termui::Menu;
 using Spreadsheet = termui::Spreadsheet;
-using TextEditor = termui::TextEditor;
-using ToggleMenu = termui::ToggleMenu;
+using TextEditor  = termui::TextEditor;
+using ToggleMenu  = termui::ToggleMenu;
 
 // ui/widgets/
-using Button = termui::Button;
-using FancyList = termui::FancyList;
-using List = termui::List;
-using Table = termui::Table;
+using Button     = termui::Button;
+using FancyList  = termui::FancyList;
+using List       = termui::List;
+using Table      = termui::Table;
 using ToggleList = termui::ToggleList;
 } // namespace tui
 

@@ -15,8 +15,8 @@ MouseInteraction::MouseInteraction(std::string s) : valid(true) {
   row = y;
 
   // decode modifiers from code
-  modifiers.shift = (code & 4) != 0;
-  modifiers.option = (code & 8) != 0;
+  modifiers.shift   = (code & 4) != 0;
+  modifiers.option  = (code & 8) != 0;
   modifiers.control = (code & 16) != 0;
 
   // decode button/event from low bits
@@ -38,19 +38,19 @@ MouseInteraction::MouseInteraction(std::string s) : valid(true) {
   // decode event type
   if (mstate == 'm') {
     event = EventType::ButtonRelease;
-
-  } else if (code & 32) {
+  }
+  else if (code & 32) {
     event = EventType::Move;
-
-  } else if (code == 64) {
-    event = EventType::ScrollUp;
+  }
+  else if (code == 64) {
+    event  = EventType::ScrollUp;
     button = MouseButton::None; // scrolling codes include a button for some reason 0_0
-
-  } else if (code == 65) {
-    event = EventType::ScrollDown;
+  }
+  else if (code == 65) {
+    event  = EventType::ScrollDown;
     button = MouseButton::None;
-
-  } else {
+  }
+  else {
     event = EventType::ButtonPress;
   }
 }

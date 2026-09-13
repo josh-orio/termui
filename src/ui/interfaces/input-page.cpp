@@ -24,9 +24,9 @@ InputPage::InputPage(const termui::string &title, const termui::strings &fields,
 void InputPage::show() {
   term_setup.configure();
 
-  state = State::Continue;
+  state    = State::Continue;
   selected = false;
-  reprint = true;
+  reprint  = true;
 
   do {
     if (reprint) {
@@ -63,8 +63,8 @@ void InputPage::display() {
 
       terminal.write(": ");
       iput.render();
-
-    } else {
+    }
+    else {
       terminal.MoveCursor(4 + ((i - start_line) * (line_seperation + 1)), 4);
       terminal.write(f + ": ");
       iput.render();
@@ -83,7 +83,8 @@ void InputPage::display() {
         std::min(static_cast<size_t>(terminal.width() - 2), 6 + f.length() + r.length())); // tracks end column of response without allowing overflow
 
     terminal.ShowCursor();
-  } else {
+  }
+  else {
     terminal.HideCursor();
   }
 
@@ -95,42 +96,42 @@ void InputPage::process_input() {
 
   if (ec == key::ENTER) { // select/deselect
     selected = !selected; // flip
-    reprint = true;
-
-  } else if (ec == key::ESC) { // escape to close
-    if (!selected) {           // dont close if field selected
+    reprint  = true;
+  }
+  else if (ec == key::ESC) { // escape to close
+    if (!selected) {         // dont close if field selected
       state = State::Exit;
     }
-
-  } else if (ec == key::U_ARROW) {
+  }
+  else if (ec == key::U_ARROW) {
     if (!selected) {
       cursor -= (cursor > 0) ? 1 : 0; // decrement but dont let (cursor < 0)
       start_line -= (cursor < start_line) ? 1 : 0;
     }
     reprint = true;
-
-  } else if (ec == key::D_ARROW) {
+  }
+  else if (ec == key::D_ARROW) {
     if (!selected) {
       cursor += (cursor < (int)fields.size() - 1) ? 1 : 0; // increment but dont let (cursor > fields.size)
       start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
     }
     reprint = true;
-
-  } else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
+  }
+  else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
     if (!selected) {
       cursor -= (cursor > 0) ? 1 : 0; // decrement but dont let (cursor < 0)
       start_line -= (cursor < start_line) ? 1 : 0;
     }
     reprint = true;
-
-  } else if (MouseInteraction(ec).match(EventType::ScrollDown)) {
+  }
+  else if (MouseInteraction(ec).match(EventType::ScrollDown)) {
     if (!selected) {
       cursor += (cursor < (int)fields.size() - 1) ? 1 : 0; // increment but dont let (cursor > fields.size)
       start_line += (cursor >= start_line + visible_lines) ? 1 : 0;
     }
     reprint = true;
-
-  } else if (ec == key::DEL) { // remove last char
+  }
+  else if (ec == key::DEL) { // remove last char
     if (selected) {
       std::string &r = responses.at(cursor);
 
@@ -139,8 +140,8 @@ void InputPage::process_input() {
       }
     }
     reprint = true;
-
-  } else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
+  }
+  else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
     if (selected) {
       std::string &r = responses.at(cursor);
 

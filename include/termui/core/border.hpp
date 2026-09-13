@@ -17,7 +17,7 @@ inline Border rounded{"─", "─", "│", "│", "╭", "╮", "╰", "╯", "�
 } // namespace termui
 
 namespace tui {
-using brd = termui::Border;
+using brd      = termui::Border;
 namespace brds = termui::Borders;
 } // namespace tui
 

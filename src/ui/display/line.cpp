@@ -6,18 +6,18 @@ Line::Line(Direction d, size_t l, std::string s) : direction(d), len(l) {
   if (s.empty()) {
     if (d == Direction::Horizontal) {
       symbol = "─";
-
-    } else if (d == Direction::Vertical) {
+    }
+    else if (d == Direction::Vertical) {
       symbol = "│";
-
-    } else if (d == Direction::Ascending) {
+    }
+    else if (d == Direction::Ascending) {
       symbol = "╱";
-
-    } else { // Descending
+    }
+    else { // Descending
       symbol = "╲";
     }
-
-  } else {
+  }
+  else {
     symbol = s;
   }
 }
@@ -32,14 +32,14 @@ void Line::render() {
 
     if (direction == Direction::Horizontal) {
       // no need to repo cursor
-
-    } else if (direction == Direction::Vertical) {
+    }
+    else if (direction == Direction::Vertical) {
       terminal.CursorDown(1).CursorLeft(1);
-
-    } else if (direction == Direction::Ascending) {
+    }
+    else if (direction == Direction::Ascending) {
       terminal.CursorUp(1);
-
-    } else { // Descending
+    }
+    else { // Descending
       terminal.CursorDown(1);
     }
   }

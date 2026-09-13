@@ -23,7 +23,7 @@ InputBox::InputBox(const termui::string &field, const termui::string &response, 
 void InputBox::show() {
   term_setup.configure();
 
-  state = State::Continue;
+  state   = State::Continue;
   reprint = true;
 
   do {
@@ -66,15 +66,15 @@ void InputBox::process_input() {
 
   if (ec == key::ESC) { // escape to close
     state = State::Exit;
-
-  } else if (ec == key::DEL) { // remove last char
+  }
+  else if (ec == key::DEL) { // remove last char
     std::string &r = response;
     if (r.size()) {
       r = std::string(r.begin(), r.end() - 1);
     }
     reprint = true;
-
-  } else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
+  }
+  else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
     std::string &r = response;
     r += ec;
     reprint = true;

@@ -6,7 +6,7 @@
 namespace termui {
 
 Input::Input(const termui::string &value, const termui::string &placeholder, const Style &valStyle, const Style &plhStyle)
-  : _value(value), _placeholder(placeholder), _valStyle(valStyle), _plhStyle(plhStyle){};
+  : _value(value), _placeholder(placeholder), _valStyle(valStyle), _plhStyle(plhStyle) {};
 
 Input &Input::value(const termui::string &v) {
   _value = v;
@@ -54,13 +54,13 @@ void Input::render() {
   std::string &v = _value;
   std::string &p = _placeholder;
 
-  bool use_response = !v.empty();
+  bool use_response    = !v.empty();
   bool use_placeholder = !use_response && !p.empty();
 
   if (use_response) {
     terminal.StyleStack(_valStyle);
-
-  } else if (use_placeholder) {
+  }
+  else if (use_placeholder) {
     terminal.StyleStack(_plhStyle);
   }
 
@@ -79,8 +79,8 @@ void Input::render() {
 
     if (_h == 1) {
       formatted.push_back(std::string(copy.end() - reverse_max_visible_length(copy, _w), copy.end()));
-
-    } else {
+    }
+    else {
       while (copy.size() > 0) {
         // clang-format off
         next = std::min({
@@ -103,22 +103,25 @@ void Input::render() {
         if (copy.begin() + next < copy.end()) {
           if (copy[next] == '\n' || copy[next] == ' ') { // special handling for these two chars as they will cause infinite loops otherwise
             copy = std::string(copy.begin() + next + 1, copy.end());
-          } else {
+          }
+          else {
             copy = std::string(copy.begin() + next, copy.end());
           }
-        } else {
+        }
+        else {
           copy = "";
         }
       }
     }
-  } else if (use_placeholder) {
+  }
+  else if (use_placeholder) {
     std::string copy = _placeholder; //.text();
     std::size_t next(0);
 
     if (_h == 1) {
       formatted.push_back(std::string(copy.begin(), copy.begin() + max_visible_length(copy, _w)));
-
-    } else {
+    }
+    else {
       while (copy.size() > 0) {
         // clang-format off
       next = std::min({
@@ -141,10 +144,12 @@ void Input::render() {
         if (copy.begin() + next < copy.end()) {
           if (copy[next] == '\n' || copy[next] == ' ') { // special handling for these two chars as they will cause infinite loops otherwise
             copy = std::string(copy.begin() + next + 1, copy.end());
-          } else {
+          }
+          else {
             copy = std::string(copy.begin() + next, copy.end());
           }
-        } else {
+        }
+        else {
           copy = "";
         }
       }

@@ -25,7 +25,7 @@ bool ToggleMenu::isSelected(int i) { return list.getSelection(i); }
 void ToggleMenu::show() {
   term_setup.configure();
 
-  state = State::Continue;
+  state   = State::Continue;
   reprint = true;
 
   do {
@@ -66,23 +66,23 @@ void ToggleMenu::process_input() {
   if (ec == key::U_ARROW) { // decrement but dont let (cursor < 0)
     list.cursor_up();
     reprint = true;
-
-  } else if (ec == key::D_ARROW) { // increment but dont let (cursor > options.size)
+  }
+  else if (ec == key::D_ARROW) { // increment but dont let (cursor > options.size)
     list.cursor_down();
     reprint = true;
-
-  } else if (ec == key::ENTER) { // enter toggles the option
+  }
+  else if (ec == key::ENTER) { // enter toggles the option
     list.toggle();
     reprint = true;
-    state = State::Select;
-
-  } else if (ec == key::ESC) { // esc closes the interface
+    state   = State::Select;
+  }
+  else if (ec == key::ESC) { // esc closes the interface
     state = State::Exit;
-
-  } else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
+  }
+  else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
     list.cursor_up();
-
-  } else if (MouseInteraction(ec).match(EventType::ScrollDown)) {
+  }
+  else if (MouseInteraction(ec).match(EventType::ScrollDown)) {
     list.cursor_down();
   }
 };

@@ -19,7 +19,7 @@ TextEditor::TextEditor(const termui::string &t, const termui::string &c)
 void TextEditor::show() {
   term_setup.configure();
 
-  state = State::Continue;
+  state   = State::Continue;
   reprint = true;
 
   do {
@@ -74,40 +74,40 @@ void TextEditor::process_input() {
       c = std::string(c.begin(), c.end() - 1);
     }
     reprint = true;
-
-  } else if (ec == key::L_ARROW) {
+  }
+  else if (ec == key::L_ARROW) {
     // move cursor left
-
-  } else if (ec == key::U_ARROW) {
+  }
+  else if (ec == key::U_ARROW) {
     pager.cursor_up();
     reprint = true;
-
-  } else if (ec == key::D_ARROW) {
+  }
+  else if (ec == key::D_ARROW) {
     pager.cursor_down();
     reprint = true;
-
-  } else if (ec == key::R_ARROW) {
+  }
+  else if (ec == key::R_ARROW) {
     // move cursor right
-
-  } else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
+  }
+  else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
     pager.cursor_up();
     reprint = true;
-
-  } else if (MouseInteraction(ec).match(EventType::ScrollDown)) {
+  }
+  else if (MouseInteraction(ec).match(EventType::ScrollDown)) {
     pager.cursor_down();
     reprint = true;
-
-  } else if (ec == key::ENTER) { // add line break
+  }
+  else if (ec == key::ENTER) { // add line break
     std::string &c = content;
     c += '\n';
     reprint = true;
-
-  } else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
+  }
+  else if ((std::string{32} <= ec) && (ec <= std::string{126})) { // accept basically all chars
     std::string &c = content;
     c += ec;
     reprint = true;
-
-  } else if (ec == key::ESC) { // left arrow closes info page
+  }
+  else if (ec == key::ESC) { // left arrow closes info page
     state = State::Exit;
   }
 }

@@ -46,10 +46,12 @@ void Pager::render() {
     if (copy.begin() + next < copy.end()) {
       if (copy[next] == '\n' || copy[next] == ' ') { // special handling for these two chars as they will cause infinite loops otherwise
         copy = std::string(copy.begin() + next + 1, copy.end());
-      } else {
+      }
+      else {
         copy = std::string(copy.begin() + next, copy.end());
       }
-    } else {
+    }
+    else {
       copy = "";
     }
   }
@@ -68,12 +70,12 @@ void Pager::render() {
 
       if (_align == Alignment::Left) {
         formatted.at(i) += std::string(_w - visible_length(formatted.at(i)), ' ');
-
-      } else if (_align == Alignment::Center) {
+      }
+      else if (_align == Alignment::Center) {
         formatted.at(i) = std::string((_w - visible_length(formatted.at(i))) / 2, ' ') + formatted.at(i);
         formatted.at(i) += std::string(_w - visible_length(formatted.at(i)), ' ');
-
-      } else /* _align == Right */ {
+      }
+      else /* _align == Right */ {
         formatted.at(i) = std::string(_w - visible_length(formatted.at(i)), ' ') + formatted.at(i);
       }
     }

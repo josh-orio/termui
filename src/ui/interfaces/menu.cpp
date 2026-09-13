@@ -23,7 +23,7 @@ Menu::Menu(const termui::string &t, const termui::strings &e, unsigned int ls)
 int Menu::show() {
   term_setup.configure();
 
-  state = State::Continue;
+  state   = State::Continue;
   reprint = true;
 
   do {
@@ -38,8 +38,8 @@ int Menu::show() {
 
   if (state == Interface::State::Select) {
     return list.get_cursor();
-
-  } else /* EXIT */ {
+  }
+  else /* EXIT */ {
     return -1;
   }
 }
@@ -72,30 +72,30 @@ void Menu::process_input() {
   if (ec == key::U_ARROW) {
     list.cursor_up();
     reprint = true;
-
-  } else if (ec == key::D_ARROW) {
+  }
+  else if (ec == key::D_ARROW) {
     list.cursor_down();
     reprint = true;
-
-  } else if (ec == key::SHIFT_U_ARROW) {
+  }
+  else if (ec == key::SHIFT_U_ARROW) {
     list.cursor_up(5);
     reprint = true;
-
-  } else if (ec == key::SHIFT_D_ARROW) {
+  }
+  else if (ec == key::SHIFT_D_ARROW) {
     list.cursor_down(5);
     reprint = true;
-
-  } else if (ec == key::ENTER) { // enter selects the highlighted element
+  }
+  else if (ec == key::ENTER) { // enter selects the highlighted element
     state = State::Select;
-
-  } else if (ec == key::ESC) { // esc closes the interface
+  }
+  else if (ec == key::ESC) { // esc closes the interface
     state = State::Exit;
-
-  } else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
+  }
+  else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
     list.cursor_up();
     reprint = true;
-
-  } else if (MouseInteraction(ec).match(EventType::ScrollDown)) {
+  }
+  else if (MouseInteraction(ec).match(EventType::ScrollDown)) {
     list.cursor_down();
     reprint = true;
   }

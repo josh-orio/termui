@@ -24,7 +24,7 @@ protected:
   termui::string _text;
   termui::Style  _style;
   Alignment      _align = Alignment::Left;
-  unsigned int           _w, _h;
+  unsigned int   _w, _h;
 };
 
 } // namespace termui

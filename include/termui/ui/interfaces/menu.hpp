@@ -11,9 +11,9 @@ class Menu : public Interface {
 public:
   Menu(const termui::string &title, const termui::strings &elements, unsigned int line_seperation = 1);
 
-  int   show();   // -1 = exit, >=0 = element selected at index
-  unsigned int  cursor(); // returns cursor
-  State status(); // when the interface closes, it will either be EXIT or SELECT
+  int          show();   // -1 = exit, >=0 = element selected at index
+  unsigned int cursor(); // returns cursor
+  State        status(); // when the interface closes, it will either be EXIT or SELECT
 
 private:
   termui::string  title;
@@ -27,7 +27,7 @@ private:
   unsigned int       line_seperation;
   const unsigned int lvo = 5; // list vertical overhead
   const unsigned int lho = 4; // list horizontal overhead
-  bool       reprint; // flag indicates if reprint is required
+  bool               reprint; // flag indicates if reprint is required
 
   void display();
   void process_input();

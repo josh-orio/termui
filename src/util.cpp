@@ -40,7 +40,7 @@ std::string curs_left(int n) {
 
 size_t visible_length(const std::string &s) {
   size_t visible_chars = 0;
-  size_t index = 0;
+  size_t index         = 0;
 
   while (index < s.size()) {
     unsigned char byte = static_cast<unsigned char>(s[index]);
@@ -83,7 +83,7 @@ size_t max_visible_length(const std::string &s, size_t n) {
     return 0;
 
   size_t visible_chars = 0; // num of printed symbols
-  size_t index = 0;         // num of bytes passed
+  size_t index         = 0; // num of bytes passed
 
   while (index < s.size()) {
     unsigned char byte = static_cast<unsigned char>(s[index]);
@@ -141,7 +141,7 @@ size_t reverse_max_visible_length(const std::string &s, size_t n) {
     ++index;
 
     if (!in_csi && c == '\x1b' && index < s.size() && s[index] == '[') {
-      in_csi = true;
+      in_csi    = true;
       csi_start = index - 1;
 
       continue;
@@ -160,8 +160,8 @@ size_t reverse_max_visible_length(const std::string &s, size_t n) {
     }
   }
 
-  size_t visible_chars = 0; // num of printed symbols
-  index = s.size();         // start from the end
+  size_t visible_chars = 0;        // num of printed symbols
+  index                = s.size(); // start from the end
 
   size_t previous_visible = s.size();
 

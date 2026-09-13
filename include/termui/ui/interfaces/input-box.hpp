@@ -23,7 +23,7 @@ private:
   static StyleMap styles;
 
   unsigned int w, h;
-  bool reprint; // flag indicates if reprint is required
+  bool         reprint; // flag indicates if reprint is required
 
   void display();
   void process_input();

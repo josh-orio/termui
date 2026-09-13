@@ -2,13 +2,24 @@ BasedOnStyle: LLVM
 IndentWidth: 2
 ColumnLimit: 160
 
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: false
+  AfterControlStatement: false
+  AfterClass: false
+  AfterStruct: false
+  AfterUnion: false
+  AfterNamespace: false
+  AfterEnum: false
+  BeforeElse: true
+  BeforeCatch: true
+  IndentBraces: false
+  SplitEmptyFunction: false
+
+
 BreakConstructorInitializers: BeforeColon   # or BeforeComma / AfterColon
 ConstructorInitializerIndentWidth: 2        # indent of initializers
 PackConstructorInitializers: NextLine       # Never = one initializer per line
 
-AlignConsecutiveDeclarations:
-  Enabled: true
-  AcrossEmptyLines: false
-  AcrossComments: false
-  AlignCompound: true
-  PadOperators: false
+AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: true

@@ -11,10 +11,10 @@ class ToggleMenu : public Interface {
 public:
   ToggleMenu(const termui::string &title, const termui::strings &elements, unsigned int line_seperation = 1);
 
-  void show();
+  void         show();
   unsigned int cursor(); // returns cursor (cant really see a use case)
 
-  bool              isSelected(int i);
+  bool                      isSelected(int i);
   std::vector<unsigned int> selmap(); // returns idxs of each selected element
 
 private:
@@ -29,7 +29,7 @@ private:
   unsigned int       line_seperation;
   const unsigned int lvo = 5; // list vertical overhead
   const unsigned int lho = 4; // list horizontal overhead
-  bool       reprint; // flag indicates if reprint is required
+  bool               reprint; // flag indicates if reprint is required
 
   void display();
   void process_input();

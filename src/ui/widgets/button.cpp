@@ -39,22 +39,22 @@ void Button::render() {
 
   if (_selected) {
     terminal.StyleStack(_focus_style);
-
-  } else {
+  }
+  else {
     terminal.StyleStack(_blur_style);
   }
 
   if (txt.length() > _w) {
     terminal.write(txt.substr(0, _w - 1) + unicode::ELLIPSIS);
-
-  } else if (txt.length() < _w) { // center the text
+  }
+  else if (txt.length() < _w) { // center the text
     int diff = _w - txt.length();
-    int l = diff / 2;
-    int r = diff - l;
+    int l    = diff / 2;
+    int r    = diff - l;
 
     terminal.write(std::string(l, ' ') + txt + std::string(r, ' '));
-
-  } else {
+  }
+  else {
     terminal.write(txt);
   }
 

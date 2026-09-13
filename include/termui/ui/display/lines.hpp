@@ -13,11 +13,11 @@ class HorizontalLine {
 public:
   HorizontalLine(unsigned int width, Border border);
 
-  void render();
+  void         render();
   unsigned int width();
 
 private:
-  unsigned int           w;
+  unsigned int   w;
   termui::Border border;
 };
 
@@ -25,11 +25,11 @@ class VerticalLine {
 public:
   VerticalLine(unsigned int height, Border border);
 
-  void render();
+  void         render();
   unsigned int height();
 
 private:
-  unsigned int           h;
+  unsigned int   h;
   termui::Border border;
 };
 

@@ -16,8 +16,8 @@ public:
   List &height(unsigned int h);
   List &line_seperation(unsigned int ls);
 
-  void cursor_up(unsigned int count = 1);
-  void cursor_down(unsigned int count = 1);
+  void         cursor_up(unsigned int count = 1);
+  void         cursor_down(unsigned int count = 1);
   unsigned int get_cursor();
 
   void render();
@@ -25,11 +25,11 @@ public:
 private:
   termui::strings _elements;
   termui::Style   _focus_style, _blur_style;
-  unsigned int            _w, _h;
-  unsigned int            _visible_lines;
-  unsigned int            _start_line;
-  unsigned int            _cursor;
-  unsigned int            _line_spacing;
+  unsigned int    _w, _h;
+  unsigned int    _visible_lines;
+  unsigned int    _start_line;
+  unsigned int    _cursor;
+  unsigned int    _line_spacing;
 
   void internal_update();
 };

@@ -18,7 +18,7 @@ inline Padding one(1, 1, 1, 1);
 } // namespace termui
 
 namespace tui {
-using pad = termui::Padding;
+using pad        = termui::Padding;
 namespace padStl = termui::PaddingStyle;
 } // namespace tui
 

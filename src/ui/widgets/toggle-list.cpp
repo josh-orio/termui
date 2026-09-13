@@ -32,14 +32,14 @@ ToggleList &ToggleList::line_seperation(unsigned int ls) {
 
 void ToggleList::cursor_up(unsigned int count) {
   internal_update();
-  _cursor = (_cursor > 0) ? std::max(0, int(_cursor - count)) : 0; // decrement but dont let (cursor < 0)
-  _start_line = (_cursor < _start_line) ? _cursor : _start_line;   // don't let cursor go 'above' start line
+  _cursor     = (_cursor > 0) ? std::max(0, int(_cursor - count)) : 0; // decrement but dont let (cursor < 0)
+  _start_line = (_cursor < _start_line) ? _cursor : _start_line;       // don't let cursor go 'above' start line
 }
 
 void ToggleList::cursor_down(unsigned int count) {
   internal_update();
-  _cursor = (_cursor < _elements.size() - count) ? std::min(_elements.size() - 1, static_cast<size_t>(_cursor + count))
-                                                 : _elements.size() - 1;                                // increment but dont let (cursor > elements.size)
+  _cursor     = (_cursor < _elements.size() - count) ? std::min(_elements.size() - 1, static_cast<size_t>(_cursor + count))
+                                                     : _elements.size() - 1;                            // increment but dont let (cursor > elements.size)
   _start_line = (_cursor >= _start_line + _visible_lines) ? _cursor - _visible_lines + 1 : _start_line; // don't let cursor go 'below' bottom of visible lines
 }
 
@@ -60,7 +60,8 @@ void ToggleList::render() {
 
     if (getSelection(i)) {
       icon = unicode::TICK;
-    } else {
+    }
+    else {
       icon = unicode::DOT;
     }
 
@@ -69,8 +70,8 @@ void ToggleList::render() {
       terminal.write(icon + " ");
       element.render();
       terminal.StylePop();
-
-    } else {
+    }
+    else {
       terminal.StyleStack(_blur_style);
       terminal.write(icon + " ");
       element.render();

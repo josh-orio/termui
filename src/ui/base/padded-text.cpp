@@ -20,8 +20,8 @@ void PaddedText::render() {
 
     if (i > 1) {
       terminal.CursorLeft(_w).CursorDown(1);
-
-    } else {
+    }
+    else {
       terminal.CursorLeft(_w - _padding.left).CursorUp(_h - _padding.top - 1); // on final iteration, move cursor to where text will start
     }
   }

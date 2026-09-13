@@ -91,11 +91,11 @@ void Terminal::Style(termui::Style style) const {
 
   if (style.InheritsSGR()) {
     // Inherit: no action taken
-
-  } else if (style.ResetsSGR()) {
+  }
+  else if (style.ResetsSGR()) {
     modifier_codes.push_back(0);
-
-  } else {
+  }
+  else {
     modifier_codes.push_back(0); // reset sgr before applying anew
 
     for (const auto &attr : style.Attributes()) {
@@ -121,15 +121,15 @@ void Terminal::Style(termui::Style style) const {
 
   if (style.Foreground().IsReset()) {
     modifier_codes.push_back(39);
-
-  } else if (!style.Foreground().IsInherit()) {
+  }
+  else if (!style.Foreground().IsInherit()) {
     if (_color_capability == Terminal::Mode::ANSI256) {
       if (style.Foreground().mode == Color::Mode::ANSI256) {
         modifier_codes.push_back(38);
         modifier_codes.push_back(5);
         modifier_codes.push_back(style.Foreground().value);
-
-      } else if (style.Foreground().mode == Color::Mode::TRUECOLOR) {
+      }
+      else if (style.Foreground().mode == Color::Mode::TRUECOLOR) {
         modifier_codes.push_back(38);
         modifier_codes.push_back(5);
         modifier_codes.push_back(truecolor_to_ansi256(style.Foreground().rgb.r, style.Foreground().rgb.g, style.Foreground().rgb.b));
@@ -141,8 +141,8 @@ void Terminal::Style(termui::Style style) const {
         modifier_codes.push_back(38);
         modifier_codes.push_back(5);
         modifier_codes.push_back(style.Foreground().value);
-
-      } else if (style.Foreground().mode == Color::Mode::TRUECOLOR) {
+      }
+      else if (style.Foreground().mode == Color::Mode::TRUECOLOR) {
         modifier_codes.push_back(38);
         modifier_codes.push_back(2);
         modifier_codes.push_back(style.Foreground().rgb.r);
@@ -154,15 +154,15 @@ void Terminal::Style(termui::Style style) const {
 
   if (style.Background().IsReset()) {
     modifier_codes.push_back(49);
-
-  } else if (!style.Background().IsInherit()) {
+  }
+  else if (!style.Background().IsInherit()) {
     if (_color_capability == Terminal::Mode::ANSI256) {
       if (style.Background().mode == Color::Mode::ANSI256) {
         modifier_codes.push_back(48);
         modifier_codes.push_back(5);
         modifier_codes.push_back(style.Background().value);
-
-      } else if (style.Background().mode == Color::Mode::TRUECOLOR) {
+      }
+      else if (style.Background().mode == Color::Mode::TRUECOLOR) {
         modifier_codes.push_back(48);
         modifier_codes.push_back(5);
         modifier_codes.push_back(truecolor_to_ansi256(style.Background().rgb.r, style.Background().rgb.g, style.Background().rgb.b));
@@ -174,8 +174,8 @@ void Terminal::Style(termui::Style style) const {
         modifier_codes.push_back(48);
         modifier_codes.push_back(5);
         modifier_codes.push_back(style.Background().value);
-
-      } else if (style.Background().mode == Color::Mode::TRUECOLOR) {
+      }
+      else if (style.Background().mode == Color::Mode::TRUECOLOR) {
         modifier_codes.push_back(48);
         modifier_codes.push_back(2);
         modifier_codes.push_back(style.Background().rgb.r);
@@ -214,8 +214,8 @@ void Terminal::StylePop() const {
 
   if (_style_stack.empty()) {
     Style(Styles::none);
-
-  } else {
+  }
+  else {
     Style(_style_stack.top());
   }
 }
@@ -247,9 +247,9 @@ std::tuple<int, int> Terminal::GetCursorPosition() const {
   tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 
   int    row = -1, col = -1;
-  size_t esc = response.find('[');
+  size_t esc  = response.find('[');
   size_t semi = response.find(';');
-  size_t r = response.find('R');
+  size_t r    = response.find('R');
   if (esc != std::string::npos && semi != std::string::npos && r != std::string::npos) {
     row = std::stoi(response.substr(esc + 1, semi - esc - 1));
     col = std::stoi(response.substr(semi + 1, r - semi - 1));
@@ -342,14 +342,14 @@ Terminal::Terminal() : _color_capability(Terminal::Mode::ASCII) {
 }
 
 TermSetup::TermSetup()
-  : input_buffering(true), input_echoing(true), show_cursor(true), alternate_output_buffer(false), enable_mouse_reporting(false){}; // terminal defaluts
+  : input_buffering(true), input_echoing(true), show_cursor(true), alternate_output_buffer(false), enable_mouse_reporting(false) {}; // terminal defaluts
 
 TermSetup::TermSetup(bool input_buffering, bool input_echoing, bool show_cursor, bool alternate_output_buffer, bool enable_mouse_reporting)
   : input_buffering(input_buffering),
     input_echoing(input_echoing),
     show_cursor(show_cursor),
     alternate_output_buffer(alternate_output_buffer),
-    enable_mouse_reporting(enable_mouse_reporting){};
+    enable_mouse_reporting(enable_mouse_reporting) {};
 
 void TermSetup::configure() {
   // assume terminal may not be in default settings

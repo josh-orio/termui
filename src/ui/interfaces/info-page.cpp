@@ -16,7 +16,7 @@ InfoPage::InfoPage(const termui::string &t, const termui::string &c)
 void InfoPage::show() {
   term_setup.configure();
 
-  state = State::Continue;
+  state   = State::Continue;
   reprint = true;
 
   do {
@@ -55,28 +55,28 @@ void InfoPage::process_input() {
   if (ec == key::U_ARROW) {
     info.cursor_up();
     reprint = true;
-
-  } else if (ec == key::SHIFT_U_ARROW) {
+  }
+  else if (ec == key::SHIFT_U_ARROW) {
     info.cursor_up(5);
     reprint = true;
-
-  } else if (ec == key::D_ARROW) {
+  }
+  else if (ec == key::D_ARROW) {
     info.cursor_down();
     reprint = true;
-
-  } else if (ec == key::SHIFT_D_ARROW) {
+  }
+  else if (ec == key::SHIFT_D_ARROW) {
     info.cursor_down(5);
     reprint = true;
-
-  } else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
+  }
+  else if (MouseInteraction(ec).match(EventType::ScrollUp)) {
     info.cursor_up();
     reprint = true;
-
-  } else if (MouseInteraction(ec).match(EventType::ScrollDown)) {
+  }
+  else if (MouseInteraction(ec).match(EventType::ScrollDown)) {
     info.cursor_down();
     reprint = true;
-
-  } else if (ec == key::ESC) {
+  }
+  else if (ec == key::ESC) {
     state = State::Exit;
   }
 }

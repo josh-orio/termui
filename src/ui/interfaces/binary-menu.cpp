@@ -31,7 +31,7 @@ BinaryMenu::BinaryMenu(const termui::string &t, const termui::string &tx, const 
 bool BinaryMenu::show() {
   term_setup.configure();
 
-  state = State::Continue;
+  state   = State::Continue;
   reprint = true;
 
   do {
@@ -81,36 +81,36 @@ void BinaryMenu::process_input() {
 
   if (ec == key::ENTER) {
     state = State::Select;
-
-  } else if (ec == key::L_ARROW) {
+  }
+  else if (ec == key::L_ARROW) {
     if (!selection) { // avoids reprint if status already == t
       selection = true;
-      reprint = true;
+      reprint   = true;
     }
-
-  } else if (ec == key::R_ARROW) {
+  }
+  else if (ec == key::R_ARROW) {
     if (selection) { // avoids reprint if status already == f
       selection = false;
-      reprint = true;
+      reprint   = true;
     }
-
-  } else if (MouseInteraction(ec).match(aff_x1, aff_x2, aff_y, aff_y, EventType::ButtonPress, MouseButton::Left)) {
+  }
+  else if (MouseInteraction(ec).match(aff_x1, aff_x2, aff_y, aff_y, EventType::ButtonPress, MouseButton::Left)) {
     std::string release = terminal.read(); // check for mouse release code
 
     if (MouseInteraction(release).match(aff_x1, aff_x2, aff_y, aff_y, EventType::ButtonRelease, MouseButton::Left)) {
       selection = true; // ensure pressed button is selected
-      state = Interface::State::Select;
+      state     = Interface::State::Select;
 
       display();                                                   // redraw incase button selection has changed
       std::this_thread::sleep_for(std::chrono::milliseconds(100)); // brief pause for visual feedback
     }
-
-  } else if (MouseInteraction(ec).match(neg_x1, neg_x2, neg_y, neg_y, EventType::ButtonPress, MouseButton::Left)) {
+  }
+  else if (MouseInteraction(ec).match(neg_x1, neg_x2, neg_y, neg_y, EventType::ButtonPress, MouseButton::Left)) {
     std::string release = terminal.read();
 
     if (MouseInteraction(release).match(neg_x1, neg_x2, neg_y, neg_y, EventType::ButtonRelease, MouseButton::Left)) {
       selection = false;
-      state = Interface::State::Select;
+      state     = Interface::State::Select;
 
       display();
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -135,11 +135,11 @@ void BinaryMenu::update_size() {
   // calculate button positions
   aff_x1 = ((terminal.width() - w) / 2) + w - (8 + 8 + 3);
   aff_x2 = aff_x1 + 8 - 1; // x2 should == x1+7 in this case, because that will display as 8 cols
-  aff_y = ((terminal.height() - h) / 2) + h - 2;
+  aff_y  = ((terminal.height() - h) / 2) + h - 2;
 
   neg_x1 = ((terminal.width() - w) / 2) + w - (8 + 2);
   neg_x2 = neg_x1 + 8 - 1;
-  neg_y = ((terminal.height() - h) / 2) + h - 2;
+  neg_y  = ((terminal.height() - h) / 2) + h - 2;
 
   aff.setFocus(selection);
   neg.setFocus(!selection);

@@ -65,7 +65,7 @@ public:
 } // namespace termui
 
 namespace tui {
-using str = termui::string;
+using str  = termui::string;
 using strs = termui::strings;
 } // namespace tui
 

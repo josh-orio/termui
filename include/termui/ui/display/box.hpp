@@ -15,11 +15,11 @@ public:
 
   void render();
 
-  void resize(unsigned int w, unsigned int h);
+  void         resize(unsigned int w, unsigned int h);
   unsigned int width(), height();
 
 private:
-  unsigned int           w, h;
+  unsigned int   w, h;
   termui::Border border;
   Style          style;
 };

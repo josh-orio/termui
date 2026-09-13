@@ -27,7 +27,7 @@ private:
   termui::string _placeholder;
   Style          _valStyle;
   Style          _plhStyle;
-  unsigned int           _w, _h;
+  unsigned int   _w, _h;
 };
 
 } // namespace termui

@@ -13,7 +13,7 @@ public:
   FancyMenu(const termui::string &title, const std::vector<FancyList::Element> &rows, unsigned int line_seperation = 1);
 
   termui::Interface::State show();   // returns EXIT or SELECT on close
-  unsigned int                     cursor(); // returns cursor position
+  unsigned int             cursor(); // returns cursor position
 
 private:
   termui::string  title;
@@ -27,7 +27,7 @@ private:
   unsigned int       line_seperation;
   const unsigned int lvo = 5; // list vertical overhead
   const unsigned int lho = 4; // list horizontal overhead
-  bool       reprint; // flag indicates if reprint is required
+  bool               reprint; // flag indicates if reprint is required
 
   void display();
   void process_input();

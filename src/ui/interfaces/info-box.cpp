@@ -24,7 +24,7 @@ InfoBox::InfoBox(const termui::string &t, const termui::string &c)
 void InfoBox::show() {
   term_setup.configure();
 
-  state = State::Continue;
+  state   = State::Continue;
   reprint = true;
 
   do {
@@ -70,11 +70,11 @@ void InfoBox::process_input() {
 
   if (ec == key::ESC) { // ESC closes info box
     state = State::Exit;
-
-  } else if (ec == key::ENTER) {
+  }
+  else if (ec == key::ENTER) {
     state = State::Exit;
-
-  } else {
+  }
+  else {
     state = State::Continue;
   }
 }

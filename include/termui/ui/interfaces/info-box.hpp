@@ -25,7 +25,7 @@ private:
   static termui::StyleMap styles;
 
   unsigned int w, h;
-  bool reprint;
+  bool         reprint;
 
   void display();
   void process_input();

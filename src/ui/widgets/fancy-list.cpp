@@ -32,14 +32,14 @@ FancyList &FancyList::line_seperation(unsigned int ls) {
 
 void FancyList::cursor_up(unsigned int count) {
   internal_update();
-  _cursor = (_cursor > 0) ? std::max(0, int(_cursor - count)) : 0; // decrement but dont let (cursor < 0)
-  _start_line = (_cursor < _start_line) ? _cursor : _start_line;   // don't let cursor go 'above' start line
+  _cursor     = (_cursor > 0) ? std::max(0, int(_cursor - count)) : 0; // decrement but dont let (cursor < 0)
+  _start_line = (_cursor < _start_line) ? _cursor : _start_line;       // don't let cursor go 'above' start line
 }
 
 void FancyList::cursor_down(unsigned int count) {
   internal_update();
-  _cursor = (_cursor < _rows.size() - count) ? std::min(_rows.size() - 1, static_cast<size_t>(_cursor + count))
-                                             : _rows.size() - 1;                                      // increment but dont let (cursor > elements.size)
+  _cursor     = (_cursor < _rows.size() - count) ? std::min(_rows.size() - 1, static_cast<size_t>(_cursor + count))
+                                                 : _rows.size() - 1;                                  // increment but dont let (cursor > elements.size)
   _start_line = (_cursor >= _start_line + _visible_rows) ? _cursor - _visible_rows + 1 : _start_line; // don't let cursor go 'below' bottom of visible lines
 }
 
@@ -63,8 +63,8 @@ void FancyList::render() {
       terminal.StylePop();
 
       element_bottom.render();
-
-    } else {
+    }
+    else {
       terminal.StyleStack(_blur_style);
 
       terminal.write("  ");
