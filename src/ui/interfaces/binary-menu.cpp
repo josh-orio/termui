@@ -141,14 +141,8 @@ void BinaryMenu::update_size() {
   neg_x2 = neg_x1 + 8 - 1;
   neg_y = ((terminal.height() - h) / 2) + h - 2;
 
-  if (selection) {
-    aff.focus();
-    neg.blur();
-
-  } else /* status == f */ {
-    aff.blur();
-    neg.focus();
-  }
+  aff.setFocus(selection);
+  neg.setFocus(!selection);
 
   // resize boundary box
   box.resize(w, h);

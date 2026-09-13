@@ -19,9 +19,20 @@ Button &Button::width(unsigned int w) {
   return *this;
 }
 
-void Button::focus() { _selected = true; }
+Button &Button::focus() {
+  _selected = true;
+  return *this;
+}
 
-void Button::blur() { _selected = false; }
+Button &Button::blur() {
+  _selected = false;
+  return *this;
+}
+
+Button &Button::setFocus(bool x) {
+  _selected = x;
+  return *this;
+}
 
 void Button::render() {
   std::string txt = _text;

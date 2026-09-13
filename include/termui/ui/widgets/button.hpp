@@ -14,14 +14,16 @@ public:
   Button &blur_style(Style s);
   Button &width(unsigned int w);
 
-  void focus(), blur();
+  Button &focus();
+  Button &blur();
+  Button &setFocus(bool x);
 
   void render();
 
 private:
   termui::string _text;
   termui::Style  _focus_style, _blur_style;
-  unsigned int           _w;
+  unsigned int   _w;
   bool           _selected;
 };
 
