@@ -110,14 +110,14 @@ Presents a menu with titles and descriptions, featuring enhanced visual styling 
 ### Constructors
 
 ```cpp
-FancyMenu(const termui::string &title, const std::vector<FancyList::Element> &rows, uint line_seperation = 1);
+FancyMenu(const termui::string &title, const std::vector<FancyList::Element> &rows, unsigned int line_seperation = 1);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `title` | `termui::string` | The menu title. |
 | `rows` | `std::vector<FancyList::Element>` | Vector of menu elements with titles and descriptions. |
-| `line_seperation` | `uint` | Number of blank lines between elements. Defaults to `1`. |
+| `line_seperation` | `unsigned int` | Number of blank lines between elements. Defaults to `1`. |
 
 ### Element Structure
 
@@ -139,7 +139,7 @@ struct Element {
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `show()` | `termui::Interface::State` | Shows the fancy menu and waits for user input. Returns `EXIT` to close, `SELECT` with selection made. |
-| `cursor()` | `uint` | Returns the current cursor position (zero-indexed element index). |
+| `cursor()` | `unsigned int` | Returns the current cursor position (zero-indexed element index). |
 
 ### Private Members
 
@@ -149,8 +149,8 @@ struct Element {
 | `text`, `desc` | `termui::strings` | Menu text and description vectors. |
 | `title_banner` | `PaddedText` | Title rendering component. |
 | `list` | `FancyList` | The fancy list widget. |
-| `line_seperation` | `uint` | Blank lines between elements. |
-| `lvo`, `lho` | `uint` | List vertical and horizontal overhead. |
+| `line_seperation` | `unsigned int` | Blank lines between elements. |
+| `lvo`, `lho` | `unsigned int` | List vertical and horizontal overhead. |
 | `reprint` | `bool` | Flag indicating if reprint is required. |
 
 ### Notes
@@ -191,7 +191,7 @@ InfoBox(const termui::string &t, const termui::string &c);
 | `box` | `Box` | Layout container. |
 | `header`, `body` | `Text` | Text rendering components. |
 | `close` | `Button` | Close button. |
-| `w`, `h` | `uint` | Width and height of the dialog. |
+| `w`, `h` | `unsigned int` | Width and height of the dialog. |
 | `reprint` | `bool` | Flag indicating if reprint is required. |
 
 ### Notes
@@ -231,15 +231,15 @@ InfoPage(const termui::string &t, const termui::string &c);
 | `title`, `content` | `termui::string` | Page title and content. |
 | `title_banner` | `PaddedText` | Title rendering component. |
 | `info` | `Pager` | Pager widget for scrolling content. |
-| `voh`, `hoh` | `uint` | Vertical and horizontal overhead. |
+| `voh`, `hoh` | `unsigned int` | Vertical and horizontal overhead. |
 | `reprint` | `bool` | Flag indicating if reprint is required. |
 
 ### Methods (Overridden)
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `cursor_up(uint count = 1)` | `void` | Moves the cursor up by `count` lines. |
-| `cursor_down(uint count = 1)` | `void` | Moves the cursor down by `count` lines. |
+| `cursor_up(unsigned int count = 1)` | `void` | Moves the cursor up by `count` lines. |
+| `cursor_down(unsigned int count = 1)` | `void` | Moves the cursor down by `count` lines. |
 
 ### Notes
 
@@ -282,7 +282,7 @@ InputBox(const termui::string &field, const termui::string &response, const term
 | `header` | `Text` | Header rendering component. |
 | `input_field` | `Input` | Input widget. |
 | `box` | `Box` | Layout container. |
-| `w`, `h` | `uint` | Width and height of the input box. |
+| `w`, `h` | `unsigned int` | Width and height of the input box. |
 | `reprint` | `bool` | Flag indicating if reprint is required. |
 
 ### Notes
@@ -301,7 +301,7 @@ Presents paginated input fields with navigation controls.
 ### Constructors
 
 ```cpp
-InputPage(const termui::string &title, const termui::strings &fields, const termui::strings &responses, uint ls = 0);
+InputPage(const termui::string &title, const termui::strings &fields, const termui::strings &responses, unsigned int ls = 0);
 ```
 
 | Parameter | Type | Description |
@@ -309,7 +309,7 @@ InputPage(const termui::string &title, const termui::strings &fields, const term
 | `title` | `termui::string` | The page title. |
 | `fields` | `termui::strings` | Vector of input field labels. |
 | `responses` | `termui::strings` | Vector of response texts. |
-| `ls` | `uint` | Line spacing multiplier. Defaults to `0`. |
+| `ls` | `unsigned int` | Line spacing multiplier. Defaults to `0`. |
 
 ### Methods
 
@@ -324,20 +324,20 @@ InputPage(const termui::string &title, const termui::strings &fields, const term
 | `title` | `termui::string` | Page title. |
 | `fields`, `responses` | `termui::strings` | Field labels and response texts. |
 | `header` | `Text` | Header rendering component. |
-| `cursor` | `uint` | Index of the currently selected row. |
+| `cursor` | `unsigned int` | Index of the currently selected row. |
 | `selected` | `bool` | Whether the current row is selected/active. |
-| `visible_lines` | `uint` | Total rows in view. |
-| `start_line` | `uint` | Index of the first visible row. |
-| `line_seperation` | `uint` | Blank rows between elements. |
-| `voh`, `hoh` | `uint` | Vertical and horizontal overhead. |
+| `visible_lines` | `unsigned int` | Total rows in view. |
+| `start_line` | `unsigned int` | Index of the first visible row. |
+| `line_seperation` | `unsigned int` | Blank rows between elements. |
+| `voh`, `hoh` | `unsigned int` | Vertical and horizontal overhead. |
 | `reprint` | `bool` | Flag indicating if reprint is required. |
 
 ### Methods (Overridden)
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `cursor_up(uint count = 1)` | `void` | Moves the cursor up by `count` lines. |
-| `cursor_down(uint count = 1)` | `void` | Moves the cursor down by `count` lines. |
+| `cursor_up(unsigned int count = 1)` | `void` | Moves the cursor up by `count` lines. |
+| `cursor_down(unsigned int count = 1)` | `void` | Moves the cursor down by `count` lines. |
 
 ### Notes
 
@@ -357,21 +357,21 @@ Presents a simple scrollable menu of text elements with cursor navigation.
 ### Constructors
 
 ```cpp
-Menu(const termui::string &title, const termui::strings &elements, uint line_seperation = 1);
+Menu(const termui::string &title, const termui::strings &elements, unsigned int line_seperation = 1);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `title` | `termui::string` | The menu title. |
 | `elements` | `termui::strings` | Vector of menu elements. |
-| `line_seperation` | `uint` | Number of blank lines between elements. Defaults to `1`. |
+| `line_seperation` | `unsigned int` | Number of blank lines between elements. Defaults to `1`. |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `show()` | `int` | Shows the menu and waits for user input. Returns `-1` for exit, or the index of the selected element. |
-| `cursor()` | `uint` | Returns the current cursor position. |
+| `cursor()` | `unsigned int` | Returns the current cursor position. |
 | `status()` | `termui::Interface::State` | Returns the current interface state when closing. |
 
 ### Private Members
@@ -382,8 +382,8 @@ Menu(const termui::string &title, const termui::strings &elements, uint line_sep
 | `elements` | `termui::strings` | Menu elements. |
 | `title_banner` | `PaddedText` | Title rendering component. |
 | `list` | `List` | List widget. |
-| `line_seperation` | `uint` | Blank lines between elements. |
-| `lvo`, `lho` | `uint` | List vertical and horizontal overhead. |
+| `line_seperation` | `unsigned int` | Blank lines between elements. |
+| `lvo`, `lho` | `unsigned int` | List vertical and horizontal overhead. |
 | `reprint` | `bool` | Flag indicating if reprint is required. |
 
 ### Notes
@@ -486,23 +486,23 @@ Presents a menu with toggleable options, allowing multiple selections.
 ### Constructors
 
 ```cpp
-ToggleMenu(const termui::string &title, const termui::strings &elements, uint line_seperation = 1);
+ToggleMenu(const termui::string &title, const termui::strings &elements, unsigned int line_seperation = 1);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `title` | `termui::string` | The menu title. |
 | `elements` | `termui::strings` | Vector of menu elements. |
-| `line_seperation` | `uint` | Number of blank lines between elements. Defaults to `1`. |
+| `line_seperation` | `unsigned int` | Number of blank lines between elements. Defaults to `1`. |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `show()` | `void` | Shows the toggle menu and waits for user input. |
-| `cursor()` | `uint` | Returns the current cursor position. |
+| `cursor()` | `unsigned int` | Returns the current cursor position. |
 | `isSelected(int i)` | `bool` | Returns whether the element at index `i` is selected. |
-| `selmap()` | `std::vector<uint>` | Returns a vector of indices of all selected elements. |
+| `selmap()` | `std::vector<unsigned int>` | Returns a vector of indices of all selected elements. |
 
 ### Private Members
 
@@ -512,8 +512,8 @@ ToggleMenu(const termui::string &title, const termui::strings &elements, uint li
 | `elements` | `termui::strings` | Menu elements. |
 | `title_banner` | `PaddedText` | Title rendering component. |
 | `list` | `ToggleList` | Toggle list widget. |
-| `line_seperation` | `uint` | Blank lines between elements. |
-| `lvo`, `lho` | `uint` | List vertical and horizontal overhead. |
+| `line_seperation` | `unsigned int` | Blank lines between elements. |
+| `lvo`, `lho` | `unsigned int` | List vertical and horizontal overhead. |
 | `reprint` | `bool` | Flag indicating if reprint is required. |
 
 ### Notes

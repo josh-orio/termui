@@ -11,7 +11,7 @@ Renders a clickable button with separate styles for focused and unfocused states
 ### Constructors
 
 ```cpp
-Button(const termui::string &text, Style focus_style = Styles::none, Style blur_style = Styles::none, uint width = 0);
+Button(const termui::string &text, Style focus_style = Styles::none, Style blur_style = Styles::none, unsigned int width = 0);
 ```
 
 | Parameter | Type | Description |
@@ -19,7 +19,7 @@ Button(const termui::string &text, Style focus_style = Styles::none, Style blur_
 | `text` | `termui::string` | The button label text to display. |
 | `focus_style` | `Style` | Style applied when the button is focused (keyboard selected). Defaults to `Styles::none`. |
 | `blur_style` | `Style` | Style applied when the button is unfocused. Defaults to `Styles::none`. |
-| `width` | `uint` | Constraining width in columns. `0` means unconstrained. |
+| `width` | `unsigned int` | Constraining width in columns. `0` means unconstrained. |
 
 ### Methods
 
@@ -28,8 +28,8 @@ Button(const termui::string &text, Style focus_style = Styles::none, Style blur_
 | `render()` | `std::string` | Renders the button to a terminal-ready string. |
 | `focus()` | `void` | Sets the button as the currently focused element. |
 | `blur()` | `void` | Removes focus from the button. |
-| `resize(uint w)` | `void` | Resizes the button to the specified width. |
-| `width()` | `uint` | Returns the current width of the button. |
+| `resize(unsigned int w)` | `void` | Resizes the button to the specified width. |
+| `width()` | `unsigned int` | Returns the current width of the button. |
 
 ### Notes
 
@@ -46,7 +46,7 @@ Renders a scrollable list of elements with titles and descriptions, featuring en
 ### Constructors
 
 ```cpp
-FancyList(const std::vector<Element> &rows, Style focus_style = Styles::none, Style blur_style = Styles::none, uint width = 0, uint height = 0, uint ls = 1);
+FancyList(const std::vector<Element> &rows, Style focus_style = Styles::none, Style blur_style = Styles::none, unsigned int width = 0, unsigned int height = 0, unsigned int ls = 1);
 ```
 
 | Parameter | Type | Description |
@@ -54,9 +54,9 @@ FancyList(const std::vector<Element> &rows, Style focus_style = Styles::none, St
 | `rows` | `std::vector<Element>` | Vector of list elements, each containing a title and description. |
 | `focus_style` | `Style` | Style applied to the focused element. Defaults to `Styles::none`. |
 | `blur_style` | `Style` | Style applied to unfocused elements. Defaults to `Styles::none`. |
-| `width` | `uint` | Constraining width in columns. `0` means unconstrained. |
-| `height` | `uint` | Constraining height in rows. `0` means unconstrained. |
-| `ls` | `uint` | Line spacing multiplier. Defaults to `1`. |
+| `width` | `unsigned int` | Constraining width in columns. `0` means unconstrained. |
+| `height` | `unsigned int` | Constraining height in rows. `0` means unconstrained. |
+| `ls` | `unsigned int` | Line spacing multiplier. Defaults to `1`. |
 
 ### Element Structure
 
@@ -78,11 +78,11 @@ struct Element {
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the fancy list to a terminal-ready string. |
-| `resize(uint w, uint h)` | `void` | Resizes the list to the specified width and height. |
-| `resize(uint w, uint h, uint ls)` | `void` | Resizes the list with custom line spacing. |
-| `cursor_up(uint count = 1)` | `void` | Moves the cursor up by `count` lines. |
-| `cursor_down(uint count = 1)` | `void` | Moves the cursor down by `count` lines. |
-| `get_cursor()` | `uint` | Returns the current cursor position (zero-indexed element index). |
+| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the list to the specified width and height. |
+| `resize(unsigned int w, unsigned int h, unsigned int ls)` | `void` | Resizes the list with custom line spacing. |
+| `cursor_up(unsigned int count = 1)` | `void` | Moves the cursor up by `count` lines. |
+| `cursor_down(unsigned int count = 1)` | `void` | Moves the cursor down by `count` lines. |
+| `get_cursor()` | `unsigned int` | Returns the current cursor position (zero-indexed element index). |
 
 ### Notes
 
@@ -100,7 +100,7 @@ Renders a simple scrollable list of text elements with cursor navigation.
 ### Constructors
 
 ```cpp
-List(const termui::strings &strs, Style focus_style = Styles::none, Style blur_style = Styles::none, uint width = 0, uint height = 0, uint ls = 0);
+List(const termui::strings &strs, Style focus_style = Styles::none, Style blur_style = Styles::none, unsigned int width = 0, unsigned int height = 0, unsigned int ls = 0);
 ```
 
 | Parameter | Type | Description |
@@ -108,19 +108,19 @@ List(const termui::strings &strs, Style focus_style = Styles::none, Style blur_s
 | `strs` | `termui::strings` | Vector of string elements to display. |
 | `focus_style` | `Style` | Style applied to the focused element. Defaults to `Styles::none`. |
 | `blur_style` | `Style` | Style applied to unfocused elements. Defaults to `Styles::none`. |
-| `width` | `uint` | Constraining width in columns. `0` means unconstrained. |
-| `height` | `uint` | Constraining height in rows. `0` means unconstrained. |
-| `ls` | `uint` | Line spacing multiplier. Defaults to `0`. |
+| `width` | `unsigned int` | Constraining width in columns. `0` means unconstrained. |
+| `height` | `unsigned int` | Constraining height in rows. `0` means unconstrained. |
+| `ls` | `unsigned int` | Line spacing multiplier. Defaults to `0`. |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the list to a terminal-ready string. |
-| `resize(uint w, uint h)` | `void` | Resizes the list to the specified width and height. |
-| `cursor_up(uint count = 1)` | `void` | Moves the cursor up by `count` lines. |
-| `cursor_down(uint count = 1)` | `void` | Moves the cursor down by `count` lines. |
-| `get_cursor()` | `uint` | Returns the current cursor position (zero-indexed element index). |
+| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the list to the specified width and height. |
+| `cursor_up(unsigned int count = 1)` | `void` | Moves the cursor up by `count` lines. |
+| `cursor_down(unsigned int count = 1)` | `void` | Moves the cursor down by `count` lines. |
+| `get_cursor()` | `unsigned int` | Returns the current cursor position (zero-indexed element index). |
 
 ### Notes
 
@@ -153,16 +153,16 @@ Table(const termui::strings &columns, const std::vector<termui::strings> &rows, 
 ```cpp
 struct Column {
   termui::string title;
-  uint width;
+  unsigned int width;
 
-  Column(termui::string str, uint w = 1);
+  Column(termui::string str, unsigned int w = 1);
 };
 ```
 
 | Member | Type | Description |
 |--------|------|-------------|
 | `title` | `termui::string` | The column header text. |
-| `width` | `uint` | The width of the column in characters. Defaults to `1`. |
+| `width` | `unsigned int` | The width of the column in characters. Defaults to `1`. |
 
 ### Row Structure
 
@@ -182,9 +182,9 @@ struct Row {
 
 ```cpp
 struct TableStyle {
-  uint table_height;
-  uint cell_height = 1;
-  uint line_seperation = 0;
+  unsigned int table_height;
+  unsigned int cell_height = 1;
+  unsigned int line_seperation = 0;
   Style cursor_style = Style(std::nullopt, 57);
   Border border = Borders::rounded;
 };
@@ -192,9 +192,9 @@ struct TableStyle {
 
 | Member | Type | Description |
 |--------|------|-------------|
-| `table_height` | `uint` | The height of the table in rows. |
-| `cell_height` | `uint` | Height of individual cells. Defaults to `1`. |
-| `line_seperation` | `uint` | Additional spacing between rows. Defaults to `0`. |
+| `table_height` | `unsigned int` | The height of the table in rows. |
+| `cell_height` | `unsigned int` | Height of individual cells. Defaults to `1`. |
+| `line_seperation` | `unsigned int` | Additional spacing between rows. Defaults to `0`. |
 | `cursor_style` | `Style` | Style applied to the cursor/focused cell. Defaults to ANSI yellow. |
 | `border` | `Border` | Border style for the table. Defaults to `Borders::rounded`. |
 
@@ -203,11 +203,11 @@ struct TableStyle {
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the table to a terminal-ready string. |
-| `resize(std::vector<uint> widths, uint h)` | `void` | Resizes the table with custom column widths and height. |
-| `cursor_up(uint count = 1)` | `void` | Moves the cursor up by `count` rows. |
-| `cursor_down(uint count = 1)` | `void` | Moves the cursor down by `count` rows. |
-| `get_cursor()` | `uint` | Returns the current cursor position (zero-indexed row index). |
-| `colCount()` | `uint` | Returns the number of columns in the table. |
+| `resize(std::vector<unsigned int> widths, unsigned int h)` | `void` | Resizes the table with custom column widths and height. |
+| `cursor_up(unsigned int count = 1)` | `void` | Moves the cursor up by `count` rows. |
+| `cursor_down(unsigned int count = 1)` | `void` | Moves the cursor down by `count` rows. |
+| `get_cursor()` | `unsigned int` | Returns the current cursor position (zero-indexed row index). |
+| `colCount()` | `unsigned int` | Returns the number of columns in the table. |
 
 ### Notes
 
@@ -226,7 +226,7 @@ Renders a scrollable list of elements where each element can be individually tog
 ### Constructors
 
 ```cpp
-ToggleList(const termui::strings &strs, Style focus_style = Styles::none, Style blur_style = Styles::none, uint width = 0, uint height = 0, uint ls = 0);
+ToggleList(const termui::strings &strs, Style focus_style = Styles::none, Style blur_style = Styles::none, unsigned int width = 0, unsigned int height = 0, unsigned int ls = 0);
 ```
 
 | Parameter | Type | Description |
@@ -234,19 +234,19 @@ ToggleList(const termui::strings &strs, Style focus_style = Styles::none, Style 
 | `strs` | `termui::strings` | Vector of string elements to display. |
 | `focus_style` | `Style` | Style applied to the focused element. Defaults to `Styles::none`. |
 | `blur_style` | `Style` | Style applied to unfocused elements. Defaults to `Styles::none`. |
-| `width` | `uint` | Constraining width in columns. `0` means unconstrained. |
-| `height` | `uint` | Constraining height in rows. `0` means unconstrained. |
-| `ls` | `uint` | Line spacing multiplier. Defaults to `0`. |
+| `width` | `unsigned int` | Constraining width in columns. `0` means unconstrained. |
+| `height` | `unsigned int` | Constraining height in rows. `0` means unconstrained. |
+| `ls` | `unsigned int` | Line spacing multiplier. Defaults to `0`. |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the toggle list to a terminal-ready string. |
-| `resize(uint w, uint h)` | `void` | Resizes the list to the specified width and height. |
-| `cursor_up(uint count = 1)` | `void` | Moves the cursor up by `count` lines. |
-| `cursor_down(uint count = 1)` | `void` | Moves the cursor down by `count` lines. |
-| `get_cursor()` | `uint` | Returns the current cursor position (zero-indexed element index). |
+| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the list to the specified width and height. |
+| `cursor_up(unsigned int count = 1)` | `void` | Moves the cursor up by `count` lines. |
+| `cursor_down(unsigned int count = 1)` | `void` | Moves the cursor down by `count` lines. |
+| `get_cursor()` | `unsigned int` | Returns the current cursor position (zero-indexed element index). |
 | `toggle()` | `void` | Toggles the selection state of the currently focused element. |
 | `getSelection(int i)` | `bool` | Returns the selection state of element at index `i`. |
 

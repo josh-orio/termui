@@ -11,13 +11,13 @@ Renders a filled rectangular area with a configurable symbol pattern.
 ### Constructors
 
 ```cpp
-Area(uint width, uint height, Style style, std::string symbol = "╱");
+Area(unsigned int width, unsigned int height, Style style, std::string symbol = "╱");
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `width` | `uint` | The width of the area in columns. |
-| `height` | `uint` | The height of the area in rows. |
+| `width` | `unsigned int` | The width of the area in columns. |
+| `height` | `unsigned int` | The height of the area in rows. |
 | `style` | `Style` | The style applied to the area. |
 | `symbol` | `std::string` | The fill symbol. Defaults to `"╱"`. |
 
@@ -26,9 +26,9 @@ Area(uint width, uint height, Style style, std::string symbol = "╱");
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the area to a terminal-ready string. |
-| `resize(uint w, uint h)` | `void` | Resizes the area. |
-| `width()` | `uint` | Returns the current width. |
-| `height()` | `uint` | Returns the current height. |
+| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the area. |
+| `width()` | `unsigned int` | Returns the current width. |
+| `height()` | `unsigned int` | Returns the current height. |
 
 ### Notes
 
@@ -44,13 +44,13 @@ Renders a bordered rectangular box with customizable border styles.
 ### Constructors
 
 ```cpp
-Box(uint width, uint height, Border border, Style style = Styles::none);
+Box(unsigned int width, unsigned int height, Border border, Style style = Styles::none);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `width` | `uint` | The width of the box in columns. |
-| `height` | `uint` | The height of the box in rows. |
+| `width` | `unsigned int` | The width of the box in columns. |
+| `height` | `unsigned int` | The height of the box in rows. |
 | `border` | `Border` | The border style. See `Borders::square` or `Borders::rounded`. |
 | `style` | `Style` | The style applied to the box. Defaults to `Styles::none`. |
 
@@ -59,9 +59,9 @@ Box(uint width, uint height, Border border, Style style = Styles::none);
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the box to a terminal-ready string. |
-| `resize(uint w, uint h)` | `void` | Resizes the box. |
-| `width()` | `uint` | Returns the current width. |
-| `height()` | `uint` | Returns the current height. |
+| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the box. |
+| `width()` | `unsigned int` | Returns the current width. |
+| `height()` | `unsigned int` | Returns the current height. |
 
 ### Notes
 
@@ -78,12 +78,12 @@ Renders a horizontal line of a specified width.
 ### Constructors
 
 ```cpp
-HorizontalLine(uint width, Border border);
+HorizontalLine(unsigned int width, Border border);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `width` | `uint` | The width of the line in columns. |
+| `width` | `unsigned int` | The width of the line in columns. |
 | `border` | `Border` | The border style for the line. |
 
 ### Methods
@@ -91,7 +91,7 @@ HorizontalLine(uint width, Border border);
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the horizontal line to a terminal-ready string. |
-| `width()` | `uint` | Returns the current width. |
+| `width()` | `unsigned int` | Returns the current width. |
 
 ---
 
@@ -102,12 +102,12 @@ Renders a vertical line of a specified height.
 ### Constructors
 
 ```cpp
-VerticalLine(uint height, Border border);
+VerticalLine(unsigned int height, Border border);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `height` | `uint` | The height of the line in rows. |
+| `height` | `unsigned int` | The height of the line in rows. |
 | `border` | `Border` | The border style for the line. |
 
 ### Methods
@@ -115,7 +115,7 @@ VerticalLine(uint height, Border border);
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the vertical line to a terminal-ready string. |
-| `height()` | `uint` | Returns the current height. |
+| `height()` | `unsigned int` | Returns the current height. |
 
 ---
 
@@ -126,12 +126,12 @@ Renders a progress bar with configurable width, completion percentage, and color
 ### Constructors
 
 ```cpp
-ProgressBar(uint width, float decimal, Color foreground, Color background);
+ProgressBar(unsigned int width, float decimal, Color foreground, Color background);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `width` | `uint` | The width of the progress bar in columns. |
+| `width` | `unsigned int` | The width of the progress bar in columns. |
 | `decimal` | `float` | The completion percentage as a decimal (0.0 to 1.0). |
 | `foreground` | `Color` | The foreground color of the progress bar. |
 | `background` | `Color` | The background color of the progress bar. |
@@ -141,7 +141,7 @@ ProgressBar(uint width, float decimal, Color foreground, Color background);
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the progress bar to a terminal-ready string. |
-| `width()` | `uint` | Returns the current width. |
+| `width()` | `unsigned int` | Returns the current width. |
 
 ### Notes
 

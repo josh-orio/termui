@@ -52,7 +52,7 @@ enum class Mode { ASCII, ANSI256, TRUECOLOR };
 
 ```cpp
 void write(const std::string &str) const;
-void write(uint row, uint column, const std::string &str) const;
+void write(unsigned int row, unsigned int column, const std::string &str) const;
 void flush() const;
 std::string read() const;
 ```
@@ -68,10 +68,10 @@ std::string read() const;
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `width()` | `uint` | Terminal width in columns. |
-| `height()` | `uint` | Terminal height in rows. |
-| `halfWidth()` | `uint` | Half the terminal width, rounded as implemented. Convenient for centering. |
-| `halfHeight()` | `uint` | Half the terminal height, rounded as implemented. Convenient for centering. |
+| `width()` | `unsigned int` | Terminal width in columns. |
+| `height()` | `unsigned int` | Terminal height in rows. |
+| `halfWidth()` | `unsigned int` | Half the terminal width, rounded as implemented. Convenient for centering. |
+| `halfHeight()` | `unsigned int` | Half the terminal height, rounded as implemented. Convenient for centering. |
 
 ### Styling
 
@@ -90,17 +90,17 @@ void StylePop() const;
 ### Positioning
 
 ```cpp
-void MoveCursor(uint row, uint column) const;
+void MoveCursor(unsigned int row, unsigned int column) const;
 void SaveCursorPosition();
 void RestoreCursorPosition();
 
-const Terminal &CursorUp(uint n) const;
-const Terminal &CursorDown(uint n) const;
-const Terminal &CursorRight(uint n) const;
-const Terminal &CursorLeft(uint n) const;
+const Terminal &CursorUp(unsigned int n) const;
+const Terminal &CursorDown(unsigned int n) const;
+const Terminal &CursorRight(unsigned int n) const;
+const Terminal &CursorLeft(unsigned int n) const;
 
-void CursorNextLine(uint n);
-void CursorPrevLine(uint n);
+void CursorNextLine(unsigned int n);
+void CursorPrevLine(unsigned int n);
 ```
 
 | Method | Description |
@@ -124,8 +124,8 @@ void ClearScreen() const;
 void ClearScrollback() const;
 void ClearLine();
 void ClearLines();
-void InsertLines(uint n);
-void DeleteLines(uint n);
+void InsertLines(unsigned int n);
+void DeleteLines(unsigned int n);
 
 void DisableInputBuffering() const;
 void EnableInputBuffering() const;

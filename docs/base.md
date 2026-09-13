@@ -13,24 +13,24 @@ Renders a plain styled block of text, optionally constrained to a fixed width an
 ### Constructors
 
 ```cpp
-Text(const termui::string &str, Style style = Styles::none, uint width = 0, uint height = 0);
+Text(const termui::string &str, Style style = Styles::none, unsigned int width = 0, unsigned int height = 0);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `str` | `termui::string` | The text content to display. |
 | `style` | `Style` | Text/colour style. Defaults to `Styles::none`. |
-| `width` | `uint` | Constraining width in columns. `0` means unconstrained. |
-| `height` | `uint` | Constraining height in rows. `0` means unconstrained. |
+| `width` | `unsigned int` | Constraining width in columns. `0` means unconstrained. |
+| `height` | `unsigned int` | Constraining height in rows. `0` means unconstrained. |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the text to a terminal-ready string. Virtual; can be overridden. |
-| `resize(uint w, uint h)` | `void` | Resizes the text area. |
-| `width()` | `uint` | Returns the current width. |
-| `height()` | `uint` | Returns the current height. |
+| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the text area. |
+| `width()` | `unsigned int` | Returns the current width. |
+| `height()` | `unsigned int` | Returns the current height. |
 
 ### Notes
 
@@ -48,7 +48,7 @@ Extends `Text` with configurable padding. Inherits all `Text` behaviour and adds
 ### Constructors
 
 ```cpp
-PaddedText(const termui::string &str, Style style = Styles::none, Padding pad_style = PaddingStyle::label, uint width = 0, uint height = 0);
+PaddedText(const termui::string &str, Style style = Styles::none, Padding pad_style = PaddingStyle::label, unsigned int width = 0, unsigned int height = 0);
 ```
 
 | Parameter | Type | Description |
@@ -56,17 +56,17 @@ PaddedText(const termui::string &str, Style style = Styles::none, Padding pad_st
 | `str` | `termui::string` | The text content to display. |
 | `style` | `Style` | Text/colour style. Defaults to `Styles::none`. |
 | `pad_style` | `Padding` | Padding configuration. Defaults to `PaddingStyle::label`. |
-| `width` | `uint` | Constraining width in columns (must exceed horizontal padding). |
-| `height` | `uint` | Constraining height in rows (must exceed vertical padding). |
+| `width` | `unsigned int` | Constraining width in columns (must exceed horizontal padding). |
+| `height` | `unsigned int` | Constraining height in rows (must exceed vertical padding). |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the padded text block. Overrides `Text::render()`. |
-| `resize(uint w, uint h)` | `void` | Resizes the text area. Inherited from `Text`. |
-| `hPadding()` | `uint` | Returns the current horizontal padding value. |
-| `vPadding()` | `uint` | Returns the current vertical padding value. |
+| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the text area. Inherited from `Text`. |
+| `hPadding()` | `unsigned int` | Returns the current horizontal padding value. |
+| `vPadding()` | `unsigned int` | Returns the current vertical padding value. |
 
 ---
 
@@ -77,7 +77,7 @@ Renders an editable input field with separate styles for its value and placehold
 ### Constructors
 
 ```cpp
-Input(const termui::string &value, Style valStyle = Styles::none, const termui::string &placeholder = termui::string(""), Style plhStyle = Styles::faint, uint width = 0, uint height = 0);
+Input(const termui::string &value, Style valStyle = Styles::none, const termui::string &placeholder = termui::string(""), Style plhStyle = Styles::faint, unsigned int width = 0, unsigned int height = 0);
 ```
 
 | Parameter | Type | Description |
@@ -86,17 +86,17 @@ Input(const termui::string &value, Style valStyle = Styles::none, const termui::
 | `valStyle` | `Style` | Style applied to the value text. Defaults to `Styles::none`. |
 | `placeholder` | `termui::string` | Placeholder text shown when the value is empty. Defaults to `""`. |
 | `plhStyle` | `Style` | Style applied to the placeholder text. Defaults to `Styles::faint`. |
-| `width` | `uint` | Constraining width in columns. `0` means unconstrained. |
-| `height` | `uint` | Constraining height in rows. `0` means unconstrained. |
+| `width` | `unsigned int` | Constraining width in columns. `0` means unconstrained. |
+| `height` | `unsigned int` | Constraining height in rows. `0` means unconstrained. |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the input field to a terminal-ready string. |
-| `resize(uint w, uint h)` | `void` | Resizes the input area. |
-| `width()` | `uint` | Returns the current width. |
-| `height()` | `uint` | Returns the current height. |
+| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the input area. |
+| `width()` | `unsigned int` | Returns the current width. |
+| `height()` | `unsigned int` | Returns the current height. |
 
 ---
 
@@ -107,27 +107,27 @@ Renders a scrollable view over a block of text. Tracks a cursor (start line) tha
 ### Constructors
 
 ```cpp
-Pager(const termui::string &str, Style style = Styles::none, uint width = 0, uint height = 0);
+Pager(const termui::string &str, Style style = Styles::none, unsigned int width = 0, unsigned int height = 0);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `str` | `termui::string` | The full text content to page through. |
 | `style` | `Style` | Text/colour style. Defaults to `Styles::none`. |
-| `width` | `uint` | Viewport width in columns. `0` means unconstrained. |
-| `height` | `uint` | Viewport height in rows. `0` means unconstrained. |
+| `width` | `unsigned int` | Viewport width in columns. `0` means unconstrained. |
+| `height` | `unsigned int` | Viewport height in rows. `0` means unconstrained. |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `render()` | `std::string` | Renders the current page (from `cursor` to `cursor + height`) to a terminal-ready string. |
-| `resize(uint w, uint h)` | `void` | Resizes the viewport. |
-| `width()` | `uint` | Returns the current viewport width. |
-| `height()` | `uint` | Returns the current viewport height. |
-| `cursor_up(uint count = 1)` | `void` | Moves the cursor up by `count` lines. |
-| `cursor_down(uint count = 1)` | `void` | Moves the cursor down by `count` lines. |
-| `get_cursor()` | `uint` | Returns the current cursor position (zero-indexed start line). |
+| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the viewport. |
+| `width()` | `unsigned int` | Returns the current viewport width. |
+| `height()` | `unsigned int` | Returns the current viewport height. |
+| `cursor_up(unsigned int count = 1)` | `void` | Moves the cursor up by `count` lines. |
+| `cursor_down(unsigned int count = 1)` | `void` | Moves the cursor down by `count` lines. |
+| `get_cursor()` | `unsigned int` | Returns the current cursor position (zero-indexed start line). |
 
 ### Notes
 
