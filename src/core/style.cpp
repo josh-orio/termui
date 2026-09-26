@@ -40,7 +40,7 @@ bool Style::ResetsSGR() const { return attributes.size() == 1 && attributes.at(0
 // --- StyleMap ---
 StyleMap::StyleMap(std::map<std::string, termui::Style> styles) : styles(styles) {}
 
-void StyleMap::add(std::string key, Style style) { styles.at(key) = style; }
+void StyleMap::add(std::string key, Style style) { styles[key] = style; }
 
 const Style &StyleMap::at(std::string style) { return styles[style]; }
 
