@@ -44,4 +44,14 @@ void StyleMap::add(std::string key, Style style) { styles.at(key) = style; }
 
 const Style &StyleMap::at(std::string style) { return styles[style]; }
 
+std::vector<std::string> StyleMap::keys() {
+  std::vector<std::string> keys;
+
+  for (auto const &s : styles) {
+    keys.push_back(s.first);
+  }
+
+  return keys;
+}
+
 } // namespace termui

@@ -61,6 +61,8 @@ public:
 
   const Style &at(std::string style);
 
+  std::vector<std::string> keys();
+
 private:
   std::map<std::string, Style> styles;
 };
