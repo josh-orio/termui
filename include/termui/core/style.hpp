@@ -57,6 +57,8 @@ public:
   StyleMap() = default;
   StyleMap(std::map<std::string, termui::Style> styles);
 
+  void add(std::string key, Style style);
+
   const Style &at(std::string style);
 
 private:
