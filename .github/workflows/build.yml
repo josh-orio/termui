@@ -1,5 +1,12 @@
 name: Build CI
-on: [push]
+on:
+  push:
+    paths:
+      - '**.hpp'
+      - '**.cpp'
+      - '**/CMakeLists.txt'
+      - 'Config.cmake.in'
+      - '.github/workflows/build.yml'
 
 jobs:
   test:

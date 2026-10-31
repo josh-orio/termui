@@ -3,6 +3,12 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**.hpp'
+      - '**.cpp'
+      - '**/CMakeLists.txt'
+      - 'Config.cmake.in'
+      - '.github/workflows/check.yml'
 
 jobs:
   test:
