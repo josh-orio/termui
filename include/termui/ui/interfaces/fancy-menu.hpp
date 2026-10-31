@@ -6,6 +6,8 @@
 #include <termui/ui/interfaces/interface.hpp>
 #include <termui/ui/widgets/fancy-list.hpp>
 
+#include <algorithm>
+
 namespace termui {
 
 class FancyMenu : public Interface {

@@ -5,6 +5,8 @@
 #include <termui/core/style.hpp>
 #include <termui/ui/base/text.hpp>
 
+#include <algorithm>
+
 namespace termui {
 
 class Pager : public Text {

@@ -1,6 +1,7 @@
 #ifndef TSTR_HPP
 #define TSTR_HPP
 
+#include <initializer_list>
 #include <memory>
 #include <string>
 #include <vector>

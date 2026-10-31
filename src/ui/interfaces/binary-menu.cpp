@@ -1,6 +1,4 @@
-#include <chrono>
 #include <termui/ui/ui.hpp>
-#include <thread>
 
 namespace termui {
 

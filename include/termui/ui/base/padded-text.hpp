@@ -4,6 +4,8 @@
 #include <termui/core/padding.hpp>
 #include <termui/ui/base/text.hpp>
 
+#include <algorithm>
+
 namespace termui {
 
 class PaddedText : public Text {

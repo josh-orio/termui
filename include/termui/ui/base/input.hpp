@@ -4,6 +4,10 @@
 #include <termui/core/str.hpp>
 #include <termui/core/style.hpp>
 
+#include <algorithm>
+#include <deque>
+#include <optional>
+
 namespace termui {
 
 class Input {

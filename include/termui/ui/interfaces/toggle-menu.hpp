@@ -5,6 +5,8 @@
 #include <termui/ui/interfaces/interface.hpp>
 #include <termui/ui/widgets/toggle-list.hpp>
 
+#include <algorithm>
+
 namespace termui {
 
 class ToggleMenu : public Interface {

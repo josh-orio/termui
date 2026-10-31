@@ -5,6 +5,8 @@
 #include <termui/ui/interfaces/interface.hpp>
 #include <termui/ui/widgets/list.hpp>
 
+#include <algorithm>
+
 namespace termui {
 
 class Menu : public Interface {

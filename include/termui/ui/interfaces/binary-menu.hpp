@@ -6,6 +6,9 @@
 #include <termui/ui/interfaces/interface.hpp>
 #include <termui/ui/widgets/button.hpp>
 
+#include <chrono>
+#include <thread>
+
 namespace termui {
 
 class BinaryMenu : public Interface {

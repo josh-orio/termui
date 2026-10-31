@@ -1,10 +1,5 @@
 #include <termui/system/terminal.hpp>
 
-#include <algorithm>
-#include <string>
-#include <utility>
-#include <vector>
-
 namespace termui {
 
 Terminal &Terminal::instance() {

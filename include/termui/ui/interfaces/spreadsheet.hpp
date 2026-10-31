@@ -5,6 +5,8 @@
 #include <termui/ui/interfaces/interface.hpp>
 #include <termui/ui/widgets/table.hpp>
 
+#include <algorithm>
+
 namespace termui {
 
 class Spreadsheet : public Interface {

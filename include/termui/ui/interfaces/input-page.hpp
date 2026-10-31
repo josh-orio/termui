@@ -4,6 +4,8 @@
 #include <termui/ui/base/padded-text.hpp>
 #include <termui/ui/interfaces/interface.hpp>
 
+#include <algorithm>
+
 namespace termui {
 
 class InputPage : public Interface {

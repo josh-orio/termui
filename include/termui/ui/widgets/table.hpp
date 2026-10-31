@@ -5,6 +5,8 @@
 #include <termui/core/str.hpp>
 #include <termui/core/style.hpp>
 
+#include <algorithm>
+
 namespace termui {
 
 class Table {

@@ -1,6 +1,7 @@
 #ifndef TERMINAL_HPP
 #define TERMINAL_HPP
 
+#include <algorithm>
 #include <iostream>
 #include <poll.h>
 #include <stack>
@@ -11,7 +12,10 @@
 #include <termui/core/style.hpp>
 #include <termui/system/mouse.hpp>
 #include <termui/util.hpp>
+#include <tuple>
 #include <unistd.h>
+#include <utility>
+#include <vector>
 
 namespace termui {
 

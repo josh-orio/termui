@@ -3,6 +3,8 @@
 
 #include <termui/core/str.hpp>
 #include <termui/core/style.hpp>
+#include <algorithm>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>

@@ -1,7 +1,5 @@
 #include <termui/ui/ui.hpp>
 
-#include <algorithm>
-
 namespace termui {
 
 Text::Text(const termui::string &str, const Style &style, std::optional<unsigned int> width, std::optional<unsigned int> height)

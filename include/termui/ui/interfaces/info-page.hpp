@@ -5,6 +5,8 @@
 #include <termui/ui/base/pager.hpp>
 #include <termui/ui/interfaces/interface.hpp>
 
+#include <algorithm>
+
 namespace termui {
 
 class InfoPage : public Interface {
