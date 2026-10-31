@@ -7,7 +7,7 @@
 namespace termui {
 
 struct Color {
-  enum class Mode { INHERIT, RESET, ANSI256, TRUECOLOR };
+  enum class Mode { Inherit, Reset, Ansi256, TrueColor };
   Mode mode;
 
   union {
@@ -30,6 +30,11 @@ struct Color {
 
   bool IsInherit() const;
   bool IsReset() const;
+
+  bool isDark() const;
+  bool isLight() const;
+
+
 };
 
 namespace Colors {

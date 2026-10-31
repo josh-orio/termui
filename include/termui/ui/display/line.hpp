@@ -15,12 +15,15 @@ public:
 
   Line(Direction d, size_t len, std::string symbol = "");
 
+  Line &style(Style s);
+
   void render();
 
 private:
-  Direction   direction;
-  size_t      len;
-  std::string symbol;
+  Style       _style;
+  Direction   _direction;
+  size_t      _len;
+  std::string _symbol;
 };
 
 } // namespace termui

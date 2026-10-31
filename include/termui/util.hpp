@@ -10,9 +10,11 @@
 namespace termui {
 std::string repeat(const std::string &s, int n);
 
-size_t visible_length(const std::string &s);                       // calculates length of printed string (not bytes)
-size_t max_visible_length(const std::string &s, size_t n);         // calculates num of bytes that make (up to) n chars when printed
+size_t visible_length(const std::string &s, size_t start = 0);                       // calculates length of printed string (not bytes), from byte offset start
+size_t max_visible_length(const std::string &s, size_t n, size_t start = 0);         // calculates byte index reached after (up to) n chars printed from start
 size_t reverse_max_visible_length(const std::string &s, size_t n); // same as ^, but counts from the back of the string
+
+std::string sgr_sequences(const std::string &s, size_t end = std::string::npos); // collects, in order, the sgr codes in the first end bytes of s
 
 std::string color_swatch(unsigned int swatches_per_line); // print tiles of 8 bit colors on your terminal
 std::string test_sgr_features();                          // generates tiles which apply a different sgr text attribute - used to test your terminal

@@ -2,6 +2,7 @@
 #define TERMINAL_HPP
 
 #include <iostream>
+#include <poll.h>
 #include <stack>
 #include <string>
 #include <sys/ioctl.h>
@@ -17,7 +18,7 @@ namespace termui {
 class Terminal {
 public:
   // enum class OutputMode { Direct, Buffered };
-  enum class Mode { ASCII, ANSI256, TRUECOLOR };
+  enum class Mode { Ascii, Ansi256, TrueColor };
 
   static Terminal &instance();
 
@@ -33,9 +34,9 @@ public:
   unsigned int halfWidth() const;
   unsigned int halfHeight() const;
 
-  Color       ForegroundColor();
-  Color       BackgroundColor();
-  bool        HasDarkBackground();
+  Color       ForegroundColor() const;
+  Color       BackgroundColor() const;
+  bool        HasDarkBackground() const; // naive impl - wip
   Color::Mode ColorCapability();
 
   // void SetOutputMode(OutputMode om);
@@ -50,7 +51,12 @@ public:
   void SaveCursorPosition() const;
   void RestoreCursorPosition() const;
 
+  //exp
+  void saveCursor() const;
+  void popCursor() const;
+
   std::tuple<int, int> GetCursorPosition() const;
+  std::tuple<int, int> GetFutureCursorPosition() const;
 
   const Terminal &CursorUp(unsigned int n) const;
   const Terminal &CursorDown(unsigned int n) const;
@@ -102,7 +108,8 @@ private:
   Mode _color_capability;
   // OutputMode output_mode;
 
-  mutable std::stack<termui::Style> _style_stack;
+  mutable std::stack<termui::Style>       _style_stack;
+  mutable std::stack<std::pair<int, int>> _cursor_stack;
 
   mutable std::string _outbuff;
 };

@@ -4,32 +4,13 @@ namespace termui {
 
 // --- Style ---
 
-Style::Style() : foreground_color(Color::Inherit()), background_color(Color::Inherit()), attributes({SGR::Inherit}) {}
-Style::Style(Color fg, Color bg) : foreground_color(fg), background_color(bg), attributes({SGR::Inherit}) {}
-Style::Style(Color fg, Color bg, std::vector<SGR> sgr) : foreground_color(fg), background_color(bg), attributes(sgr) {}
-Style::Style(std::vector<SGR> sgr) : foreground_color(Color::Inherit()), background_color(Color::Inherit()), attributes(sgr) {}
-
-const Color            &Style::Foreground() const { return foreground_color; }
-const Color            &Style::Background() const { return background_color; }
-const std::vector<SGR> &Style::Attributes() const { return attributes; }
-
-Style &Style::Foreground(Color c) {
-  foreground_color = c;
-  return *this;
-}
-
-Style &Style::Background(Color c) {
-  background_color = c;
-  return *this;
-}
-
-Style &Style::Attributes(std::vector<SGR> a) {
-  attributes = a;
-  return *this;
-}
+Style::Style() : foregroundColor(Color::Inherit()), backgroundColor(Color::Inherit()), attributes({SGR::Inherit}) {}
+Style::Style(Color fg, Color bg) : foregroundColor(fg), backgroundColor(bg), attributes({SGR::Inherit}) {}
+Style::Style(Color fg, Color bg, std::vector<SGR> sgr) : foregroundColor(fg), backgroundColor(bg), attributes(sgr) {}
+Style::Style(std::vector<SGR> sgr) : foregroundColor(Color::Inherit()), backgroundColor(Color::Inherit()), attributes(sgr) {}
 
 bool Style::operator==(const Style &other) const {
-  return foreground_color == other.foreground_color && background_color == other.background_color && attributes == other.attributes;
+  return foregroundColor == other.foregroundColor && backgroundColor == other.backgroundColor && attributes == other.attributes;
 }
 bool Style::operator!=(const Style &other) const { return !(*this == other); }
 

@@ -38,9 +38,9 @@ std::string curs_left(int n) {
   return std::format("\x1b[{}D", n);
 }
 
-size_t visible_length(const std::string &s) {
+size_t visible_length(const std::string &s, size_t start) {
   size_t visible_chars = 0;
-  size_t index         = 0;
+  size_t index         = start;
 
   while (index < s.size()) {
     unsigned char byte = static_cast<unsigned char>(s[index]);
@@ -76,14 +76,14 @@ size_t visible_length(const std::string &s) {
   return visible_chars;
 }
 
-size_t max_visible_length(const std::string &s, size_t n) {
+size_t max_visible_length(const std::string &s, size_t n, size_t start) {
   if (n <= 0)
-    return 0;
+    return start;
   if (s.empty())
-    return 0;
+    return start;
 
-  size_t visible_chars = 0; // num of printed symbols
-  size_t index         = 0; // num of bytes passed
+  size_t visible_chars = 0;     // num of printed symbols
+  size_t index         = start; // num of bytes passed
 
   while (index < s.size()) {
     unsigned char byte = static_cast<unsigned char>(s[index]);
@@ -144,19 +144,31 @@ size_t reverse_max_visible_length(const std::string &s, size_t n) {
       in_csi    = true;
       csi_start = index - 1;
 
+      // consume the '[': it's in the CSI ender range (@ <= c <= ~), so if left to the check
+      // below every sequence would 'end' on its own '[', and whatever followed it, like the
+      // params and real ender of "\x1b[31m", would be counted as visible chars
+      ++index;
+
       continue;
     }
 
     if (in_csi && c >= 0x40 && c <= 0x7E) {
       in_csi = false;
 
-      for (size_t i = csi_start; i <= index && i < map.size(); ++i) {
+      // index is already one past the ender here, so using i <= index would also mark the
+      // first char after the sequence as invisible, and it wouldn't be counted
+      for (size_t i = csi_start; i < index; ++i) {
         map[i] = true; // mark CSI bytes
       }
 
-      index = csi_start + 1;
-
       continue;
+    }
+  }
+
+  // an unterminated CSI runs to the end of the string, same as visible_length skips it
+  if (in_csi) {
+    for (size_t i = csi_start; i < s.size(); ++i) {
+      map[i] = true;
     }
   }
 
@@ -190,6 +202,39 @@ size_t reverse_max_visible_length(const std::string &s, size_t n) {
   }
 
   return s.size(); // reached the beginning
+}
+
+std::string sgr_sequences(const std::string &s, size_t end) {
+  std::string  sequences;
+  const size_t stop  = (end < s.size()) ? end : s.size();
+  size_t       index = 0;
+
+  while (index + 1 < stop) {
+    if (s[index] != '\x1b' || s[index + 1] != '[') {
+      ++index;
+      continue;
+    }
+
+    const size_t csi_start = index;
+
+    index += 2; // consume ESC [
+
+    while (index < stop) {
+      unsigned char c = static_cast<unsigned char>(s[index]);
+
+      ++index; // 'consume' the byte
+
+      if (c >= 0x40 && c <= 0x7E) {
+        if (c == 'm') { // only SGR: other sequences, like cursor moves, shouldn't be replayed
+          sequences.append(s, csi_start, index - csi_start);
+        }
+
+        break;
+      }
+    }
+  }
+
+  return sequences;
 }
 
 std::string color_swatch(unsigned int swatches_per_line) {

@@ -18,6 +18,9 @@ Pager &Pager::cursor_down(unsigned int count) {
 unsigned int Pager::get_cursor() { return _cursor; }
 
 void Pager::render() {
+  bool has_w = _w.has_value(), has_h = _h.has_value();
+  int  w = *_w, h = *_h;
+
   if (_w == 0 || _h == 0) {
     return;
   }
@@ -31,13 +34,13 @@ void Pager::render() {
     next = std::min({
       copy.size(),
       
-      max_visible_length(copy, _w),
+      max_visible_length(copy, w),
       
       copy.find('\n'),
       
-      (copy.rfind(' ', max_visible_length(copy, _w)) == std::string::npos || visible_length(copy) <= _w)
+      (copy.rfind(' ', max_visible_length(copy, w)) == std::string::npos || visible_length(copy) <= w)
         ? copy.size()
-        : copy.rfind(' ', max_visible_length(copy, _w))
+        : copy.rfind(' ', max_visible_length(copy, w))
     });
     // clang-format on
 
@@ -60,32 +63,32 @@ void Pager::render() {
     _cursor = std::max(size_t(0), formatted.size() - 1);
   }
 
-  while (formatted.size() < _cursor + _h) { // add 'overrun' strings
-    formatted.push_back(std::string(_w, ' '));
+  while (formatted.size() < _cursor + h) { // add 'overrun' strings
+    formatted.push_back(std::string(w, ' '));
   }
 
   // align text
   for (int i = 0; i < formatted.size(); i++) {
-    if (formatted.at(i).size() < _w) {
+    if (formatted.at(i).size() < w) {
 
       if (_align == Alignment::Left) {
-        formatted.at(i) += std::string(_w - visible_length(formatted.at(i)), ' ');
+        formatted.at(i) += std::string(w - visible_length(formatted.at(i)), ' ');
       }
       else if (_align == Alignment::Center) {
-        formatted.at(i) = std::string((_w - visible_length(formatted.at(i))) / 2, ' ') + formatted.at(i);
-        formatted.at(i) += std::string(_w - visible_length(formatted.at(i)), ' ');
+        formatted.at(i) = std::string((w - visible_length(formatted.at(i))) / 2, ' ') + formatted.at(i);
+        formatted.at(i) += std::string(w - visible_length(formatted.at(i)), ' ');
       }
       else /* _align == Right */ {
-        formatted.at(i) = std::string(_w - visible_length(formatted.at(i)), ' ') + formatted.at(i);
+        formatted.at(i) = std::string(w - visible_length(formatted.at(i)), ' ') + formatted.at(i);
       }
     }
   }
 
   terminal.StyleStack(_style);
 
-  for (int i = _cursor; i < _cursor + _h; i++) {
+  for (int i = _cursor; i < _cursor + h; i++) {
     if (i > _cursor) {
-      terminal.CursorLeft(_w).CursorDown(1);
+      terminal.CursorLeft(w).CursorDown(1);
     }
 
     terminal.write(formatted.at(i));

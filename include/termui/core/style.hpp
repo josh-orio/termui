@@ -22,33 +22,20 @@ enum class SGR : uint8_t {
   CrossedOut   = 9, // here too
 };
 
-class Style {
-public:
+struct Style {
   Style();
   Style(Color fg, Color bg);
   Style(Color fg, Color bg, std::vector<SGR> sgr);
   Style(std::vector<SGR> sgr);
 
-  const Color            &Foreground() const;
-  const Color            &Background() const;
-  const std::vector<SGR> &Attributes() const;
-
-  Style &Foreground(Color);
-  Style &Background(Color);
-  Style &Attributes(std::vector<SGR>);
-
   bool operator==(const Style &other) const;
   bool operator!=(const Style &other) const;
-
-  // bool IsNone() const;
-  // bool NotNone() const;
 
   bool InheritsSGR() const;
   bool ResetsSGR() const;
 
-private:
-  Color            foreground_color = Color::Inherit();
-  Color            background_color = Color::Inherit();
+  Color            foregroundColor = Color::Inherit();
+  Color            backgroundColor = Color::Inherit();
   std::vector<SGR> attributes;
 };
 

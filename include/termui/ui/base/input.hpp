@@ -17,17 +17,21 @@ public:
   Input &width(unsigned int w);
   Input &height(unsigned int h);
   Input &size(unsigned int w, unsigned int h); // convenience: set both at once
+  Input &focus();
+  Input &blur();
+  Input &focussed(bool x);
 
   const termui::string &get_value() const;
 
   void render();
 
 private:
-  termui::string _value;
-  termui::string _placeholder;
-  Style          _valStyle;
-  Style          _plhStyle;
-  unsigned int   _w, _h;
+  termui::string              _value;
+  termui::string              _placeholder;
+  Style                       _valStyle;
+  Style                       _plhStyle;
+  std::optional<unsigned int> _w, _h;
+  bool                        _focussed;
 };
 
 } // namespace termui
