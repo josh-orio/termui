@@ -2,6 +2,8 @@
 
 Display classes in termui are responsible for rendering visual elements in the terminal user interface. They provide building blocks for creating layouts, borders, lines, and progress indicators.
 
+All `render()` methods write through `termui::terminal` into its output buffer. Nothing appears on screen until `terminal.flush()` is called.
+
 ---
 
 ## `termui::Area`
@@ -25,10 +27,7 @@ Area(unsigned int width, unsigned int height, Style style, std::string symbol = 
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `render()` | `std::string` | Renders the area to a terminal-ready string. |
-| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the area. |
-| `width()` | `unsigned int` | Returns the current width. |
-| `height()` | `unsigned int` | Returns the current height. |
+| `render()` | `void` | Writes the area to the terminal buffer. |
 
 ### Notes
 
@@ -58,7 +57,7 @@ Box(unsigned int width, unsigned int height, Border border, Style style = Styles
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `render()` | `std::string` | Renders the box to a terminal-ready string. |
+| `render()` | `void` | Writes the box to the terminal buffer. |
 | `resize(unsigned int w, unsigned int h)` | `void` | Resizes the box. |
 | `width()` | `unsigned int` | Returns the current width. |
 | `height()` | `unsigned int` | Returns the current height. |
@@ -71,51 +70,41 @@ Box(unsigned int width, unsigned int height, Border border, Style style = Styles
 
 ---
 
-## `termui::HorizontalLine`
+## `termui::Line`
 
-Renders a horizontal line of a specified width.
+Renders a line of a given length in one of four directions.
 
 ### Constructors
 
 ```cpp
-HorizontalLine(unsigned int width, Border border);
+Line(Direction d, size_t len, std::string symbol = "");
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `width` | `unsigned int` | The width of the line in columns. |
-| `border` | `Border` | The border style for the line. |
+| `d` | `Direction` | The direction the line is drawn in. |
+| `len` | `size_t` | The length of the line in cells. |
+| `symbol` | `std::string` | The symbol to draw with. If empty, the default for the direction is used. |
+
+### Direction
+
+```cpp
+enum class Direction { Horizontal, Vertical, Ascending, Descending };
+```
+
+| Value | Default symbol | `tui` shorthand |
+|-------|----------------|-----------------|
+| `Horizontal` | `─` | `tui::linedir::h` |
+| `Vertical` | `│` | `tui::linedir::v` |
+| `Ascending` | `╱` | `tui::linedir::a` |
+| `Descending` | `╲` | `tui::linedir::d` |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `render()` | `std::string` | Renders the horizontal line to a terminal-ready string. |
-| `width()` | `unsigned int` | Returns the current width. |
-
----
-
-## `termui::VerticalLine`
-
-Renders a vertical line of a specified height.
-
-### Constructors
-
-```cpp
-VerticalLine(unsigned int height, Border border);
-```
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `height` | `unsigned int` | The height of the line in rows. |
-| `border` | `Border` | The border style for the line. |
-
-### Methods
-
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `render()` | `std::string` | Renders the vertical line to a terminal-ready string. |
-| `height()` | `unsigned int` | Returns the current height. |
+| `render()` | `void` | Writes the line to the terminal buffer, starting at the cursor. |
+| `style(Style s)` | `Line&` | Sets the style. |
 
 ---
 
@@ -140,8 +129,7 @@ ProgressBar(unsigned int width, float decimal, Color foreground, Color backgroun
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `render()` | `std::string` | Renders the progress bar to a terminal-ready string. |
-| `width()` | `unsigned int` | Returns the current width. |
+| `render()` | `void` | Writes the progress bar to the terminal buffer. |
 
 ### Notes
 

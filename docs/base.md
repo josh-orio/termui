@@ -2,40 +2,56 @@
 
 Base classes in termui are the fundamental building blocks of larger TUI systems. They encapsulate text representation and input handling.
 
+All `render()` methods write through `termui::terminal` into its output buffer. Nothing appears on screen until `terminal.flush()` is called.
+
 > **Note:** In a future version of the library, the features of `Text` and `Pager` may be combined into a single object (TBD).
 
 ---
 
 ## `termui::Text`
 
-Renders a plain styled block of text, optionally constrained to a fixed width and height.
+Renders a styled block of text, optionally constrained to a fixed width and height.
 
 ### Constructors
 
 ```cpp
-Text(const termui::string &str, Style style = Styles::none, unsigned int width = 0, unsigned int height = 0);
+Text(const termui::string &str, const Style &style = {}, std::optional<unsigned int> width = std::nullopt, std::optional<unsigned int> height = std::nullopt);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `str` | `termui::string` | The text content to display. |
-| `style` | `Style` | Text/colour style. Defaults to `Styles::none`. |
-| `width` | `unsigned int` | Constraining width in columns. `0` means unconstrained. |
-| `height` | `unsigned int` | Constraining height in rows. `0` means unconstrained. |
+| `style` | `Style` | Text/colour style. Defaults to an inert `Style`, which inherits the active style. |
+| `width` | `std::optional<unsigned int>` | Constraining width in columns. Unset means unconstrained. |
+| `height` | `std::optional<unsigned int>` | Constraining height in rows. Unset means unconstrained. |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `render()` | `std::string` | Renders the text to a terminal-ready string. Virtual; can be overridden. |
-| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the text area. |
-| `width()` | `unsigned int` | Returns the current width. |
-| `height()` | `unsigned int` | Returns the current height. |
+| `render()` | `void` | Writes the text to the terminal buffer. Virtual; can be overridden. |
+| `style(const Style &s)` | `Text&` | Sets the style. |
+| `align(const Alignment &a)` | `Text&` | Sets the alignment. Defaults to `Alignment::Left`. |
+| `width(std::optional<unsigned int> w)` | `Text&` | Sets or clears the width. |
+| `height(std::optional<unsigned int> h)` | `Text&` | Sets or clears the height. |
+| `size(std::optional<unsigned int> w, std::optional<unsigned int> h)` | `Text&` | Sets or clears both at once. |
+| `size()` | `std::pair<unsigned int, unsigned int>` | Measures the rendered text, returned as `{width, height}`. Returns `{0, 0}` if there is nothing to draw. |
+
+### Alignment
+
+```cpp
+enum class Alignment { Left, Center, Right };
+```
 
 ### Notes
 
+- An unset size and a size of `0` are different: unset means unconstrained, while `0` means nothing is drawn.
+- Lines wrap at the last space that fits, or mid-word if there is no space. `\n` always starts a new line.
+- With a height set, the output is never taller than `height`. If text remains after the last line, it is cut off and ends in `…`. Trailing newlines alone don't count as remaining text.
+- With a height set, unused rows are filled with blank lines.
+- With a width set, each line is padded to `width` and aligned using its visible width, so UTF-8 and coloured text line up correctly. Without a width, lines are not padded or aligned.
 - `render()` is declared `virtual` — subclasses may override it.
-- `text`, `w`, `h`, and `style` are exposed as `protected` members for use by subclasses.
+- `_text`, `_style`, `_align`, `_w`, `_h`, and `layout()` are `protected` for use by subclasses. `layout()` returns the wrapped, truncated and aligned lines.
 
 ---
 
@@ -43,93 +59,128 @@ Text(const termui::string &str, Style style = Styles::none, unsigned int width =
 
 Extends `Text` with configurable padding. Inherits all `Text` behaviour and adds horizontal and vertical padding around the content.
 
-> **Warning:** Ensure `width` and `height` are greater than the configured padding, otherwise the text will not be visible.
+> **Warning:** Both `width` and `height` must be set before calling `render()`, and must be greater than the configured padding, otherwise the text will not be visible.
 
 ### Constructors
 
 ```cpp
-PaddedText(const termui::string &str, Style style = Styles::none, Padding pad_style = PaddingStyle::label, unsigned int width = 0, unsigned int height = 0);
+PaddedText(const termui::string &str, Style style = {}, Padding pad_style = {});
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `str` | `termui::string` | The text content to display. |
-| `style` | `Style` | Text/colour style. Defaults to `Styles::none`. |
-| `pad_style` | `Padding` | Padding configuration. Defaults to `PaddingStyle::label`. |
-| `width` | `unsigned int` | Constraining width in columns (must exceed horizontal padding). |
-| `height` | `unsigned int` | Constraining height in rows (must exceed vertical padding). |
+| `style` | `Style` | Text/colour style. Defaults to an inert `Style`. |
+| `pad_style` | `Padding` | Padding configuration. Defaults to no padding. |
+
+### Padding
+
+```cpp
+struct Padding {
+  unsigned int left, right, top, bottom;
+};
+```
+
+| Preset | Left/right | Top/bottom |
+|--------|------------|------------|
+| `PaddingStyle::none` | `0` | `0` |
+| `PaddingStyle::label` | `1` | `0` |
+| `PaddingStyle::one` | `1` | `1` |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `render()` | `std::string` | Renders the padded text block. Overrides `Text::render()`. |
-| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the text area. Inherited from `Text`. |
-| `hPadding()` | `unsigned int` | Returns the current horizontal padding value. |
-| `vPadding()` | `unsigned int` | Returns the current vertical padding value. |
+| `render()` | `void` | Draws the padded background, then the text inside it. Overrides `Text::render()`. |
+| `setPadding(Padding p)` | `PaddedText&` | Sets the padding. |
+| `hPadding()` | `unsigned int` | Returns the total horizontal padding (`left + right`). |
+| `vPadding()` | `unsigned int` | Returns the total vertical padding (`top + bottom`). |
+
+`style()`, `align()`, `width()`, `height()` and `size()` are inherited from `Text`.
+
+### Notes
+
+- The inherited setters return `Text&`, so call `setPadding()` before them when chaining.
 
 ---
 
 ## `termui::Input`
 
-Renders an editable input field with separate styles for its value and placeholder text.
+Renders an editable input field with separate styles for its value and placeholder text. `Input` only draws the field; reading keys and updating the value is up to the caller.
 
 ### Constructors
 
 ```cpp
-Input(const termui::string &value, Style valStyle = Styles::none, const termui::string &placeholder = termui::string(""), Style plhStyle = Styles::faint, unsigned int width = 0, unsigned int height = 0);
+Input(const termui::string &value = "", const termui::string &placeholder = "", const Style &valStyle = {}, const Style &plhStyle = Styles::faint);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `value` | `termui::string` | The current input value. |
-| `valStyle` | `Style` | Style applied to the value text. Defaults to `Styles::none`. |
 | `placeholder` | `termui::string` | Placeholder text shown when the value is empty. Defaults to `""`. |
+| `valStyle` | `Style` | Style applied to the value text. Defaults to an inert `Style`. |
 | `plhStyle` | `Style` | Style applied to the placeholder text. Defaults to `Styles::faint`. |
-| `width` | `unsigned int` | Constraining width in columns. `0` means unconstrained. |
-| `height` | `unsigned int` | Constraining height in rows. `0` means unconstrained. |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `render()` | `std::string` | Renders the input field to a terminal-ready string. |
-| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the input area. |
-| `width()` | `unsigned int` | Returns the current width. |
-| `height()` | `unsigned int` | Returns the current height. |
+| `render()` | `void` | Writes the input field to the terminal buffer. |
+| `value(const termui::string &v)` | `Input&` | Sets the value. |
+| `placeholder(const termui::string &p)` | `Input&` | Sets the placeholder. |
+| `valueStyle(const Style &s)` | `Input&` | Sets the value style. |
+| `placeholderStyle(const Style &s)` | `Input&` | Sets the placeholder style. |
+| `width(unsigned int w)` | `Input&` | Sets the width. |
+| `height(unsigned int h)` | `Input&` | Sets the height. |
+| `size(unsigned int w, unsigned int h)` | `Input&` | Sets both at once. |
+| `focus()` | `Input&` | Marks the input as focussed. |
+| `blur()` | `Input&` | Marks the input as not focussed. |
+| `focussed(bool x)` | `Input&` | Sets the focus state. |
+| `get_value()` | `const termui::string&` | Returns the current value. |
+
+### Notes
+
+- Set both `width` and `height` before calling `render()`.
+- Set the focus state with `focus()`, `blur()` or `focussed()` before rendering; it has no default.
+- When focussed, `render()` leaves the cursor where the next character will appear. A placeholder leaves it at the start of the field.
+- With a `height` of `1`, a value that is too long scrolls: the last `width - 1` characters are shown, keeping one cell free for the cursor. A `width` of `1` shows only the cursor cell.
+- With a greater `height`, a value wraps like `Text`, and the last `height` lines are shown so that the end of the value stays visible.
+- A placeholder that is too long is cut off at the end of the last line.
+- Colour codes in a part of the value that has scrolled away still apply to the part that is shown.
 
 ---
 
 ## `termui::Pager`
 
-Renders a scrollable view over a block of text. Tracks a cursor (start line) that can be moved up or down to pan through content that exceeds the display area.
+Renders a scrollable view over a block of text. Tracks a cursor (start line) that can be moved up or down to pan through content that exceeds the display area. Inherits from `Text`.
 
 ### Constructors
 
 ```cpp
-Pager(const termui::string &str, Style style = Styles::none, unsigned int width = 0, unsigned int height = 0);
+Pager(const termui::string &str, const Style &style = {}, unsigned int width = 0, unsigned int height = 0);
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `str` | `termui::string` | The full text content to page through. |
-| `style` | `Style` | Text/colour style. Defaults to `Styles::none`. |
-| `width` | `unsigned int` | Viewport width in columns. `0` means unconstrained. |
-| `height` | `unsigned int` | Viewport height in rows. `0` means unconstrained. |
+| `style` | `Style` | Text/colour style. Defaults to an inert `Style`. |
+| `width` | `unsigned int` | Viewport width in columns. |
+| `height` | `unsigned int` | Viewport height in rows. |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `render()` | `std::string` | Renders the current page (from `cursor` to `cursor + height`) to a terminal-ready string. |
-| `resize(unsigned int w, unsigned int h)` | `void` | Resizes the viewport. |
-| `width()` | `unsigned int` | Returns the current viewport width. |
-| `height()` | `unsigned int` | Returns the current viewport height. |
-| `cursor_up(unsigned int count = 1)` | `void` | Moves the cursor up by `count` lines. |
-| `cursor_down(unsigned int count = 1)` | `void` | Moves the cursor down by `count` lines. |
+| `render()` | `void` | Writes the current page (from `cursor` to `cursor + height`) to the terminal buffer. |
+| `cursor_up(unsigned int count = 1)` | `Pager&` | Moves the cursor up by `count` lines. |
+| `cursor_down(unsigned int count = 1)` | `Pager&` | Moves the cursor down by `count` lines. |
 | `get_cursor()` | `unsigned int` | Returns the current cursor position (zero-indexed start line). |
+
+`style()`, `align()`, `width()`, `height()` and `size()` are inherited from `Text`.
 
 ### Notes
 
+- A `width` or `height` of `0` draws nothing, so set both, either here or with the inherited setters.
 - The cursor represents the **first visible line** of the content. It is not a text-insertion cursor.
 - `cursor_up` and `cursor_down` default to moving one line at a time if `count` is omitted.
+- `cursor_down` is not bounds checked when called; the value is clamped in `render()`.

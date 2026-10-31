@@ -13,7 +13,7 @@ A singleton representing the connected terminal. Higher-level classes (`Base`, `
 `Terminal` is a singleton with a private constructor, so it can't be created directly. In application code it's accessed through a global reference rather than by calling `instance()` yourself:
 
 ```cpp
-#include <termui/system/globals.hpp>
+#include <termui/globals.hpp>
 
 termui::terminal.write("hello");
 // or, equivalently:
@@ -32,18 +32,19 @@ tui::term.write("hello");
 ### Color capability
 
 ```cpp
-enum class Mode { ASCII, ANSI256, TRUECOLOR };
+enum class Mode { Ascii, Ansi256, TrueColor };
 ```
 
 | Mode | Meaning |
 |------|---------|
-| `ASCII` | No colour support; styling is limited to plain text. |
-| `ANSI256` | 256-colour indexed palette support. |
-| `TRUECOLOR` | Full 24-bit RGB colour support. |
+| `Ascii` | No colour support; `Style()` emits nothing. |
+| `Ansi256` | 256-colour indexed palette support. |
+| `TrueColor` | Full 24-bit RGB colour support. |
+
+The mode is detected once at startup from the `COLORTERM` and `TERM` environment variables.
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `ColorCapability()` | `Color::Mode` | The colour depth the terminal supports. |
 | `ForegroundColor()` | `Color` | The terminal's current default foreground colour. |
 | `BackgroundColor()` | `Color` | The terminal's current default background colour. |
 | `HasDarkBackground()` | `bool` | `true` if the terminal's background colour is dark, useful for choosing a light/dark theme automatically. |
@@ -62,7 +63,7 @@ std::string read() const;
 | `write(str)` | Appends `str` to the internal output buffer. Does not write to the terminal until `flush()` is called. |
 | `write(row, column, str)` | Moves the cursor to `(row, column)` and appends `str` to the output buffer. |
 | `flush()` | Writes the buffered output to the terminal (`std::cout`) and clears the buffer. |
-| `read()` | Reads and returns a line of input from stdin. |
+| `read()` | Reads stdin and returns one key: either a single character, or a whole escape sequence such as an arrow key or mouse event. Returns `""` if nothing complete is available. Compare the result against the codes in `termui::key`. |
 
 ### Size
 
@@ -91,16 +92,16 @@ void StylePop() const;
 
 ```cpp
 void MoveCursor(unsigned int row, unsigned int column) const;
-void SaveCursorPosition();
-void RestoreCursorPosition();
+void SaveCursorPosition() const;
+void RestoreCursorPosition() const;
+
+std::tuple<int, int> GetCursorPosition() const;
+std::tuple<int, int> GetFutureCursorPosition() const;
 
 const Terminal &CursorUp(unsigned int n) const;
 const Terminal &CursorDown(unsigned int n) const;
 const Terminal &CursorRight(unsigned int n) const;
 const Terminal &CursorLeft(unsigned int n) const;
-
-void CursorNextLine(unsigned int n);
-void CursorPrevLine(unsigned int n);
 ```
 
 | Method | Description |
@@ -108,80 +109,48 @@ void CursorPrevLine(unsigned int n);
 | `MoveCursor(row, column)` | Moves the cursor to an absolute position. |
 | `SaveCursorPosition()` | Saves the current cursor position for later restoration. |
 | `RestoreCursorPosition()` | Moves the cursor back to the last saved position. |
+| `GetCursorPosition()` | Asks the terminal for the cursor position and waits for the reply. Returns `{row, column}`, ignoring anything still in the output buffer. |
+| `GetFutureCursorPosition()` | Returns the `{row, column}` the cursor will be at once the output buffer has been flushed. |
 | `CursorUp(n)` / `CursorDown(n)` / `CursorRight(n)` / `CursorLeft(n)` | Moves the cursor `n` cells in the given direction, relative to its current position. Returns `*this` to allow chaining. |
-| `CursorNextLine(n)` | Moves the cursor down `n` lines, to the start of the line. |
-| `CursorPrevLine(n)` | Moves the cursor up `n` lines, to the start of the line. |
 
 ### Screen
 
 ```cpp
-void Reset() const;
-void SaveScreen() const;
-void RestoreScreen() const;
-void AltScreen() const;
-void ExitAltScreen() const;
 void ClearScreen() const;
 void ClearScrollback() const;
-void ClearLine();
-void ClearLines();
-void InsertLines(unsigned int n);
-void DeleteLines(unsigned int n);
-
-void DisableInputBuffering() const;
-void EnableInputBuffering() const;
-void DisableInputEcho() const;
-void EnableInputEcho() const;
 ```
 
 | Method | Description |
 |--------|-------------|
-| `Reset()` | Resets terminal styling/state to defaults. |
-| `SaveScreen()` | Saves the current screen contents. |
-| `RestoreScreen()` | Restores a previously saved screen. |
-| `AltScreen()` | Switches to the terminal's alternate screen buffer. |
-| `ExitAltScreen()` | Switches back to the main screen buffer. |
 | `ClearScreen()` | Clears the visible screen. |
 | `ClearScrollback()` | Clears the terminal's scrollback history. |
-| `ClearLine()` | Clears the current line. |
-| `ClearLines()` | Clears all lines. |
-| `InsertLines(n)` | Inserts `n` blank lines at the cursor's position, shifting existing lines down. |
-| `DeleteLines(n)` | Deletes `n` lines starting at the cursor's position, shifting subsequent lines up. |
-| `DisableInputBuffering()` / `EnableInputBuffering()` | Toggles line buffering on stdin (i.e. raw vs. canonical mode), controlling whether input is delivered a line at a time or a keypress at a time. |
-| `DisableInputEcho()` / `EnableInputEcho()` | Toggles whether typed input is echoed back to the terminal. |
 
 ### Session
 
 ```cpp
-void SetWindowTitle(std::string);
-void SetForegroundColor(Color);
-void SetBackgroundColor(Color);
-void SetCursorColor(Color);
 void ShowCursor() const;
 void HideCursor() const;
 ```
 
 | Method | Description |
 |--------|-------------|
-| `SetWindowTitle(title)` | Sets the terminal window/tab title. |
-| `SetForegroundColor(c)` | Sets the terminal's default foreground colour. |
-| `SetBackgroundColor(c)` | Sets the terminal's default background colour. |
-| `SetCursorColor(c)` | Sets the cursor's colour. |
 | `ShowCursor()` | Makes the cursor visible. |
 | `HideCursor()` | Hides the cursor. |
 
-### Mouse
+### Not yet implemented
 
-```cpp
-void EnableMousePress();
-void DisableMousePress();
-void EnableMouseTracking();
-void DisableMouseTracking();
-```
+The following methods are declared in `terminal.hpp` but have no implementation, so calling one fails at link time.
 
-| Method | Description |
-|--------|-------------|
-| `EnableMousePress()` / `DisableMousePress()` | Enables/disables X10 mouse mode, which reports mouse button presses only. |
-| `EnableMouseTracking()` / `DisableMouseTracking()` | Enables/disables full mouse tracking, additionally reporting mouse motion/drag events. |
+| Group | Methods |
+|-------|---------|
+| Color | `ColorCapability()` |
+| Positioning | `saveCursor()`, `popCursor()`, `CursorNextLine()`, `CursorPrevLine()` |
+| Screen | `Reset()`, `SaveScreen()`, `RestoreScreen()`, `AltScreen()`, `ExitAltScreen()`, `ClearLine()`, `ClearLines()`, `InsertLines()`, `DeleteLines()` |
+| Input | `DisableInputBuffering()`, `EnableInputBuffering()`, `DisableInputEcho()`, `EnableInputEcho()` |
+| Session | `SetWindowTitle()`, `SetForegroundColor()`, `SetBackgroundColor()`, `SetCursorColor()` |
+| Mouse | `EnableMousePress()`, `DisableMousePress()`, `EnableMouseTracking()`, `DisableMouseTracking()` |
+
+Use `TermSetup` to configure input handling, the alternate screen and mouse reporting.
 
 ### Notes
 
@@ -205,7 +174,7 @@ TermSetup(bool input_buffering, bool input_echoing, bool show_cursor, bool alter
 
 | Constructor | Description |
 |-------------|-------------|
-| `TermSetup()` | Default configuration. |
+| `TermSetup()` | Standard terminal defaults: buffered, echoing input with a visible cursor, on the main screen, without mouse reporting. |
 | `TermSetup(input_buffering, input_echoing, show_cursor, alternate_output_buffer, enable_mouse_reporting)` | Explicitly specifies each setting. See parameter table below. |
 
 | Parameter | Type | Description |
@@ -216,13 +185,53 @@ TermSetup(bool input_buffering, bool input_echoing, bool show_cursor, bool alter
 | `alternate_output_buffer` | `bool` | Whether to use the terminal's alternate screen buffer. |
 | `enable_mouse_reporting` | `bool` | Whether mouse events should be reported. |
 
+### Presets
+
+| Preset | Buffering | Echo | Cursor | Alternate screen | Mouse |
+|--------|-----------|------|--------|------------------|-------|
+| `TermSetups::fullscreen` | off | off | hidden | on | on |
+| `TermSetups::fullscreen_no_mouse` | off | off | hidden | on | off |
+| `TermSetups::fullscreen_with_cursor` | off | off | visible | on | off |
+| `TermSetups::windowed` | off | off | hidden | off | on |
+
 ### Methods
 
 | Method | Description |
 |--------|-------------|
-| `configure()` | Applies this `TermSetup`'s settings to the terminal — e.g. switching to the alternate buffer, disabling input echo — to give the application a proper full-screen interface feel. |
+| `configure()` | Applies this `TermSetup`'s settings to the terminal — e.g. switching to the alternate buffer, disabling input echo — to give the application a proper full-screen interface feel. Writes straight to `std::cout`, bypassing the output buffer. |
 | `reset()` | Restores the terminal to a normal, usable state. This is a fixed set of sensible defaults, not simply the inverse of `configure()`. |
 
 ### Notes
 
 - Typically constructed once at application startup, with `configure()` called before entering the main loop and `reset()` called on exit (including on error paths), so the user's terminal isn't left in a broken state.
+
+---
+
+## `termui::MouseInteraction`
+
+Decodes a mouse event read from `Terminal::read()`. Mouse reporting must be enabled through `TermSetup`.
+
+### Constructors
+
+```cpp
+MouseInteraction(std::string s);
+```
+
+Decodes the SGR mouse sequence `s`. If `s` isn't a mouse sequence, `valid` is `false` and `match()` always returns `false`.
+
+### Members
+
+| Member | Type | Description |
+|--------|------|-------------|
+| `valid` | `bool` | Whether `s` was a valid mouse sequence. |
+| `col`, `row` | `size_t` | The position of the event. |
+| `event` | `EventType` | One of `Move`, `ScrollUp`, `ScrollDown`, `ButtonPress`, `ButtonRelease`. |
+| `button` | `MouseButton` | One of `None`, `Left`, `Middle`, `Right`. |
+| `modifiers` | `ModifierKey` | Which of `shift`, `control` and `option` were held. |
+
+### Methods
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `match(event, button = MouseButton::None, modifiers = Modifiers::None)` | `bool` | `true` if the event, button and modifiers all match exactly. |
+| `match(x1, x2, y1, y2, event, button = MouseButton::None, modifiers = Modifiers::None)` | `bool` | As above, and the position is within the region from column `x1` to `x2` and row `y1` to `y2`, inclusive. |

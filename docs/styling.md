@@ -11,15 +11,15 @@ Represents a terminal colour, or a special non-colour state (`Inherit` / `Reset`
 ### Modes
 
 ```cpp
-enum class Mode { INHERIT, RESET, ANSI256, TRUECOLOR };
+enum class Mode { Inherit, Reset, Ansi256, TrueColor };
 ```
 
 | Mode | Meaning |
 |------|---------|
-| `INHERIT` | No colour is set; whatever colour is already active is left untouched. |
-| `RESET` | Explicitly reset to the terminal's default colour. |
-| `ANSI256` | An indexed 256-colour palette value. |
-| `TRUECOLOR` | A 24-bit RGB colour. |
+| `Inherit` | No colour is set; whatever colour is already active is left untouched. |
+| `Reset` | Explicitly reset to the terminal's default colour. |
+| `Ansi256` | An indexed 256-colour palette value. |
+| `TrueColor` | A 24-bit RGB colour. |
 
 ### Constructors
 
@@ -27,13 +27,15 @@ enum class Mode { INHERIT, RESET, ANSI256, TRUECOLOR };
 Color();
 Color(uint8_t v);
 Color(uint8_t r, uint8_t g, uint8_t b);
+Color(std::string hex);
 ```
 
 | Constructor | Mode | Description |
 |-------------|------|-------------|
-| `Color()` | `INHERIT` | Default-constructing a `Color` means "don't touch the existing colour." Use this when you don't want a `Style` to affect the foreground or background at all. |
-| `Color(uint8_t v)` | `ANSI256` | A colour from the 256-colour palette, identified by index `v`. |
-| `Color(uint8_t r, uint8_t g, uint8_t b)` | `TRUECOLOR` | A 24-bit RGB colour. |
+| `Color()` | `Inherit` | Default-constructing a `Color` means "don't touch the existing colour." Use this when you don't want a `Style` to affect the foreground or background at all. |
+| `Color(uint8_t v)` | `Ansi256` | A colour from the 256-colour palette, identified by index `v`. |
+| `Color(uint8_t r, uint8_t g, uint8_t b)` | `TrueColor` | A 24-bit RGB colour. |
+| `Color(std::string hex)` | `TrueColor` | A 24-bit RGB colour from a hex code in the form `"#abcdef"`. |
 
 ### Static factories
 
@@ -47,13 +49,19 @@ Color(uint8_t r, uint8_t g, uint8_t b);
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `operator==` | `bool` | Compares mode and value/RGB for equality. |
-| `IsInherit()` | `bool` | `true` if this colour is in `INHERIT` mode. |
-| `IsReset()` | `bool` | `true` if this colour is in `RESET` mode. |
+| `IsInherit()` | `bool` | `true` if this colour is in `Inherit` mode. |
+| `IsReset()` | `bool` | `true` if this colour is in `Reset` mode. |
+| `isDark()` | `bool` | `true` if the colour's luminance is below the midpoint. Only meaningful for `TrueColor` colours. |
+| `isLight()` | `bool` | The inverse of `isDark()`. |
 
 ### Notes
 
-- Internally, `value` (for `ANSI256`) and `rgb` (for `TRUECOLOR`) share a `union`; only the member matching the current `mode` is meaningful.
-- `INHERIT` and `RESET` are distinct: inheriting leaves the current colour as-is (useful when composing styles), while reset actively clears it.
+- Internally, `value` (for `Ansi256`) and `rgb` (for `TrueColor`) share a `union`; only the member matching the current `mode` is meaningful.
+- `Inherit` and `Reset` are distinct: inheriting leaves the current colour as-is (useful when composing styles), while reset actively clears it.
+
+### Predefined colours
+
+The `termui::Colors` namespace provides `Red`, `Green`, `Yellow`, `Blue`, `Magenta`, `Cyan`, `White`, `Black`, `Lavender`, `Orange` and `Rose`.
 
 ---
 
@@ -63,17 +71,17 @@ The set of terminal text attributes ("Select Graphic Rendition") that a `Style` 
 
 ```cpp
 enum class SGR : uint8_t {
-  Inherit    = 255,
-  None       = 0,
-  Bold       = 1,
-  Faint      = 2,
-  Italic     = 3,
-  Underlined = 4,
-  Blink      = 5,
-  FastBlink  = 6,
+  Inherit      = 255,
+  None         = 0,
+  Bold         = 1,
+  Faint        = 2,
+  Italic       = 3,
+  Underlined   = 4,
+  Blink        = 5,
+  FastBlink    = 6,
   ReverseVideo = 7,
-  Conceal    = 8,
-  CrossedOut = 9,
+  Conceal      = 8,
+  CrossedOut   = 9,
 };
 ```
 
@@ -89,7 +97,7 @@ enum class SGR : uint8_t {
 | `FastBlink` | Fast blink. Support for this varies between terminal emulators. |
 | `ReverseVideo` | Swaps foreground and background colours. |
 | `Conceal` | Hidden/invisible text. |
-| `CrossedOut` | Strikethrough text. |
+| `CrossedOut` | Strikethrough text. Support for this varies between terminal emulators. |
 
 > **Note:** `Inherit` and `None` are sentinel values interpreted specially by `Style` (see `InheritsSGR()` / `ResetsSGR()` below) — don't mix them with real attributes in the same `Style`.
 
@@ -110,24 +118,60 @@ Style(std::vector<SGR> sgr);
 
 | Constructor | Description |
 |-------------|-------------|
-| `Style()` | An empty style: foreground and background both inherit, no attributes. Applying it has no visible effect. |
-| `Style(fg, bg)` | Sets foreground and background colour only; no attributes are touched. |
+| `Style()` | An inert style: foreground, background and attributes all inherit. Applying it has no visible effect. |
+| `Style(fg, bg)` | Sets foreground and background colour only; attributes inherit. |
 | `Style(fg, bg, sgr)` | Sets foreground, background, and a list of attributes. |
 | `Style(sgr)` | Sets attributes only; foreground and background both inherit. |
+
+### Members
+
+`Style` is a plain struct, so these are read and written directly.
+
+| Member | Type | Description |
+|--------|------|-------------|
+| `foregroundColor` | `Color` | The style's foreground colour. |
+| `backgroundColor` | `Color` | The style's background colour. |
+| `attributes` | `std::vector<SGR>` | The style's list of `SGR` attributes. |
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `Foreground()` | `const Color&` | The style's foreground colour. |
-| `Background()` | `const Color&` | The style's background colour. |
-| `Attributes()` | `const std::vector<SGR>&` | The style's list of `SGR` attributes. |
 | `operator==` / `operator!=` | `bool` | Compares foreground, background, and attributes for equality. |
-| `InheritsSGR()` | `bool` | `true` only if `Attributes()` is exactly `{ SGR::Inherit }` — i.e. this style explicitly leaves existing attributes untouched. |
-| `ResetsSGR()` | `bool` | `true` only if `Attributes()` is exactly `{ SGR::None }` — i.e. this style explicitly clears all attributes. |
+| `InheritsSGR()` | `bool` | `true` only if `attributes` is exactly `{ SGR::Inherit }` — i.e. this style explicitly leaves existing attributes untouched. |
+| `ResetsSGR()` | `bool` | `true` only if `attributes` is exactly `{ SGR::None }` — i.e. this style explicitly clears all attributes. |
+
+### Predefined styles
+
+| Style | Description |
+|-------|-------------|
+| `Styles::none` | Resets colours and attributes, like `\x1b[0m`. |
+| `Styles::inherit` | Inherits colours and attributes, so it changes nothing. |
+| `Styles::bold` | Bold text; colours inherit. |
+| `Styles::faint` | Faint text; colours inherit. |
 
 ### Notes
 
 - Like `Color`, a default-constructed `Style` is inert: it inherits foreground, background, and attributes, so applying it changes nothing.
 - `InheritsSGR()` and `ResetsSGR()` only return `true` for the specific single-element sentinel vectors described above. A style with a mix of real attributes (e.g. `{ Bold, Underlined }`) returns `false` for both.
-- `Foreground()`, `Background()`, and `Attributes()` return references into the `Style`; they're valid as long as the `Style` itself is alive.
+
+---
+
+## `termui::StyleMap`
+
+A collection of named styles, used by the interfaces to look up their styles by key.
+
+### Constructors
+
+```cpp
+StyleMap() = default;
+StyleMap(std::map<std::string, termui::Style> styles);
+```
+
+### Methods
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `add(std::string key, Style style)` | `void` | Adds a style, replacing any existing style with that key. |
+| `at(std::string style)` | `const Style&` | Returns the style with that key. A missing key is added as an inert `Style`. |
+| `keys()` | `std::vector<std::string>` | Returns all of the keys, in sorted order. |
