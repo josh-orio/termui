@@ -31,6 +31,10 @@ void Line::render() {
   terminal.StyleStack(_style);
 
   for (int i = 0; i < _len; i++) {
+    if (_direction == Direction::Vertical) {
+      terminal.SaveCursorPosition();
+    }
+
     terminal.write(_symbol);
 
     if (i + 1 == _len) {
@@ -41,7 +45,8 @@ void Line::render() {
       // no need to repo cursor
     }
     else if (_direction == Direction::Vertical) {
-      terminal.CursorDown(1).CursorLeft(1);
+      terminal.RestoreCursorPosition();
+      terminal.CursorDown(1);
     }
     else if (_direction == Direction::Ascending) {
       terminal.CursorUp(1);
