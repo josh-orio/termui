@@ -370,31 +370,30 @@ std::tuple<int, int> Terminal::GetFutureCursorPosition() const {
     clearWrap();
   };
 
+  auto wrapLine = [&] {
+    col = 1;
+    row = std::min(h, row + 1);
+  };
+
   auto putCell = [&](int cells) {
     if (cells <= 0) {
       return;
     }
 
     if (wrapPending) {
-      col = 0;
-      if (row < h - 1) {
-        ++row;
-      }
+      wrapLine();
       wrapPending = false;
     }
 
     // A wide glyph may need to wrap before it is written.
-    if (cells > 1 && col + cells > w) {
-      col = 0;
-      if (row < h - 1) {
-        ++row;
-      }
+    if (cells > 1 && col + cells - 1 > w) {
+      wrapLine();
     }
 
     // A glyph occupying the final cell leaves the cursor
     // there with wrapping pending.
-    if (cells >= w - col) {
-      col         = w - 1;
+    if (col + cells - 1 >= w) {
+      col         = w;
       wrapPending = true;
     }
     else {
@@ -603,11 +602,11 @@ std::tuple<int, int> Terminal::GetFutureCursorPosition() const {
           clearWrap();
           break;
         case 'a': // HPR: horizontal relative movement
-          col = std::clamp(col + a, 0, w - 1);
+          col = std::clamp(col + a, 1, w);
           clearWrap();
           break;
         case 'e': // VPR: vertical relative movement
-          row = std::clamp(row + a, 0, h - 1);
+          row = std::clamp(row + a, 1, h);
           clearWrap();
           break;
         case 's': // Save cursor (common CSI form)
@@ -675,17 +674,17 @@ std::tuple<int, int> Terminal::GetFutureCursorPosition() const {
       case 'D': // IND: index / line feed
         lineFeed();
         break;
-      case 'E': // NEL: next line, column 0
+      case 'E': // NEL: next line, column 1
         lineFeed();
-        col = 0;
+        col = 1;
         break;
       case 'M': // RI: reverse index
         clearWrap();
-        if (row > 0)
+        if (row > 1)
           --row;
         break;
       case 'c': // RIS: reset (approximate cursor effect)
-        row = col = 0;
+        row = col = 1;
         clearWrap();
         break;
       default:
@@ -707,13 +706,13 @@ std::tuple<int, int> Terminal::GetFutureCursorPosition() const {
       continue;
     case '\b':
       ++i;
-      col = std::max(0, col - 1);
+      col = std::max(1, col - 1);
       clearWrap();
       continue;
     case '\t':
       ++i;
       clearWrap();
-      col = std::min(w - 1, ((col / 8) + 1) * 8);
+      col = std::min(w, (((col - 1) / 8) + 1) * 8 + 1); // tab stops at 9, 17, 25, ...
       continue;
     case '\a': // BEL
       ++i;
