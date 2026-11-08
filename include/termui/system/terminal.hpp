@@ -17,6 +17,13 @@
 #include <utility>
 #include <vector>
 
+// warns callers outside termui. the library's own build defines TERMUI_INTERNAL (CMakeLists.txt), so it stays quiet
+#ifdef TERMUI_INTERNAL
+#define TERMUI_INTERNAL_ONLY(reason)
+#else
+#define TERMUI_INTERNAL_ONLY(reason) [[deprecated(reason)]]
+#endif
+
 namespace termui {
 
 class Terminal {
@@ -52,7 +59,11 @@ public:
 
   // --- Positioning ---
   void MoveCursor(unsigned int row, unsigned int column) const;
+
+  // widgets use the terminal's single saved cursor slot while rendering, so a position saved by a caller is lost on the next render()
+  TERMUI_INTERNAL_ONLY("used internally by termui widgets, so the saved position is overwritten by any render(); use MoveCursor() or GetFutureCursorPosition() instead")
   void SaveCursorPosition() const;
+  TERMUI_INTERNAL_ONLY("used internally by termui widgets, so the saved position is overwritten by any render(); use MoveCursor() or GetFutureCursorPosition() instead")
   void RestoreCursorPosition() const;
 
   //exp

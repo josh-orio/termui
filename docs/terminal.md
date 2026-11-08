@@ -107,8 +107,8 @@ const Terminal &CursorLeft(unsigned int n) const;
 | Method | Description |
 |--------|-------------|
 | `MoveCursor(row, column)` | Moves the cursor to an absolute position. |
-| `SaveCursorPosition()` | Saves the current cursor position for later restoration. |
-| `RestoreCursorPosition()` | Moves the cursor back to the last saved position. |
+| `SaveCursorPosition()` | Internal: saves the current cursor position for later restoration. Calling it from outside termui gives a compiler warning, as widgets use the terminal's single saved slot while rendering and overwrite it. |
+| `RestoreCursorPosition()` | Internal: moves the cursor back to the last saved position. Warns outside termui, as above. |
 | `GetCursorPosition()` | Asks the terminal for the cursor position and waits for the reply. Returns `{row, column}`, ignoring anything still in the output buffer. |
 | `GetFutureCursorPosition()` | Returns the `{row, column}` the cursor will be at once the output buffer has been flushed. |
 | `CursorUp(n)` / `CursorDown(n)` / `CursorRight(n)` / `CursorLeft(n)` | Moves the cursor `n` cells in the given direction, relative to its current position. Returns `*this` to allow chaining. |

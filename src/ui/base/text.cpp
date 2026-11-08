@@ -139,11 +139,15 @@ void Text::render() {
 
   terminal.StyleStack(_style);
 
+  // save/restore rather than CursorLeft: a line ending in the last column doesn't advance the cursor
   for (int i = 0; i < formatted.size(); i++) {
     if (i > 0) {
-      terminal.CursorLeft(_w.has_value() ? *_w : visible_length(formatted.at(i - 1))).CursorDown(1);
+      terminal.RestoreCursorPosition();
+      terminal.CursorDown(1);
+      terminal.write(sgr_sequences(formatted.at(i - 1))); // restoring the cursor also restores the style it was saved with
     }
 
+    terminal.SaveCursorPosition();
     terminal.write(formatted.at(i));
   }
 

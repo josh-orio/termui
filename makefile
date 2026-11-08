@@ -25,7 +25,7 @@ clean:
 check:
 	@/opt/homebrew/opt/llvm/bin/clang-tidy \
 	$$(find src include -name '*.cpp' -o -name '*.hpp') \
-	-checks='clang-analyzer-core.uninitialized.*,cppcoreguidelines-pro-type-member-init' -- -std=c++20 -Iinclude
+	-checks='clang-analyzer-core.uninitialized.*,cppcoreguidelines-pro-type-member-init' -- -std=c++20 -Iinclude -DTERMUI_INTERNAL
 
 gtest:
 	mkdir -p $(BUILD_DIR)

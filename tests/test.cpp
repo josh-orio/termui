@@ -16,6 +16,10 @@ static std::string strip_csi(const std::string &raw) {
       }
       continue;
     }
+    if (raw[i] == '\x1b' && i + 1 < raw.size()) { // two byte escapes, like ESC 7 / ESC 8 (save / restore cursor)
+      i++;
+      continue;
+    }
     text += raw[i];
   }
 

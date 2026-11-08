@@ -12,6 +12,7 @@ target_include_directories(termui
         $<INSTALL_INTERFACE:include>
 )
 target_compile_options(termui PRIVATE -Wall -Wextra -Wuninitialized -Wno-sign-compare)
+target_compile_definitions(termui PRIVATE TERMUI_INTERNAL) # silences the TERMUI_INTERNAL_ONLY warnings for termui's own sources
 
 set_target_properties(termui
     PROPERTIES

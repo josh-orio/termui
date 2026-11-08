@@ -24,14 +24,17 @@ void PaddedText::render() {
   terminal.StyleStack(_style);
 
   // drawing background (padding)
+  // save/restore rather than CursorLeft(w): a row ending in the last column doesn't advance the cursor
   for (int i = h; i > 0; --i) {
+    terminal.SaveCursorPosition();
     terminal.write(std::string(w, ' '));
+    terminal.RestoreCursorPosition();
 
     if (i > 1) {
-      terminal.CursorLeft(w).CursorDown(1);
+      terminal.CursorDown(1);
     }
     else {
-      terminal.CursorLeft(w - _padding.left).CursorUp(h - _padding.top - 1); // on final iteration, move cursor to where text will start
+      terminal.CursorRight(_padding.left).CursorUp(h - _padding.top - 1); // on final iteration, move cursor to where text will start
     }
   }
 
