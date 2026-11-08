@@ -19,7 +19,7 @@ void Pager::render() {
   bool has_w = _w.has_value(), has_h = _h.has_value();
   int  w = *_w, h = *_h;
 
-  if (_w == 0 || _h == 0) {
+  if ((has_w && w == 0) || (has_h && h == 0)) {
     return;
   }
 
@@ -83,16 +83,14 @@ void Pager::render() {
   }
 
   terminal.StyleStack(_style);
+  terminal.SaveCursorPosition();
 
-  // save/restore rather than CursorLeft: a line ending in the last column doesn't advance the cursor
   for (int i = _cursor; i < _cursor + h; i++) {
     if (i > _cursor) {
       terminal.RestoreCursorPosition();
-      terminal.CursorDown(1);
-      terminal.write(sgr_sequences(formatted.at(i - 1))); // restoring the cursor also restores the style it was saved with
+      terminal.CursorDown(i - _cursor);
     }
 
-    terminal.SaveCursorPosition();
     terminal.write(formatted.at(i));
   }
 
