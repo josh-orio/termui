@@ -28,6 +28,8 @@ public:
   virtual void render();
 
 protected:
+  friend class TextRow; // measures segments with layout()
+
   std::vector<std::string> layout() const; // wraps, truncates and aligns _text, at most h lines long
 
   termui::string              _text;

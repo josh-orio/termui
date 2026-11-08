@@ -55,6 +55,11 @@ TEST(text, TrailingNewlinesAreNotTruncated) {
   EXPECT_EQ(rendered_text(termui::Text("a\n\n", {}, 5, 1)), "a    ");
 }
 
+TEST(text, FittingLineIsNotWrappedByLaterLines) {
+  EXPECT_EQ(rendered_text(termui::Text("User A\nAAA", {}, 6, 2)), "User AAAA   ");
+  EXPECT_EQ(rendered_text(termui::Text("ab cd\nefghijk", {}, 5, 3)), "ab cdefghijk   ");
+}
+
 TEST(text, UnsetSizes) {
   EXPECT_EQ(rendered_text(termui::Text("hello world")), "hello world");
   EXPECT_EQ(termui::Text("hello world").size(), (std::pair<unsigned int, unsigned int>{11, 1}));
@@ -64,6 +69,61 @@ TEST(text, UnsetSizes) {
 TEST(text, EmptyTextMeasuresAsZero) {
   EXPECT_EQ(termui::Text("", {}, 5).size(), (std::pair<unsigned int, unsigned int>{0, 0}));
   EXPECT_EQ(termui::Text("").size(), (std::pair<unsigned int, unsigned int>{0, 0}));
+}
+
+// renders a TextRow, returning what it wrote with all CSI sequences removed
+static std::string rendered_text(termui::TextRow row) {
+  testing::internal::CaptureStdout();
+  row.render();
+  termui::terminal.flush();
+
+  return strip_csi(testing::internal::GetCapturedStdout());
+}
+
+static termui::TextRow commit_row(unsigned int w) {
+  return termui::TextRow(w).add(termui::Text("josh")).add(termui::Text("committed")).add(termui::Text("abc1234")).add(termui::Text("today").align(termui::Text::Alignment::Right), 8);
+}
+
+TEST(text_row, LeftoverWidthGoesToLastSegment) {
+  EXPECT_EQ(rendered_text(commit_row(40)), "josh committed abc1234             today");
+  EXPECT_EQ(commit_row(40).size(), (std::pair<unsigned int, unsigned int>{40, 1}));
+}
+
+TEST(text_row, SegmentThatRunsOutOfRoomIsCut) {
+  EXPECT_EQ(rendered_text(commit_row(20)), "josh commi…    today");
+  EXPECT_EQ(rendered_text(commit_row(16)), "josh c…    today");
+}
+
+TEST(text_row, ReserveIsCappedAtWidth) {
+  EXPECT_EQ(rendered_text(commit_row(6)), " today");
+  EXPECT_EQ(rendered_text(commit_row(0)), "");
+}
+
+TEST(text_row, SegmentsAreColumnsOfSharedHeight) {
+  // each column is written top to bottom before the next, so lines appear column by column
+  EXPECT_EQ(rendered_text(termui::TextRow(6, 2).add(termui::Text("ab\ncd")).add(termui::Text("xy"))), "abcd  xy    ");
+  EXPECT_EQ(rendered_text(termui::TextRow(std::nullopt, 2).add(termui::Text("aaa bbb ccc")).add(termui::Text("x"))), "aaa bbb ccc             x "); // no width, so nothing wraps
+  EXPECT_EQ(rendered_text(termui::TextRow(4, 2).add(termui::Text("aaa bbb ccc")).add(termui::Text("x"))), "aaa bbb…"); // wraps within its column, the first segment takes all 4 so x gets none
+}
+
+TEST(text_row, UnsetHeightFitsTallestSegment) {
+  EXPECT_EQ(termui::TextRow(6, std::nullopt).add(termui::Text("a\nb\nc")).add(termui::Text("x")).size(), (std::pair<unsigned int, unsigned int>{6, 3}));
+  EXPECT_EQ(termui::TextRow(6, 0).add(termui::Text("a")).size(), (std::pair<unsigned int, unsigned int>{0, 0}));
+}
+
+TEST(text_row, NaturalWidthIsWidestLine) {
+  EXPECT_EQ(termui::TextRow(std::nullopt, std::nullopt).add(termui::Text("a\nbbb")).size(), (std::pair<unsigned int, unsigned int>{3, 2}));
+}
+
+TEST(text_row, UnsetWidthUsesNaturalWidths) {
+  EXPECT_EQ(rendered_text(termui::TextRow().add(termui::Text("ab")).add(termui::Text("cd"), 4)), "ab cd  ");
+  EXPECT_EQ(termui::TextRow().add(termui::Text("ab")).add(termui::Text("cd"), 4).size(), (std::pair<unsigned int, unsigned int>{7, 1}));
+}
+
+TEST(text_row, PaddingSeparatesDrawnSegments) {
+  EXPECT_EQ(rendered_text(termui::TextRow(10).padding(3).add(termui::Text("ab")).add(termui::Text("cd"))), "ab   cd   ");
+  EXPECT_EQ(rendered_text(termui::TextRow(10).padding(0).add(termui::Text("ab")).add(termui::Text("cd"))), "abcd      ");
+  EXPECT_EQ(rendered_text(termui::TextRow().add(termui::Text("")).add(termui::Text("ab")).add(termui::Text("cd"))), "ab cd"); // nothing drawn before ab, so no padding
 }
 
 // renders a focused Input, returning the text it wrote with all CSI sequences removed

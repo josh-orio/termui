@@ -55,6 +55,56 @@ enum class Alignment { Left, Center, Right };
 
 ---
 
+## `termui::TextRow`
+
+Lays out several `Text` segments side by side as columns that share one width and height, separated by padding. Segments are filled left to right; the segment that runs out of room is cut with an ellipsis, and any after it are not drawn.
+
+### Constructors
+
+```cpp
+TextRow(std::optional<unsigned int> width = std::nullopt, std::optional<unsigned int> height = 1);
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `width` | `std::optional<unsigned int>` | Total width shared by the segments. Unset means each segment takes its natural width. |
+| `height` | `std::optional<unsigned int>` | Height of every column. Defaults to `1`. Unset fits the tallest segment. |
+
+### Methods
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `add(const Text &text, unsigned int reserve = 0)` | `TextRow&` | Appends a segment. `reserve` is the width set aside for it, which earlier segments can't use. |
+| `width(std::optional<unsigned int> w)` | `TextRow&` | Sets or clears the width. |
+| `height(std::optional<unsigned int> h)` | `TextRow&` | Sets or clears the height. |
+| `size(std::optional<unsigned int> w, std::optional<unsigned int> h)` | `TextRow&` | Sets or clears both at once. |
+| `padding(unsigned int p)` | `TextRow&` | Sets the number of empty cells between segments. Defaults to `1`. |
+| `size()` | `std::pair<unsigned int, unsigned int>` | Measures the rendered row, returned as `{width, height}`. Returns `{0, 0}` if there is nothing to draw. |
+| `render()` | `void` | Writes the row to the terminal buffer, leaving the cursor on its bottom row, after its last column. |
+
+### Example
+
+```cpp
+termui::TextRow(w)
+    .add(termui::Text(name, bold))
+    .add(termui::Text("referenced this job in commit", style))
+    .add(termui::Text(hash.substr(0, 7), bold))
+    .add(termui::Text(date, style).align(termui::Text::Alignment::Right), 20)
+    .render();
+```
+
+### Notes
+
+- Each segment keeps its own style and alignment. Any width or height set on it is ignored; the row sizes it.
+- A segment's natural width is its widest line.
+- Each segment wraps within its own column like `Text`, and is cut with `…` on the last row if text remains.
+- With a width set, the last segment takes all leftover width, so a right aligned last segment sits against the right edge.
+- A reserve larger than the width is capped at the width.
+- Padding only goes between segments that are drawn, and counts towards the width. A reserved segment's padding is held back along with its reserve.
+- Padding cells are blank and use the surrounding style, not a segment's style.
+
+---
+
 ## `termui::PaddedText`
 
 Extends `Text` with configurable padding. Inherits all `Text` behaviour and adds horizontal and vertical padding around the content.

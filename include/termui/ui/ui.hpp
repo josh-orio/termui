@@ -7,6 +7,7 @@
 #include <termui/ui/base/input.hpp>
 #include <termui/ui/base/padded-text.hpp>
 // #include <termui/ui/base/pager.hpp>
+#include <termui/ui/base/text-row.hpp>
 #include <termui/ui/base/text.hpp>
 
 // --- Display ---
@@ -40,6 +41,7 @@ using Input      = termui::Input;
 using PaddedText = termui::PaddedText;
 using Pager      = termui::Pager;
 using Text       = termui::Text;
+using TextRow    = termui::TextRow;
 
 // ui/display/
 using Area = termui::Area;

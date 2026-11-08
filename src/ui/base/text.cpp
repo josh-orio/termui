@@ -70,7 +70,7 @@ std::vector<std::string> Text::layout() const {
     const size_t limit = has_w ? max_visible_length(src, w, pos) : npos; // byte index where this line runs out of width
     const size_t rsp   = has_w ? src.rfind(' ', limit) : npos;           // last space at or before limit, anywhere in src
     const size_t sp    = (rsp == npos || rsp < pos) ? npos : rsp;        // word-wrap point: rsp if on this line (earlier spaces belong to previous lines)
-    const bool   fits  = !has_w || visible_length(src, pos) <= w;        // whether all remaining text fits on this line
+    const bool   fits  = !has_w || !overflows;                           // whether this line fits, later lines don't count
 
     // clang-format off
     next = std::min({
