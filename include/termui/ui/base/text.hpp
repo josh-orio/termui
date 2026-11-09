@@ -3,6 +3,7 @@
 
 #include <termui/core/str.hpp>
 #include <termui/core/style.hpp>
+
 #include <algorithm>
 #include <optional>
 #include <string>
@@ -23,7 +24,7 @@ public:
   Text &height(std::optional<unsigned int> h);
   Text &size(std::optional<unsigned int> w, std::optional<unsigned int> h);
 
-  std::pair<unsigned int, unsigned int> size(); // measures and returns the dimensions of rendered text
+  virtual std::pair<unsigned int, unsigned int> size(); // measures and returns the dimensions of rendered text
 
   virtual void render();
 

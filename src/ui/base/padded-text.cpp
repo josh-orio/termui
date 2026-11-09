@@ -9,6 +9,16 @@ PaddedText &PaddedText::setPadding(Padding p) {
   return *this;
 }
 
+std::pair<unsigned int, unsigned int> PaddedText::size() {
+  const std::vector<std::string> formatted = layout();
+
+  if (formatted.empty()) {
+    return {0, 0};
+  }
+
+  return {visible_length(formatted.at(0)) + _padding.left + _padding.right, formatted.size() + _padding.top + _padding.bottom}; // returned as width, height
+}
+
 unsigned int PaddedText::hPadding() { return static_cast<int>(_padding.left) + static_cast<int>(_padding.right); }
 
 unsigned int PaddedText::vPadding() { return static_cast<int>(_padding.top) + static_cast<int>(_padding.bottom); }
