@@ -19,6 +19,7 @@ public:
   TextRow &height(std::optional<unsigned int> h); // unset fits the tallest segment
   TextRow &size(std::optional<unsigned int> w, std::optional<unsigned int> h);
   TextRow &padding(unsigned int p); // empty cells between segments, defaults to 1
+  TextRow &paddingStyle(const Style &s);
 
   std::pair<unsigned int, unsigned int> size(); // measures and returns the dimensions of the rendered row
 
@@ -38,6 +39,7 @@ private:
   std::vector<Segment>        _segments;
   std::optional<unsigned int> _w, _h;
   unsigned int                _padding = 1;
+  Style                       _padding_style;
 };
 
 } // namespace termui

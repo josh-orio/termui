@@ -79,6 +79,7 @@ TextRow(std::optional<unsigned int> width = std::nullopt, std::optional<unsigned
 | `height(std::optional<unsigned int> h)` | `TextRow&` | Sets or clears the height. |
 | `size(std::optional<unsigned int> w, std::optional<unsigned int> h)` | `TextRow&` | Sets or clears both at once. |
 | `padding(unsigned int p)` | `TextRow&` | Sets the number of empty cells between segments. Defaults to `1`. |
+| `paddingStyle(const Style &s)` | `TextRow&` | Sets the style of the padding cells. Defaults to an inert `Style`, which inherits the active style. |
 | `size()` | `std::pair<unsigned int, unsigned int>` | Measures the rendered row, returned as `{width, height}`. Returns `{0, 0}` if there is nothing to draw. |
 | `render()` | `void` | Writes the row to the terminal buffer, leaving the cursor on its bottom row, after its last column. |
 
@@ -101,7 +102,7 @@ termui::TextRow(w)
 - With a width set, the last segment takes all leftover width, so a right aligned last segment sits against the right edge.
 - A reserve larger than the width is capped at the width.
 - Padding only goes between segments that are drawn, and counts towards the width. A reserved segment's padding is held back along with its reserve.
-- Padding cells are blank and use the surrounding style, not a segment's style.
+- Padding cells are blank and use the padding style, never a segment's style.
 
 ---
 

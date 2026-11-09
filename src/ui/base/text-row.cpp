@@ -30,6 +30,11 @@ TextRow &TextRow::padding(unsigned int p) {
   return *this;
 }
 
+TextRow &TextRow::paddingStyle(const Style &s) {
+  _padding_style = s;
+  return *this;
+}
+
 std::vector<std::string> TextRow::natural_lines(Text text) { return text.size(std::nullopt, std::nullopt).layout(); }
 
 unsigned int TextRow::rows() {
@@ -132,7 +137,7 @@ void TextRow::render() {
 
   for (int i = 0; const auto &[pad, seg_w] : layout()) {
     if (pad > 0) {
-      cols.push_back(Text("", {}, pad, h));
+      cols.push_back(Text("", _padding_style, pad, h));
     }
     if (seg_w > 0) { // a width of 0 draws nothing, so the cursor hasn't moved
       cols.push_back(Text(_segments[i].text).size(seg_w, h));
