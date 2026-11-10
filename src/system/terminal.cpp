@@ -1,5 +1,7 @@
 #include <termui/system/terminal.hpp>
 
+#include <cctype>
+
 namespace termui {
 
 Terminal &Terminal::instance() {
@@ -81,14 +83,17 @@ unsigned int Terminal::halfWidth() const { return width() / 2; }
 
 unsigned int Terminal::halfHeight() const { return height() / 2; }
 
-Color Terminal::ForegroundColor() const {
+// sends an OSC color query (10 = foreground, 11 = background) and parses the reply.
+// returns Color::Inherit() if the terminal does not answer within the timeout
+static Color query_osc_color(int code) {
   termios old, raw;
   tcgetattr(0, &old);
   raw = old;
   raw.c_lflag &= ~(ICANON | ECHO);
   tcsetattr(0, TCSANOW, &raw);
 
-  ::write(1, "\033]10;?\033\\", 8);
+  std::string query = "\033]" + std::to_string(code) + ";?\033\\";
+  ::write(1, query.c_str(), query.size());
 
   std::string r;
   pollfd      p{0, POLLIN, 0};
@@ -102,41 +107,51 @@ Color Terminal::ForegroundColor() const {
 
   tcsetattr(0, TCSANOW, &old);
 
-  auto pos = r.find("rgb");
+  // parse the reply body, e.g. "\033]11;rgb:1e1e/1e1e/1e1e\033\\" (1-4 hex digits per channel)
+  auto pos = r.find("rgb:");
+  if (pos == std::string::npos) {
+    return Color::Inherit();
+  }
+  pos += 4;
 
-  return Color(static_cast<uint8_t>(std::stoi(r.substr(pos + 4, 2), nullptr, 16)), static_cast<uint8_t>(std::stoi(r.substr(pos + 9, 2), nullptr, 16)),
-               static_cast<uint8_t>(std::stoi(r.substr(pos + 14, 2), nullptr, 16)));
-}
-
-Color Terminal::BackgroundColor() const {
-  termios old, raw;
-  tcgetattr(0, &old);
-  raw = old;
-  raw.c_lflag &= ~(ICANON | ECHO);
-  tcsetattr(0, TCSANOW, &raw);
-
-  ::write(1, "\033]11;?\033\\", 8);
-
-  std::string r;
-  pollfd      p{0, POLLIN, 0};
-  char        c;
-  while (poll(&p, 1, 100) > 0 && ::read(0, &c, 1) == 1) {
-    r += c;
-    if (c == '\a' || (c == '\\' && r.size() > 1 && r[r.size() - 2] == '\033')) {
-      break;
+  uint8_t channels[3];
+  for (int i = 0; i < 3; i++) {
+    size_t end = pos;
+    while (end < r.size() && std::isxdigit(static_cast<unsigned char>(r[end]))) {
+      end++;
     }
+
+    size_t digits = end - pos;
+    if (digits < 1 || digits > 4) {
+      return Color::Inherit();
+    }
+
+    // scale an n-digit hex value (max 16^n - 1) to 0..255
+    unsigned long v   = std::stoul(r.substr(pos, digits), nullptr, 16);
+    unsigned long max = (1UL << (4 * digits)) - 1;
+    channels[i]       = static_cast<uint8_t>(((v * 255) + (max / 2)) / max);
+
+    if (i < 2) {
+      if (end >= r.size() || r[end] != '/') {
+        return Color::Inherit();
+      }
+      end++;
+    }
+    pos = end;
   }
 
-  tcsetattr(0, TCSANOW, &old);
-
-  auto pos = r.find("rgb");
-
-  return Color(static_cast<uint8_t>(std::stoi(r.substr(pos + 4, 2), nullptr, 16)), static_cast<uint8_t>(std::stoi(r.substr(pos + 9, 2), nullptr, 16)),
-               static_cast<uint8_t>(std::stoi(r.substr(pos + 14, 2), nullptr, 16)));
+  return Color(channels[0], channels[1], channels[2]);
 }
+
+Color Terminal::ForegroundColor() const { return query_osc_color(10); }
+
+Color Terminal::BackgroundColor() const { return query_osc_color(11); }
 
 bool Terminal::HasDarkBackground() const {
   auto col = BackgroundColor();
+  if (col.mode != Color::Mode::TrueColor) {
+    return true; // unknown background: assume dark, the most common default
+  }
 
   auto lum     = (0.299 * col.rgb.r) + (0.587 * col.rgb.g) + (0.114 * col.rgb.b);
   bool is_dark = lum < 127.5;
@@ -149,6 +164,34 @@ bool Terminal::HasDarkBackground() const {
 //   void SetOutputMode(OutputMode om);
 
 // ---- Styling ----
+// nearest xterm 256-color index for a TrueColor (checks both the 6x6x6 cube and the 24-step grey ramp).
+// Ansi256 colors return their own value
+static uint8_t to_ansi256(const Color &col) {
+  if (col.mode == Color::Mode::Ansi256) {
+    return col.value;
+  }
+
+  static constexpr int levels[6] = {0, 95, 135, 175, 215, 255};
+
+  auto idx  = [](int c) { return c < 48 ? 0 : c < 115 ? 1 : (c - 35) / 40; };
+  auto dist = [&col](int r, int g, int b) {
+    return (r - col.rgb.r) * (r - col.rgb.r) + (g - col.rgb.g) * (g - col.rgb.g) + (b - col.rgb.b) * (b - col.rgb.b);
+  };
+
+  // nearest colour in the 6x6x6 cube (16..231)
+  int ri = idx(col.rgb.r), gi = idx(col.rgb.g), bi = idx(col.rgb.b);
+  int cube_code = 16 + (36 * ri) + (6 * gi) + bi;
+  int cube_dist = dist(levels[ri], levels[gi], levels[bi]);
+
+  // nearest grey on the ramp (232..255, values 8, 18, ..., 238)
+  int avg       = (col.rgb.r + col.rgb.g + col.rgb.b) / 3;
+  int grey_i    = avg > 238 ? 23 : (avg < 3 ? 0 : (avg - 3) / 10);
+  int grey_v    = 8 + (10 * grey_i);
+  int grey_dist = dist(grey_v, grey_v, grey_v);
+
+  return static_cast<uint8_t>(grey_dist < cube_dist ? 232 + grey_i : cube_code);
+}
+
 void Terminal::Style(termui::Style style) const {
   if (_color_capability == Terminal::Mode::Ascii) {
     return;
@@ -170,19 +213,6 @@ void Terminal::Style(termui::Style style) const {
     }
   }
 
-  auto truecolor_to_ansi256 = [](uint8_t r, uint8_t g, uint8_t b) -> int {
-    // map each component to 0..5
-    auto conv = [](uint8_t c) -> int {
-      if (c < 48)
-        return 0;
-      if (c < 115)
-        return 1;
-      return (int)((c - 35) / 40); // maps 0..255 to 0..5 roughly
-    };
-    int rr = conv(r), gg = conv(g), bb = conv(b);
-    return 16 + 36 * rr + 6 * gg + bb;
-  };
-
   // ansi256 code: ESC[38;5;{ID}m
   // trucol code:  ESC[38;2;{r};{g};{b}m
 
@@ -199,7 +229,7 @@ void Terminal::Style(termui::Style style) const {
       else if (style.foregroundColor.mode == Color::Mode::TrueColor) {
         modifier_codes.push_back(38);
         modifier_codes.push_back(5);
-        modifier_codes.push_back(truecolor_to_ansi256(style.foregroundColor.rgb.r, style.foregroundColor.rgb.g, style.foregroundColor.rgb.b));
+        modifier_codes.push_back(to_ansi256(style.foregroundColor));
       }
     }
 
@@ -232,7 +262,7 @@ void Terminal::Style(termui::Style style) const {
       else if (style.backgroundColor.mode == Color::Mode::TrueColor) {
         modifier_codes.push_back(48);
         modifier_codes.push_back(5);
-        modifier_codes.push_back(truecolor_to_ansi256(style.backgroundColor.rgb.r, style.backgroundColor.rgb.g, style.backgroundColor.rgb.b));
+        modifier_codes.push_back(to_ansi256(style.backgroundColor));
       }
     }
 

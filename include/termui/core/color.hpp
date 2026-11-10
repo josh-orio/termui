@@ -33,8 +33,6 @@ struct Color {
 
   bool isDark() const;
   bool isLight() const;
-
-
 };
 
 namespace Colors {
