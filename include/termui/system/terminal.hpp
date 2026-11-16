@@ -26,6 +26,25 @@
 
 namespace termui {
 
+// splits raw stdin bytes into whole keys: single chars, utf-8 chars, escape sequences and bracketed pastes
+class InputDecoder {
+public:
+  void feed(const char *data, size_t n);
+
+  // returns the next complete key, or "" if nothing complete is buffered.
+  // flush resolves an incomplete prefix instead of waiting: a lone ESC becomes the ESC key,
+  // an unfinished sequence gives up its first byte, and a partial paste returns what has arrived
+  std::string next(bool flush = false);
+
+  bool empty() const { return _buf.empty(); }
+
+private:
+  size_t token_length() const; // 0 means incomplete
+
+  std::string _buf;
+  bool        _in_paste = false;
+};
+
 class Terminal {
 public:
   // enum class OutputMode { Direct, Buffered };
@@ -37,7 +56,7 @@ public:
   void write(unsigned int row, unsigned int column, const std::string &str) const;
   void flush() const; // flushes outbuff through cout;
 
-  std::string read() const; // read off stdin
+  std::string read() const; // next key off stdin (a whole escape sequence, utf-8 char, or bracketed paste)
 
   unsigned int width() const;
   unsigned int height() const;
@@ -117,8 +136,15 @@ public:
   void EnableMouseTracking();
   void DisableMouseTracking();
 
+  // --- Paste ---
+  // pasted text is then returned by read() as one string instead of key by key
+  void EnableBracketedPaste() const;
+  void DisableBracketedPaste() const;
+
 private:
   Terminal();
+
+  mutable InputDecoder _input;
 
   Mode _color_capability;
   // OutputMode output_mode;

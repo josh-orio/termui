@@ -257,3 +257,97 @@ TEST(library, ReverseMaxVisibleLength) {
   // EXPECT_EQ(termui::reverse_max_visible_length("test" + termui::term::SAVE_CURSOR + "test" + termui::term::SAVE_CURSOR + "test", 8), 4 + 3 + 4);
   // EXPECT_EQ(termui::reverse_max_visible_length("test" + termui::term::SAVE_CURSOR + "test" + termui::term::SAVE_CURSOR + "test", 9), 4 + 3 + 4 + 3 + 1);
 }
+
+// ---- input decoding ----
+
+static std::vector<std::string> decode_all(termui::InputDecoder &d, bool flush = false) {
+  std::vector<std::string> keys;
+  for (std::string k = d.next(flush); !k.empty(); k = d.next(flush)) {
+    keys.push_back(k);
+  }
+  return keys;
+}
+
+static std::vector<std::string> decode(const std::string &bytes, bool flush = false) {
+  termui::InputDecoder d;
+  d.feed(bytes.data(), bytes.size());
+  return decode_all(d, flush);
+}
+
+using Keys = std::vector<std::string>;
+
+TEST(input_decoder, PlainPasteIsNotHeldBack) {
+  EXPECT_EQ(decode("#6361e9"), (Keys{"#", "6", "3", "6", "1", "e", "9"}));
+}
+
+TEST(input_decoder, TwoArrowsInOneRead) {
+  EXPECT_EQ(decode("\x1b[A\x1b[B"), (Keys{"\x1b[A", "\x1b[B"}));
+}
+
+TEST(input_decoder, ArrowsSplitAtEveryPosition) {
+  std::string bytes = "\x1b[A\x1b[B";
+  for (size_t cut = 1; cut < bytes.size(); cut++) {
+    termui::InputDecoder d;
+    d.feed(bytes.data(), cut);
+    Keys keys = decode_all(d);
+    d.feed(bytes.data() + cut, bytes.size() - cut);
+    Keys rest = decode_all(d);
+    keys.insert(keys.end(), rest.begin(), rest.end());
+    EXPECT_EQ(keys, (Keys{"\x1b[A", "\x1b[B"})) << "cut at " << cut;
+  }
+}
+
+TEST(input_decoder, LoneEscWaitsThenResolves) {
+  termui::InputDecoder d;
+  d.feed("\x1b", 1);
+  EXPECT_EQ(d.next(), "");
+  EXPECT_EQ(d.next(true), "\x1b");
+  EXPECT_TRUE(d.empty());
+}
+
+TEST(input_decoder, AltKeyDoesNotSwallowFollowingKeys) {
+  EXPECT_EQ(decode("\x1bhello"), (Keys{"\x1bh", "e", "l", "l", "o"}));
+}
+
+TEST(input_decoder, UnlistedCsiFinalBytes) {
+  EXPECT_EQ(decode("\x1b[I\x1b[97;5ux"), (Keys{"\x1b[I", "\x1b[97;5u", "x"}));
+}
+
+TEST(input_decoder, MouseReports) {
+  EXPECT_EQ(decode("\x1b[<0;10;5M\x1b[<0;10;5m"), (Keys{"\x1b[<0;10;5M", "\x1b[<0;10;5m"}));
+  EXPECT_EQ(decode("\x1b[M !!a"), (Keys{"\x1b[M !!", "a"}));
+}
+
+TEST(input_decoder, Ss3AndTilde) {
+  EXPECT_EQ(decode("\x1bOP\x1b[3~"), (Keys{"\x1bOP", "\x1b[3~"}));
+}
+
+TEST(input_decoder, Utf8CharsStayWhole) {
+  EXPECT_EQ(decode("é€😀a"), (Keys{"é", "€", "😀", "a"}));
+  termui::InputDecoder d;
+  d.feed("\xc3", 1);
+  EXPECT_EQ(d.next(), "");
+  d.feed("\xa9", 1);
+  EXPECT_EQ(d.next(), "é");
+}
+
+TEST(input_decoder, IncompleteSequenceFlushesOneByte) {
+  EXPECT_EQ(decode("\x1b[1;", true), (Keys{"\x1b", "[", "1", ";"}));
+}
+
+TEST(input_decoder, BracketedPasteIsOneString) {
+  EXPECT_EQ(decode("\x1b[200~#6361e9\x1b[201~q"), (Keys{"#6361e9", "q"}));
+  EXPECT_EQ(decode("\x1b[200~a\x1b[Ab\x1b[201~"), (Keys{"a\x1b[Ab"}));
+}
+
+TEST(input_decoder, BracketedPasteInChunks) {
+  termui::InputDecoder d;
+  std::string a = "\x1b[200~hello wo", b = "rld\x1b[20", c = "1~x";
+  d.feed(a.data(), a.size());
+  EXPECT_EQ(d.next(), "");
+  EXPECT_EQ(d.next(true), "hello wo");
+  d.feed(b.data(), b.size());
+  EXPECT_EQ(d.next(true), "rld"); // partial end marker held back
+  d.feed(c.data(), c.size());
+  EXPECT_EQ(decode_all(d), (Keys{"x"}));
+}

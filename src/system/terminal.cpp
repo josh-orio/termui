@@ -21,51 +21,181 @@ void Terminal::flush() const {
   _outbuff.clear();
 }
 
-std::string Terminal::read() const { // claude written
-  static std::string buf;
+static constexpr const char *PASTE_START = "\x1b[200~";
+static constexpr const char *PASTE_END   = "\x1b[201~";
+static constexpr size_t      PASTE_MARKER_LEN = 6;
 
-  // only read from stdin if we don't already have a complete sequence buffered
-  auto find_end = [&]() {
-    if (buf.empty()) {
-      return std::string::npos;
+void InputDecoder::feed(const char *data, size_t n) { _buf.append(data, n); }
+
+size_t InputDecoder::token_length() const {
+  auto at   = [&](size_t i) { return static_cast<unsigned char>(_buf[i]); };
+  size_t sz = _buf.size();
+
+  if (sz == 0) {
+    return 0;
+  }
+
+  unsigned char b0 = at(0);
+
+  if (b0 == 0x1b) {
+    if (sz < 2) {
+      return 0; // lone ESC: could be the ESC key or the start of a sequence
     }
 
-    if (buf[0] == '\x1b' && buf.size() > 1) {
-      return buf.find_first_of("Mm~ABCDFHPQRSZ", 2);
+    unsigned char b1 = at(1);
+
+    if (b1 == '[') { // CSI: params 0x30-0x3F, intermediates 0x20-0x2F, final 0x40-0x7E
+      if (sz < 3) {
+        return 0;
+      }
+      if (at(2) == 'M') { // X10 mouse report: ESC [ M + 3 raw bytes
+        return sz >= 6 ? 6 : 0;
+      }
+
+      size_t i = 2;
+      while (i < sz && at(i) >= 0x30 && at(i) <= 0x3F) {
+        i++;
+      }
+      while (i < sz && at(i) >= 0x20 && at(i) <= 0x2F) {
+        i++;
+      }
+      if (i == sz) {
+        return 0;
+      }
+      if (at(i) >= 0x40 && at(i) <= 0x7E) {
+        return i + 1;
+      }
+      return i; // malformed, emit what we have so the bad byte doesn't jam input
     }
 
-    return std::string::npos; // single char, always "complete"
-  };
+    if (b1 == 'O') { // SS3: ESC O x
+      return sz >= 3 ? 3 : 0;
+    }
 
-  if (find_end() == std::string::npos) {
-    char tmp[64];
-    int  nbytes = ::read(STDIN_FILENO, tmp, sizeof(tmp));
-    if (nbytes > 0) {
-      buf.append(tmp, nbytes);
+    if (b1 == ']') { // OSC reply, ends with BEL or ESC backslash
+      for (size_t i = 2; i < sz; i++) {
+        if (at(i) == '\a') {
+          return i + 1;
+        }
+        if (at(i) == 0x1b && i + 1 < sz && _buf[i + 1] == '\\') {
+          return i + 2;
+        }
+      }
+      return 0;
+    }
+
+    if (b1 == 0x1b) {
+      return 1; // ESC pressed, followed by another escape
+    }
+
+    return 2; // alt + key
+  }
+
+  // utf-8 multi byte char
+  size_t len = 1;
+  if ((b0 & 0xE0) == 0xC0) {
+    len = 2;
+  }
+  else if ((b0 & 0xF0) == 0xE0) {
+    len = 3;
+  }
+  else if ((b0 & 0xF8) == 0xF0) {
+    len = 4;
+  }
+
+  for (size_t i = 1; i < len; i++) {
+    if (i >= sz) {
+      return 0;
+    }
+    if ((at(i) & 0xC0) != 0x80) {
+      return 1; // invalid continuation byte, emit the lead byte alone
     }
   }
 
-  if (buf.empty()) {
-    return "";
-  }
-
-  // escape sequence
-  if (buf[0] == '\x1b' && buf.size() > 1) {
-    auto end = buf.find_first_of("Mm~ABCDFHPQRSZ", 2);
-
-    if (end != std::string::npos) {
-      std::string seq = buf.substr(0, end + 1);
-      buf.erase(0, end + 1);
-      return seq;
-    }
-    return ""; // incomplete, wait for more
-  }
-
-  // regular character
-  std::string ch = buf.substr(0, 1);
-  buf.erase(0, 1);
-  return ch;
+  return len;
 }
+
+std::string InputDecoder::next(bool flush) {
+  for (;;) {
+    if (_in_paste) {
+      auto end = _buf.find(PASTE_END);
+      if (end != std::string::npos) {
+        std::string text = _buf.substr(0, end);
+        _buf.erase(0, end + PASTE_MARKER_LEN);
+        _in_paste = false;
+        if (!text.empty()) {
+          return text;
+        }
+        continue;
+      }
+      if (!flush || _buf.empty()) {
+        return "";
+      }
+
+      // return what has arrived, holding back a possible partial end marker
+      size_t keep = 0;
+      for (size_t k = std::min(_buf.size(), PASTE_MARKER_LEN - 1); k > 0; k--) {
+        if (_buf.compare(_buf.size() - k, k, PASTE_END, k) == 0) {
+          keep = k;
+          break;
+        }
+      }
+      std::string text = _buf.substr(0, _buf.size() - keep);
+      _buf.erase(0, text.size());
+      return text;
+    }
+
+    if (_buf.compare(0, PASTE_MARKER_LEN, PASTE_START) == 0) {
+      _buf.erase(0, PASTE_MARKER_LEN);
+      _in_paste = true;
+      continue;
+    }
+
+    size_t len = token_length();
+    if (len == 0) {
+      if (!flush || _buf.empty()) {
+        return "";
+      }
+      len = 1; // incomplete and nothing more is coming
+    }
+
+    std::string key = _buf.substr(0, len);
+    _buf.erase(0, len);
+    return key;
+  }
+}
+
+std::string Terminal::read() const {
+  static constexpr int SEQUENCE_TIMEOUT_MS = 30; // how long to wait for the rest of a split sequence
+
+  for (;;) {
+    std::string key = _input.next();
+    if (!key.empty()) {
+      return key;
+    }
+
+    // something partial is buffered, only wait briefly for the rest of it
+    if (!_input.empty()) {
+      pollfd p{STDIN_FILENO, POLLIN, 0};
+      if (poll(&p, 1, SEQUENCE_TIMEOUT_MS) <= 0) {
+        return _input.next(true);
+      }
+    }
+
+    char    tmp[256];
+    ssize_t n = ::read(STDIN_FILENO, tmp, sizeof(tmp));
+    if (n > 0) {
+      _input.feed(tmp, n);
+      continue;
+    }
+
+    return _input.next(true); // error (e.g. EINTR on resize) or eof: "" if nothing is buffered
+  }
+}
+
+void Terminal::EnableBracketedPaste() const { std::cout << "\x1b[?2004h" << std::flush; }
+
+void Terminal::DisableBracketedPaste() const { std::cout << "\x1b[?2004l" << std::flush; }
 
 unsigned int Terminal::width() const {
   winsize w;
@@ -918,6 +1048,7 @@ void TermSetup::reset() { // sets terminal defaults, not blindly inversing confi
   std::cout << "\x1b[?25h"              // show cursor
             << "\x1b[?1049l"            // primary output buffer
             << "\x1b[?1003l\x1b[?1006l" // mouse reporting off
+            << "\x1b[?2004l"            // bracketed paste off
             << std::flush;
 }
 
